@@ -10,7 +10,7 @@
             font-family: 'Inter', sans-serif;
         }
         .hero-background {
-            background-image: url('https://placehold.co/1200x600/f8fafc/0f172a?text=Restoring+Community');
+            background-image: url('/resources/background.jpg');
             background-size: cover;
             background-position: center;
             position: relative;
@@ -27,7 +27,7 @@
         }
         @media (prefers-color-scheme: dark) {
             .hero-background {
-                background-image: url('https://placehold.co/1200x600/1e293b/ffffff?text=Restoring+Community');
+                background-image: url('/resources/background.jpg');
             }
             .hero-background::before {
                 background: rgba(30, 41, 59, 0.7);
@@ -49,59 +49,10 @@
                 transform: translateY(0);
             }
         }
-        .video-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            visibility: hidden;
-            opacity: 0;
-            transition: visibility 0s, opacity 0.3s;
-        }
-        .video-overlay.active {
-            visibility: visible;
-            opacity: 1;
-        }
-        .video-overlay-content {
-            position: relative;
-            max-width: 90%;
-            max-height: 90%;
-        }
-        .video-overlay-content video {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-        .close-btn {
-            position: absolute;
-            top: 20px;
-            right: 30px;
-            color: #fff;
-            font-size: 40px;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 101;
-        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body class="bg-gray-100 text-gray-800 flex flex-col min-h-screen dark:bg-zinc-950 dark:text-gray-200">
-
-    <div id="videoModal" class="video-overlay">
-        <span class="close-btn" onclick="closeModal()">&times;</span>
-        <div class="video-overlay-content">
-            <video id="fullScreenVideo" controls autoplay loop>
-                <source src="your-video-url.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-        </div>
-    </div>
 
     <header class="bg-white shadow-md p-4 sticky top-0 z-50 dark:bg-zinc-900">
         <div class="container mx-auto flex justify-between items-center">
@@ -110,7 +61,7 @@
                 <a href="#about" class="text-gray-600 hover:text-indigo-700 transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">About Us</a>
                 <a href="#programs" class="text-gray-600 hover:text-indigo-700 transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">What We Do</a>
                 <a href="#school-vision" class="text-gray-600 hover:text-indigo-700 transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">Our Vision</a>
-                <a href="#get-involved" class="text-gray-600 hover:text-indigo-700 transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">Get Involved</a>
+                <a href="/donate" class="text-gray-600 hover:text-indigo-700 transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">Get Involved</a>
             </nav>
             <button class="md:hidden text-gray-600 hover:text-indigo-700 focus:outline-none dark:text-gray-400 dark:hover:text-amber-400">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -132,7 +83,7 @@
                 <p class="text-lg md:text-xl max-w-2xl mx-auto mb-6">
                     Our mission is to restore our communities in Englewood by proclaiming Christ, training in godliness, and empowering the vulnerable.
                 </p>
-                <a href="#get-involved" class="bg-indigo-700 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:bg-indigo-800 transition duration-300 dark:bg-amber-400 dark:text-zinc-900 dark:hover:bg-amber-300">
+                <a href="/donate" class="bg-indigo-700 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:bg-indigo-800 transition duration-300 dark:bg-amber-400 dark:text-zinc-900 dark:hover:bg-amber-300">
                     Join Our CARE Mission
                 </a>
             </div>
@@ -151,21 +102,23 @@
             <h2 class="text-3xl md:text-4xl font-bold text-center mb-8">What We Do</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
                 <div class="bg-white rounded-lg shadow-md p-8 border-t-4 border-indigo-500 flex flex-col items-center text-center group transition-transform duration-300 hover:scale-105 dark:bg-zinc-900 dark:border-amber-400">
-                    <img src="https://placehold.co/150x150/f0f4f8/1e3a8a?text=Bible+Study" alt="Placeholder image of a Bible study" class="rounded-full mb-4 dark:bg-slate-700">
+                    <img src="/resources/bible.jpg" alt="EFO Logo" class="rounded-full mb-4 dark:bg-slate-700">
                     <h3 class="text-2xl font-semibold mb-2">Weekly Bible Studies</h3>
                     <p class="text-gray-600 leading-relaxed dark:text-gray-400">
                         We host regular Bible studies for boys, girls, and adults. These gatherings provide a space for deep discipleship, fellowship, and spiritual growth, helping to build a strong foundation in Christ.
                     </p>
                 </div>
+                
                 <a href="https://englewoodworks.org" target="_blank" class="bg-white rounded-lg shadow-md p-8 border-t-4 border-indigo-500 flex flex-col items-center text-center group transition-transform duration-300 hover:scale-105 dark:bg-zinc-900 dark:border-amber-400">
-                    <img src="https://placehold.co/150x150/f0f4f8/1e3a8a?text=Youth+Club" alt="Placeholder image of youth" class="rounded-full mb-4 dark:bg-slate-700">
+                    <img src="/resources/club.jpg" alt="EFO Banner" class="rounded-full mb-4 dark:bg-slate-700">
                     <h3 class="text-2xl font-semibold mb-2 text-gray-800 dark:text-gray-200">Englewood Works Club</h3>
                     <p class="text-gray-600 leading-relaxed dark:text-gray-400">
                         Our Englewood Works Club is an after-school program focused on developing the whole person. We help students with homework and a weekly Bible study. This program is instrumental in preparing the youth for a brighter future.
                     </p>
                 </a>
+
                 <div class="bg-white rounded-lg shadow-md p-8 border-t-4 border-indigo-500 flex flex-col items-center text-center group transition-transform duration-300 hover:scale-105 dark:bg-zinc-900 dark:border-amber-400">
-                    <img src="https://placehold.co/150x150/f0f4f8/1e3a8a?text=School+Vision" alt="Placeholder image of a school" class="rounded-full mb-4 dark:bg-slate-700">
+                    <img src="/resources/school.jpg" alt="EFO Logo" class="rounded-full mb-4 dark:bg-slate-700">
                     <h3 class="text-2xl font-semibold mb-2">A Classical Christian School</h3>
                     <p class="text-gray-600 leading-relaxed dark:text-gray-400">
                         We are laying the groundwork to establish a K-12 classical Christian school in Englewood, providing students with an education rooted in truth, goodness, and beauty.
@@ -185,10 +138,11 @@
                         This school will seek to train the next generation of leaders, thinkers, and artisans to be a blessing to their families and neighbors for the glory of God. It's a vision for holistic transformation that starts with the heart and mind.
                     </p>
                 </div>
-                <div id="video-container" class="md:w-1/2 cursor-pointer group transition-transform duration-300 hover:scale-105">
-                    <div class="bg-gray-200 rounded-lg shadow-lg w-full h-64 flex items-center justify-center text-center text-gray-700 p-4 dark:bg-zinc-800 dark:text-gray-400">
-                        <p>Click here to watch our video!</p>
-                    </div>
+                <div class="md:w-1/2">
+                    <video id="schoolVideo" controls autoplay muted loop class="rounded-lg shadow-lg w-full h-auto">
+                        <source src="/resources/school.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
                 </div>
             </div>
         </section>
@@ -196,7 +150,7 @@
         <section id="get-involved" class="bg-white rounded-lg shadow-md p-10 mb-8 text-center max-w-5xl mx-auto dark:bg-zinc-900">
             <h2 class="text-3xl md:text-4xl font-bold mb-4">Partner With Us</h2>
             <p class="text-lg text-gray-700 max-w-2xl mx-auto mb-6 dark:text-gray-300">
-                Your partnership is vital to our ministry. You can help us serve the community in three key ways.
+                        Your partnership is vital to our ministry. You can help us serve the community in three key ways.
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div class="p-6 bg-gray-100 rounded-lg shadow-inner dark:bg-zinc-800">
@@ -212,7 +166,7 @@
                 <div class="p-6 bg-gray-100 rounded-lg shadow-inner dark:bg-zinc-800">
                     <h3 class="text-xl font-bold text-indigo-700 mb-2 dark:text-amber-400">Donate</h3>
                     <p class="text-gray-600 mb-4 dark:text-gray-400">Provide financial support to help us continue this vital ministry.</p>
-                    <a href="https://englewoodfamily.org/donate" class="text-indigo-500 hover:text-indigo-700 font-semibold transition duration-300 dark:text-amber-500 dark:hover:text-amber-400">Donate Now</a>
+                    <a href="/donate" class="text-indigo-500 hover:text-indigo-700 font-semibold transition duration-300 dark:text-amber-500 dark:hover:text-amber-400">Donate Now</a>
                     <a href="mailto:info@englewoodfamily.org?subject=Requesting%20Donation%20Information" class="block mt-2 text-indigo-500 hover:text-indigo-700 font-semibold transition duration-300 dark:text-amber-500 dark:hover:text-amber-400">Email us for more information</a>
                 </div>
             </div>
@@ -258,24 +212,6 @@
                 link.textContent = email;
                 link.className = 'hover:underline';
                 emailSpan.parentNode.replaceChild(link, emailSpan);
-            }
-            const videoContainer = document.getElementById('video-container');
-            const videoModal = document.getElementById('videoModal');
-            const fullScreenVideo = document.getElementById('fullScreenVideo');
-            function openModal() {
-                videoModal.classList.add('active');
-                if (fullScreenVideo) {
-                    fullScreenVideo.play();
-                }
-            }
-            window.closeModal = function() {
-                if (fullScreenVideo) {
-                    fullScreenVideo.pause();
-                }
-                videoModal.classList.remove('active');
-            }
-            if (videoContainer) {
-                videoContainer.addEventListener('click', openModal);
             }
         });
     </script>
