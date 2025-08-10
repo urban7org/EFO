@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Englewood Works</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .hero-background {
+            background-image: url('banner.gif');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        .hero-background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: rgba(248, 250, 252, 0.7);
+            border-radius: 0.5rem;
+        }
+        @media (prefers-color-scheme: dark) {
+            .hero-background {
+                background-image: url('banner.gif');
+            }
+            .hero-background::before {
+                background: rgba(30, 41, 59, 0.7);
+            }
+        }
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            opacity: 0;
+            animation: fadeIn 1.5s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body class="bg-gray-100 text-gray-800 flex flex-col min-h-screen dark:bg-zinc-950 dark:text-gray-200">
+
+    <header class="bg-white shadow-md p-4 sticky top-0 z-50 dark:bg-zinc-900">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="/" class="flex items-center space-x-2">
+                <img src="englewoodworks logo.png" alt="Englewood Works Logo" class="h-8 w-auto">
+                <span class="text-2xl font-bold text-indigo-700 dark:text-amber-400">Englewood Works</span>
+            </a>
+            <nav class="hidden md:flex space-x-6">
+                <a href="#mission" class="text-gray-600 hover:text-indigo-700 transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">Mission</a>
+                <a href="#program" class="text-gray-600 hover:text-indigo-700 transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">Our Program</a>
+                <a href="#sponsor" class="text-gray-600 hover:text-indigo-700 transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">Support Us</a>
+            </nav>
+            <button class="md:hidden text-gray-600 hover:text-indigo-700 focus:outline-none dark:text-gray-400 dark:hover:text-amber-400">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto p-4 md:p-8">
+        <section class="hero-background text-zinc-900 rounded-lg p-10 mb-8 text-center shadow-lg dark:text-white">
+            <div class="hero-content">
+                <h1 class="text-4xl md:text-5xl font-extrabold mb-4">Empowering Residents with Hands-On Skills</h1>
+                <p class="text-lg md:text-xl max-w-2xl mx-auto mb-6">
+                    Unpracticed hands turning imperfect items into unique works of art.
+                </p>
+                <a href="#sponsor" class="bg-indigo-700 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:bg-indigo-800 transition duration-300 dark:bg-amber-400 dark:text-zinc-900 dark:hover:bg-amber-300">
+                    Sponsor Our Program
+                </a>
+            </div>
+        </section>
+
+        <section id="mission" class="mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-6">Our Mission</h2>
+            <div class="bg-white rounded-lg shadow-md p-6 max-w-3xl mx-auto dark:bg-zinc-900">
+                <p class="text-gray-700 leading-relaxed text-lg text-center dark:text-gray-300">
+                    Englewood Works is dedicated to empowering residents of the Englewood neighborhood on Chicago's South Side by providing comprehensive employability skills and training. We create pathways to meaningful employment, fostering economic self-sufficiency and community resilience. Through education, mentorship, and hands-on experience, we equip individuals with the tools they need to succeed in today’s workforce and build a brighter future for themselves and their families.
+                </p>
+            </div>
+        </section>
+
+        <section id="program" class="mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-8">Our After-School Program</h2>
+            <div class="bg-white rounded-lg shadow-md p-8 max-w-5xl mx-auto dark:bg-zinc-900">
+                <div class="space-y-8">
+                    <div class="flex items-start space-x-6">
+                        <div class="flex-shrink-0 w-24 h-24 bg-indigo-700 rounded-full flex items-center justify-center text-white font-bold text-xl dark:bg-amber-400 dark:text-zinc-900">
+                            1
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-semibold mb-2">Homework & Academics</h3>
+                            <p class="text-gray-700 leading-relaxed dark:text-gray-400">
+                                We start each day with dedicated time for homework, math, reading, and writing, ensuring students have a strong academic foundation to build upon.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-6">
+                        <div class="flex-shrink-0 w-24 h-24 bg-indigo-700 rounded-full flex items-center justify-center text-white font-bold text-xl dark:bg-amber-400 dark:text-zinc-900">
+                            2
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-semibold mb-2">Hands-On Trade Skills</h3>
+                            <p class="text-gray-700 leading-relaxed dark:text-gray-400">
+                                Our students get practical experience with real tools in a safe environment, including a CNC router for woodworking and other hand tools to develop valuable trade skills.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-6">
+                        <div class="flex-shrink-0 w-24 h-24 bg-indigo-700 rounded-full flex items-center justify-center text-white font-bold text-xl dark:bg-amber-400 dark:text-zinc-900">
+                            3
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-semibold mb-2">Life Skills & Enrichment</h3>
+                            <p class="text-gray-700 leading-relaxed dark:text-gray-400">
+                                Students participate in cooking classes, creative projects, and other life-skills training to foster well-rounded personal development and confidence.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-6">
+                        <div class="flex-shrink-0 w-24 h-24 bg-indigo-700 rounded-full flex items-center justify-center text-white font-bold text-xl dark:bg-amber-400 dark:text-zinc-900">
+                            4
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-semibold mb-2">Snacks & Community</h3>
+                            <p class="text-gray-700 leading-relaxed dark:text-gray-400">
+                                Each day includes a healthy snack and free game time, providing a safe and joyful environment for students to build friendships and community.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sponsor" class="bg-white rounded-lg shadow-md p-10 mb-8 text-center max-w-5xl mx-auto dark:bg-zinc-900">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">Support Our Program</h2>
+            <p class="text-lg text-gray-700 max-w-2xl mx-auto mb-6 dark:text-gray-300">
+                Your sponsorship directly impacts the lives of residents by providing the skills and training needed for meaningful employment and economic resilience. We are currently seeking both financial and product donations.
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Sponsor Level 1: Founding Sponsor -->
+                <div class="p-6 bg-gray-100 rounded-lg shadow-inner border-t-4 border-indigo-700 dark:bg-zinc-800 dark:border-amber-400">
+                    <h3 class="text-xl font-bold text-indigo-700 mb-2 dark:text-amber-400">Founding Sponsor</h3>
+                    <p class="text-gray-600 text-sm mb-2 dark:text-gray-400">Contribution: $10,000+</p>
+                    <p class="text-gray-600 dark:text-gray-400">Funds the launch and essential equipment.</p>
+                </div>
+                <!-- Sponsor Level 2: Gold Sponsor -->
+                <div class="p-6 bg-gray-100 rounded-lg shadow-inner border-t-4 border-indigo-700 dark:bg-zinc-800 dark:border-amber-400">
+                    <h3 class="text-xl font-bold text-indigo-700 mb-2 dark:text-amber-400">Gold Sponsor</h3>
+                    <p class="text-gray-600 text-sm mb-2 dark:text-gray-400">Contribution: $5,000 - $9,999</p>
+                    <p class="text-gray-600 dark:text-gray-400">Supports operational costs for multiple cohorts.</p>
+                </div>
+                <!-- Sponsor Level 3: Silver Sponsor -->
+                <div class="p-6 bg-gray-100 rounded-lg shadow-inner border-t-4 border-indigo-700 dark:bg-zinc-800 dark:border-amber-400">
+                    <h3 class="text-xl font-bold text-indigo-700 mb-2 dark:text-amber-400">Silver Sponsor</h3>
+                    <p class="text-gray-600 text-sm mb-2 dark:text-gray-400">Contribution: $2,000 - $4,999</p>
+                    <p class="text-gray-600 dark:text-gray-400">Covers training costs for several students.</p>
+                </div>
+                <!-- Sponsor Level 4: Bronze Sponsor -->
+                <div class="p-6 bg-gray-100 rounded-lg shadow-inner border-t-4 border-indigo-700 dark:bg-zinc-800 dark:border-amber-400">
+                    <h3 class="text-xl font-bold text-indigo-700 mb-2 dark:text-amber-400">Bronze Sponsor</h3>
+                    <p class="text-gray-600 text-sm mb-2 dark:text-gray-400">Contribution: $1,000 - $1,999</p>
+                    <p class="text-gray-600 dark:text-gray-400">Helps subsidize student fees and training supplies.</p>
+                </div>
+            </div>
+            
+            <div class="mt-8 flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                <a href="#" class="bg-indigo-700 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:bg-indigo-800 transition duration-300 dark:bg-amber-400 dark:text-zinc-900 dark:hover:bg-amber-300">
+                    Donate Now
+                </a>
+                <a href="mailto:info@englewoodfamily.org?subject=Englewood%20Works%20Sponsorship" class="bg-transparent text-indigo-700 font-bold py-3 px-6 rounded-full border border-indigo-700 hover:bg-indigo-700 hover:text-white transition duration-300 dark:text-amber-400 dark:border-amber-400 dark:hover:bg-amber-400 dark:hover:text-zinc-900">
+                    Contact Us
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-white shadow-inner p-4 mt-8 dark:bg-zinc-900">
+        <div class="container mx-auto text-center text-gray-600 dark:text-gray-400">
+            <p>
+                <a href="https://www.google.com/maps/dir/?api=1&destination=672+W+Marquette+Rd%2C+Chicago%2C+IL+60621" target="_blank" class="hover:underline">
+                    672 W Marquette Rd. Chicago, IL 60621
+                </a>
+            </p>
+            <p>
+                Phone: <a href="tel:+13129054290" class="hover:underline">(312) 905-4290</a>
+                 | Email: <span id="email-contact">info@englewoodfamily.org</span>
+            </p>
+            <div class="mt-4 flex justify-center space-x-4">
+                <a href="https://www.facebook.com/EnglewoodFam/" target="_blank" class="text-gray-600 hover:text-indigo-700 transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">
+                    <i class="fa-brands fa-facebook text-3xl"></i>
+                </a>
+                <a href="https://www.linkedin.com/company/englewoodfamily" target="_blank" class="text-gray-600 hover:text-indigo-700 transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">
+                    <i class="fa-brands fa-linkedin-in text-3xl"></i>
+                </a>
+                <a href="https://x.com/EnglewoodFamily" target="_blank" class="text-gray-600 hover:text-indigo-700 transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">
+                    <i class="fa-brands fa-x-twitter text-3xl"></i>
+                </a>
+                <a href="https://youtube.com/channel/UCTwWoryLiV2E0zAr1Pz_zBw" target="_blank" class="text-gray-600 hover:text-indigo-700 transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">
+                    <i class="fa-brands fa-youtube text-3xl"></i>
+                </a>
+            </div>
+            <p class="mt-2">&copy; 2025 Englewood Works. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const emailSpan = document.getElementById('email-contact');
+            if (emailSpan) {
+                const email = emailSpan.textContent;
+                const link = document.createElement('a');
+                link.href = 'mailto:' + email;
+                link.textContent = email;
+                link.className = 'hover:underline';
+                emailSpan.parentNode.replaceChild(link, emailSpan);
+            }
+        });
+    </script>
+</body>
+</html>
