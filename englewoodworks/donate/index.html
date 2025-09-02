@@ -11,29 +11,62 @@
             font-family: 'Inter', sans-serif;
         }
         /* Custom colors for light and dark mode */
+        :root {
+            --primary-color-light: #3684c6;
+            --accent-color-light: #21679f;
+            --primary-color-dark: #facc15;
+            --accent-color-dark: #fbbf24;
+        }
+
         .text-theme-light {
-            color: #3684c6;
+            color: var(--primary-color-light);
         }
         .text-theme-dark {
-            color: #facc15;
+            color: var(--primary-color-dark);
         }
         .bg-theme-light {
-            background-color: #3684c6;
+            background-color: var(--primary-color-light);
         }
         .bg-theme-dark {
-            background-color: #facc15;
+            background-color: var(--primary-color-dark);
         }
         .hover-text-theme-light:hover {
-            color: #21679f;
+            color: var(--accent-color-light);
         }
         .hover-bg-theme-light:hover {
-            background-color: #21679f;
+            background-color: var(--accent-color-light);
         }
         .hover-text-theme-dark:hover {
-            color: #fbbf24;
+            color: var(--accent-color-dark);
         }
         .hover-bg-theme-dark:hover {
-            background-color: #fbbf24;
+            background-color: var(--accent-color-dark);
+        }
+        @media (prefers-color-scheme: dark) {
+            .text-theme-light {
+                color: var(--primary-color-dark);
+            }
+            .text-theme-dark {
+                color: var(--primary-color-light);
+            }
+            .bg-theme-light {
+                background-color: var(--primary-color-dark);
+            }
+            .bg-theme-dark {
+                background-color: var(--primary-color-light);
+            }
+            .hover-text-theme-light:hover {
+                color: var(--accent-color-dark);
+            }
+            .hover-bg-theme-light:hover {
+                background-color: var(--accent-color-dark);
+            }
+            .hover-text-theme-dark:hover {
+                color: var(--accent-color-light);
+            }
+            .hover-bg-theme-dark:hover {
+                background-color: var(--accent-color-light);
+            }
         }
         /* Style consolidation for repetitive elements */
         .card-heading {
@@ -43,7 +76,7 @@
             @apply text-gray-600 leading-relaxed dark:text-gray-400;
         }
         .link {
-            @apply text-theme-light hover-text-theme-light font-semibold transition duration-300 dark:text-theme-dark hover-text-theme-dark;
+            @apply text-theme-light hover-text-theme-light font-semibold transition duration-300;
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
