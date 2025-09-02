@@ -10,6 +10,30 @@
         body {
             font-family: 'Inter', sans-serif;
         }
+        .text-theme-light {
+            color: #3684c6;
+        }
+        .text-theme-dark {
+            color: #facc15;
+        }
+        .bg-theme-light {
+            background-color: #3684c6;
+        }
+        .bg-theme-dark {
+            background-color: #facc15;
+        }
+        .hover-text-theme-light:hover {
+            color: #21679f;
+        }
+        .hover-bg-theme-light:hover {
+            background-color: #21679f;
+        }
+        .hover-text-theme-dark:hover {
+            color: #fbbf24;
+        }
+        .hover-bg-theme-dark:hover {
+            background-color: #fbbf24;
+        }
         .hero-background {
             background-image: url('banner.gif');
             background-size: cover;
@@ -51,7 +75,7 @@
             }
         }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body class="bg-gray-100 text-gray-800 flex flex-col min-h-screen dark:bg-zinc-950 dark:text-gray-200">
 
@@ -59,14 +83,14 @@
         <div class="container mx-auto flex justify-between items-center">
             <a href="/" class="flex items-center space-x-2">
                 <img src="englewoodworks logo.png" alt="Englewood Works Logo" class="h-8 w-auto">
-                <span class="text-2xl font-bold text-indigo-700 dark:text-amber-400">Englewood Works</span>
+                <span class="text-2xl font-bold text-theme-light dark:text-theme-dark">Englewood Works</span>
             </a>
             <nav class="hidden md:flex space-x-6">
-                <a href="#mission" class="text-gray-600 hover:text-indigo-700 transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">Mission</a>
-                <a href="#program" class="text-gray-600 hover:text-indigo-700 transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">Our Program</a>
-                <a href="#sponsor" class="text-gray-600 hover:text-indigo-700 transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">Support Us</a>
+                <a href="#mission" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-dark">Mission</a>
+                <a href="#program" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-dark">Our Program</a>
+                <a href="#sponsor" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-dark">Support Us</a>
             </nav>
-            <button class="md:hidden text-gray-600 hover:text-indigo-700 focus:outline-none dark:text-gray-400 dark:hover:text-amber-400">
+            <button class="md:hidden text-gray-600 hover-text-theme-light focus:outline-none dark:text-gray-400 hover-text-theme-dark">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
@@ -81,7 +105,7 @@
                 <p class="text-lg md:text-xl max-w-2xl mx-auto mb-6">
                     Unpracticed hands turning imperfect items into unique works of art.
                 </p>
-                <a href="#sponsor" class="bg-indigo-700 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:bg-indigo-800 transition duration-300 dark:bg-amber-400 dark:text-zinc-900 dark:hover:bg-amber-300">
+                <a href="donate/index.html" class="bg-theme-light text-white font-bold py-3 px-6 rounded-full shadow-lg hover-bg-theme-light transition duration-300 dark:bg-theme-dark dark:text-zinc-900 hover-bg-theme-dark">
                     Sponsor Our Program
                 </a>
             </div>
@@ -91,7 +115,7 @@
             <h2 class="text-3xl md:text-4xl font-bold text-center mb-6">Our Mission</h2>
             <div class="bg-white rounded-lg shadow-md p-6 max-w-3xl mx-auto dark:bg-zinc-900">
                 <p class="text-gray-700 leading-relaxed text-lg text-center dark:text-gray-300">
-                    Englewood Works is dedicated to empowering residents of the Englewood neighborhood on Chicago's South Side by providing comprehensive employability skills and training. We create pathways to meaningful employment, fostering economic self-sufficiency and community resilience. Through education, mentorship, and hands-on experience, we equip individuals with the tools they need to succeed in today’s workforce and build a brighter future for themselves and their families.
+                    Englewood Works is dedicated to empowering residents of the Englewood neighborhood on Chicago's South Side by providing comprehensive employability skills and training. We strive to create pathways to meaningful employment, fostering economic self-sufficiency and community resilience. Through education, mentorship, and hands-on experience, we equip individuals with the tools they need to succeed in today’s workforce and build a brighter future for themselves and their families.
                 </p>
             </div>
         </section>
@@ -101,7 +125,7 @@
             <div class="bg-white rounded-lg shadow-md p-8 max-w-5xl mx-auto dark:bg-zinc-900">
                 <div class="space-y-8">
                     <div class="flex items-start space-x-6">
-                        <div class="flex-shrink-0 w-24 h-24 bg-indigo-700 rounded-full flex items-center justify-center text-white font-bold text-xl dark:bg-amber-400 dark:text-zinc-900">
+                        <div class="flex-shrink-0 w-24 h-24 bg-theme-light rounded-full flex items-center justify-center text-white font-bold text-xl dark:bg-theme-dark dark:text-zinc-900">
                             1
                         </div>
                         <div>
@@ -112,7 +136,7 @@
                         </div>
                     </div>
                     <div class="flex items-start space-x-6">
-                        <div class="flex-shrink-0 w-24 h-24 bg-indigo-700 rounded-full flex items-center justify-center text-white font-bold text-xl dark:bg-amber-400 dark:text-zinc-900">
+                        <div class="flex-shrink-0 w-24 h-24 bg-theme-light rounded-full flex items-center justify-center text-white font-bold text-xl dark:bg-theme-dark dark:text-zinc-900">
                             2
                         </div>
                         <div>
@@ -123,7 +147,7 @@
                         </div>
                     </div>
                     <div class="flex items-start space-x-6">
-                        <div class="flex-shrink-0 w-24 h-24 bg-indigo-700 rounded-full flex items-center justify-center text-white font-bold text-xl dark:bg-amber-400 dark:text-zinc-900">
+                        <div class="flex-shrink-0 w-24 h-24 bg-theme-light rounded-full flex items-center justify-center text-white font-bold text-xl dark:bg-theme-dark dark:text-zinc-900">
                             3
                         </div>
                         <div>
@@ -134,7 +158,7 @@
                         </div>
                     </div>
                     <div class="flex items-start space-x-6">
-                        <div class="flex-shrink-0 w-24 h-24 bg-indigo-700 rounded-full flex items-center justify-center text-white font-bold text-xl dark:bg-amber-400 dark:text-zinc-900">
+                        <div class="flex-shrink-0 w-24 h-24 bg-theme-light rounded-full flex items-center justify-center text-white font-bold text-xl dark:bg-theme-dark dark:text-zinc-900">
                             4
                         </div>
                         <div>
@@ -155,33 +179,37 @@
             </p>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="p-6 bg-gray-100 rounded-lg shadow-inner border-t-4 border-indigo-700 dark:bg-zinc-800 dark:border-amber-400">
-                    <h3 class="text-xl font-bold text-indigo-700 mb-2 dark:text-amber-400">Founding Sponsor</h3>
+                <!-- Sponsor Level 1: Founding Sponsor -->
+                <div class="p-6 bg-gray-100 rounded-lg shadow-inner border-t-4 border-theme-light dark:bg-zinc-800 dark:border-theme-dark">
+                    <h3 class="text-xl font-bold text-theme-light mb-2 dark:text-theme-dark">Founding Sponsor</h3>
                     <p class="text-gray-600 text-sm mb-2 dark:text-gray-400">Contribution: $10,000+</p>
                     <p class="text-gray-600 dark:text-gray-400">Funds the launch and essential equipment.</p>
                 </div>
-                <div class="p-6 bg-gray-100 rounded-lg shadow-inner border-t-4 border-indigo-700 dark:bg-zinc-800 dark:border-amber-400">
-                    <h3 class="text-xl font-bold text-indigo-700 mb-2 dark:text-amber-400">Gold Sponsor</h3>
+                <!-- Sponsor Level 2: Gold Sponsor -->
+                <div class="p-6 bg-gray-100 rounded-lg shadow-inner border-t-4 border-theme-light dark:bg-zinc-800 dark:border-theme-dark">
+                    <h3 class="text-xl font-bold text-theme-light mb-2 dark:text-theme-dark">Gold Sponsor</h3>
                     <p class="text-gray-600 text-sm mb-2 dark:text-gray-400">Contribution: $5,000 - $9,999</p>
                     <p class="text-gray-600 dark:text-gray-400">Supports operational costs for multiple cohorts.</p>
                 </div>
-                <div class="p-6 bg-gray-100 rounded-lg shadow-inner border-t-4 border-indigo-700 dark:bg-zinc-800 dark:border-amber-400">
-                    <h3 class="text-xl font-bold text-indigo-700 mb-2 dark:text-amber-400">Silver Sponsor</h3>
+                <!-- Sponsor Level 3: Silver Sponsor -->
+                <div class="p-6 bg-gray-100 rounded-lg shadow-inner border-t-4 border-theme-light dark:bg-zinc-800 dark:border-theme-dark">
+                    <h3 class="text-xl font-bold text-theme-light mb-2 dark:text-theme-dark">Silver Sponsor</h3>
                     <p class="text-gray-600 text-sm mb-2 dark:text-gray-400">Contribution: $2,000 - $4,999</p>
                     <p class="text-gray-600 dark:text-gray-400">Covers training costs for several students.</p>
                 </div>
-                <div class="p-6 bg-gray-100 rounded-lg shadow-inner border-t-4 border-indigo-700 dark:bg-zinc-800 dark:border-amber-400">
-                    <h3 class="text-xl font-bold text-indigo-700 mb-2 dark:text-amber-400">Bronze Sponsor</h3>
+                <!-- Sponsor Level 4: Bronze Sponsor -->
+                <div class="p-6 bg-gray-100 rounded-lg shadow-inner border-t-4 border-theme-light dark:bg-zinc-800 dark:border-theme-dark">
+                    <h3 class="text-xl font-bold text-theme-light mb-2 dark:text-theme-dark">Bronze Sponsor</h3>
                     <p class="text-gray-600 text-sm mb-2 dark:text-gray-400">Contribution: $1,000 - $1,999</p>
                     <p class="text-gray-600 dark:text-gray-400">Helps subsidize student fees and training supplies.</p>
                 </div>
             </div>
             
             <div class="mt-8 flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-                <a href="/donate" class="bg-indigo-700 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:bg-indigo-800 transition duration-300 dark:bg-amber-400 dark:text-zinc-900 dark:hover:bg-amber-300">
-                    Donate Now
+                <a href="donate/index.html" class="bg-theme-light text-white font-bold py-3 px-6 rounded-full shadow-lg hover-bg-theme-light transition duration-300 dark:bg-theme-dark dark:text-zinc-900 hover-bg-theme-dark">
+                    Sponsor Our Program
                 </a>
-                <a href="mailto:info@englewoodfamily.org?subject=Englewood%20Works%20Sponsorship" class="bg-transparent text-indigo-700 font-bold py-3 px-6 rounded-full border border-indigo-700 hover:bg-indigo-700 hover:text-white transition duration-300 dark:text-amber-400 dark:border-amber-400 dark:hover:bg-amber-400 dark:hover:text-zinc-900">
+                <a href="mailto:info@englewoodfamily.org?subject=Englewood%20Works%20Sponsorship" class="bg-transparent text-theme-light font-bold py-3 px-6 rounded-full border border-theme-light hover-bg-theme-light hover:text-white transition duration-300 dark:text-theme-dark dark:border-theme-dark hover-bg-theme-dark dark:hover:text-zinc-900">
                     Contact Us
                 </a>
             </div>
@@ -200,16 +228,16 @@
                  | Email: <span id="email-contact">info@englewoodfamily.org</span>
             </p>
             <div class="mt-4 flex justify-center space-x-4">
-                <a href="https://www.facebook.com/EnglewoodFam/" target="_blank" class="text-gray-600 hover:text-indigo-700 transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">
+                <a href="https://www.facebook.com/EnglewoodFam/" target="_blank" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-dark">
                     <i class="fa-brands fa-facebook text-3xl"></i>
                 </a>
-                <a href="https://www.linkedin.com/company/englewoodfamily" target="_blank" class="text-gray-600 hover:text-indigo-700 transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">
+                <a href="https://www.linkedin.com/company/englewoodfamily" target="_blank" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-dark">
                     <i class="fa-brands fa-linkedin-in text-3xl"></i>
                 </a>
-                <a href="https://x.com/EnglewoodFamily" target="_blank" class="text-gray-600 hover:text-indigo-700 transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">
+                <a href="https://x.com/EnglewoodFamily" target="_blank" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-dark">
                     <i class="fa-brands fa-x-twitter text-3xl"></i>
                 </a>
-                <a href="https://youtube.com/channel/UCTwWoryLiV2E0zAr1Pz_zBw" target="_blank" class="text-gray-600 hover:text-indigo-700 transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">
+                <a href="https://youtube.com/channel/UCTwWoryLiV2E0zAr1Pz_zBw" target="_blank" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-dark">
                     <i class="fa-brands fa-youtube text-3xl"></i>
                 </a>
             </div>
