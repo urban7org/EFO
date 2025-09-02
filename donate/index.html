@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Support Englewood Family Outreach</title>
-    <link rel="icon" href="../resources/EFO Logo.png" type="image/png">
+    <link rel="icon" id="favicon" href="../resources/EFO Logo.png" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -67,59 +67,6 @@
             .hover-bg-theme-dark:hover {
                 background-color: var(--accent-color-light);
             }
-        }
-
-        .hero-background {
-            background-image: url('/resources/background.jpg');
-            background-size: cover;
-            background-position: center;
-            position: relative;
-        }
-        .hero-background::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            background: rgba(248, 250, 252, 0.7);
-            border-radius: 0.5rem;
-        }
-        @media (prefers-color-scheme: dark) {
-            .hero-background {
-                background-image: url('/resources/background.jpg');
-            }
-            .hero-background::before {
-                background: rgba(30, 41, 59, 0.7);
-            }
-        }
-        .hero-content {
-            position: relative;
-            z-index: 10;
-            opacity: 0;
-            animation: fadeIn 1.5s ease-out forwards;
-        }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        /* CSS to handle the light/dark mode logo switch */
-        img#logo {
-            content: url("../resources/EFO Logo.png");
-        }
-        @media (prefers-color-scheme: dark) {
-            img#logo {
-                content: url("../resources/EFO Logo_gold.png");
-            }
-        }
-        .social-link-hover-gold:hover {
-            color: #facc15;
         }
         /* Style consolidation for repetitive elements */
         .card-heading {
