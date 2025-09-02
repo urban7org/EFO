@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Englewood Family Outreach</title>
-    <link rel="icon" href="/resources/EFO Logo.png" type="image/png">
+    <link rel="icon" id="favicon" href="/resources/EFO Logo.png" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -118,12 +118,6 @@
                 content: url("/resources/EFO Logo_gold.png");
             }
         }
-        /* CSS for the favicon switch */
-        @media (prefers-color-scheme: dark) {
-            head link[rel="icon"] {
-                content: url("/resources/EFO Logo_gold.png");
-            }
-        }
         .social-link-hover-gold:hover {
             color: #facc15;
         }
@@ -157,8 +151,8 @@
             <div class="hero-content">
                 <h1 class="text-4xl md:text-5xl font-extrabold mb-4">
                     <span class="text-theme-light dark:text-theme-dark">C</span>onnect. 
-                    <span class="text-theme-light dark:text-theme-dark">A</span>nchore. 
-                    <span class="text-theme-light dark:text-theme-dark">R</span>estor. 
+                    <span class="text-theme-light dark:text-theme-dark">A</span>nchor. 
+                    <span class="text-theme-light dark:text-theme-dark">R</span>estore. 
                     <span class="text-theme-light dark:text-theme-dark">E</span>mpower.
                 </h1>
                 <p class="text-lg md:text-xl max-w-2xl mx-auto mb-6">
@@ -275,16 +269,16 @@
                  | Email: <span id="email-contact">info@englewoodfamily.org</span>
             </p>
             <div class="mt-4 flex justify-center space-x-4">
-                <a href="https://www.facebook.com/EnglewoodFam/" target="_blank" class="text-gray-600 social-link-hover-gold transition duration-300 dark:text-gray-400">
+                <a href="https://www.facebook.com/EnglewoodFam/" target="_blank" class="text-gray-600 hover:text-[#facc15] transition duration-300 dark:text-gray-400 dark:hover:text-[#21679f]">
                     <i class="fa-brands fa-facebook text-3xl"></i>
                 </a>
-                <a href="https://www.linkedin.com/company/englewoodfamily" target="_blank" class="text-gray-600 social-link-hover-gold transition duration-300 dark:text-gray-400">
+                <a href="https://www.linkedin.com/company/englewoodfamily" target="_blank" class="text-gray-600 hover:text-[#facc15] transition duration-300 dark:text-gray-400 dark:hover:text-[#21679f]">
                     <i class="fa-brands fa-linkedin-in text-3xl"></i>
                 </a>
-                <a href="https://x.com/EnglewoodFamily" target="_blank" class="text-gray-600 social-link-hover-gold transition duration-300 dark:text-gray-400">
+                <a href="https://x.com/EnglewoodFamily" target="_blank" class="text-gray-600 hover:text-[#facc15] transition duration-300 dark:text-gray-400 dark:hover:text-[#21679f]">
                     <i class="fa-brands fa-x-twitter text-3xl"></i>
                 </a>
-                <a href="https://youtube.com/channel/UCTwWoryLiV2E0zAr1Pz_zBw" target="_blank" class="text-gray-600 social-link-hover-gold transition duration-300 dark:text-gray-400">
+                <a href="https://youtube.com/channel/UCTwWoryLiV2E0zAr1Pz_zBw" target="_blank" class="text-gray-600 hover:text-[#facc15] transition duration-300 dark:text-gray-400 dark:hover:text-[#21679f]">
                     <i class="fa-brands fa-youtube text-3xl"></i>
                 </a>
             </div>
@@ -304,6 +298,29 @@
                 emailSpan.parentNode.replaceChild(link, emailSpan);
             }
         });
+        
+        // Favicon switch logic
+        const favicon = document.getElementById('favicon');
+        const lightModeFavicon = "/resources/EFO Logo.png";
+        const darkModeFavicon = "/resources/EFO Logo_gold.png";
+        
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        
+        function updateFavicon(e) {
+            if (e.matches) {
+                favicon.href = darkModeFavicon;
+            } else {
+                favicon.href = lightModeFavicon;
+            }
+        }
+        
+        // Set initial favicon
+        if (mediaQuery.matches) {
+            favicon.href = darkModeFavicon;
+        }
+        
+        // Listen for changes in color scheme
+        mediaQuery.addEventListener('change', updateFavicon);
     </script>
 </body>
 </html>
