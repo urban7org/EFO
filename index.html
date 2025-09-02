@@ -59,32 +59,6 @@
                 content: url("/resources/EFO Logo_gold.png");
             }
         }
-
-        /* Consolidated CSS classes */
-        .header-link {
-            @apply text-gray-600 hover:text-[#3684c6] transition duration-300 dark:text-gray-400 dark:hover:text-amber-400;
-        }
-        .body-text {
-            @apply text-gray-700 leading-relaxed text-lg text-center dark:text-gray-300;
-        }
-        .body-paragraph {
-            @apply text-gray-600 mb-4 dark:text-gray-400;
-        }
-        .title-primary {
-            @apply text-3xl md:text-4xl font-bold text-center mb-6;
-        }
-        .sub-title {
-            @apply text-2xl font-semibold mb-2;
-        }
-        .card-container {
-            @apply bg-white rounded-lg shadow-md p-8 border-t-4 border-[#3684c6] flex flex-col items-center text-center group transition-transform duration-300 hover:scale-105 dark:bg-zinc-900 dark:border-amber-400;
-        }
-        .card-link {
-            @apply text-[#3684c6] hover:text-[#21679f] font-semibold transition duration-300 dark:text-amber-500 dark:hover:text-amber-400;
-        }
-        .social-link {
-            @apply text-gray-600 hover:text-[#3684c6] transition duration-300 dark:text-gray-400 dark:hover:text-amber-400;
-        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
@@ -97,10 +71,10 @@
                 <span class="text-2xl font-bold text-[#3684c6] dark:text-amber-400">Englewood Family Outreach</span>
             </a>
             <nav class="hidden md:flex space-x-6">
-                <a href="#about" class="header-link">About Us</a>
-                <a href="#programs" class="header-link">What We Do</a>
-                <a href="#school-vision" class="header-link">Our Vision</a>
-                <a href="/donate" class="header-link">Get Involved</a>
+                <a href="#about" class="text-gray-600 hover:text-[#3684c6] transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">About Us</a>
+                <a href="#programs" class="text-gray-600 hover:text-[#3684c6] transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">What We Do</a>
+                <a href="#school-vision" class="text-gray-600 hover:text-[#3684c6] transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">Our Vision</a>
+                <a href="/donate" class="text-gray-600 hover:text-[#3684c6] transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">Get Involved</a>
             </nav>
             <button class="md:hidden text-gray-600 hover:text-[#3684c6] focus:outline-none dark:text-gray-400 dark:hover:text-amber-400">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -129,15 +103,15 @@
         </section>
 
         <section id="about" class="mb-12">
-            <h2 class="title-primary">Who We Are</h2>
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-6">Who We Are</h2>
             <div class="bg-white rounded-lg shadow-md p-6 max-w-3xl mx-auto dark:bg-zinc-900">
-                <p class="body-text">
+                <p class="text-gray-700 leading-relaxed text-lg text-center dark:text-gray-300">
                     Englewood Family Outreach is a faith-based organization dedicated to serving the Englewood community of Chicago. As Executive Director, Daniel Bair leads our team in building relationships, providing resources, and facilitating programs that help families develop into healthy, Christ-centered entities. We believe in the power of the Gospel to transform lives and bring renewal to the community.
                 </p>
                 
                 <div class="mt-8 text-center">
-                    <h3 class="sub-title">Executive Director: Daniel M. Bair</h3>
-                    <p class="body-text max-w-2xl mx-auto">
+                    <h3 class="text-2xl font-semibold mb-2">Executive Director: Daniel M. Bair</h3>
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed max-w-2xl mx-auto">
                         On staff since 2001, Daniel is a passionate leader with a deep commitment to the Englewood community. He leads efforts to alleviate poverty through relational approaches and envisions restoring Englewood residents to a right relationship with God, others, and creation. Daniel graduated from Moody Bible Institute and went on to earn an M.A. in biblical exegesis from Wheaton College Graduate School, grounding his ministry in a solid theological foundation.
                     </p>
                 </div>
@@ -145,36 +119,42 @@
         </section>
 
         <section id="programs" class="mb-12">
-            <h2 class="title-primary">What We Do</h2>
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-8">What We Do</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
-                <div class="card-container">
+                <div class="bg-white rounded-lg shadow-md p-8 border-t-4 border-[#3684c6] flex flex-col items-center text-center group transition-transform duration-300 hover:scale-105 dark:bg-zinc-900 dark:border-amber-400">
                     <img src="/resources/bible.jpg" alt="EFO Logo" class="rounded-full mb-4 dark:bg-slate-700">
-                    <h3 class="sub-title">Weekly Bible Studies</h3>
-                    <p class="body-paragraph">Join us in praying for the spiritual and physical restoration of Englewood.</p>
+                    <h3 class="text-2xl font-semibold mb-2">Weekly Bible Studies</h3>
+                    <p class="text-gray-600 leading-relaxed dark:text-gray-400">
+                        We host regular Bible studies for boys, girls, and adults. These gatherings provide a space for deep discipleship, fellowship, and spiritual growth, helping to build a strong foundation in Christ.
+                    </p>
                 </div>
                 
-                <a href="https://englewoodworks.org" target="_blank" class="card-container">
+                <a href="https://englewoodworks.org" target="_blank" class="bg-white rounded-lg shadow-md p-8 border-t-4 border-[#3684c6] flex flex-col items-center text-center group transition-transform duration-300 hover:scale-105 dark:bg-zinc-900 dark:border-amber-400">
                     <img src="/resources/club.jpg" alt="EFO Banner" class="rounded-full mb-4 dark:bg-slate-700">
-                    <h3 class="sub-title text-gray-800 dark:text-gray-200">Englewood Works Club</h3>
-                    <p class="body-paragraph">Our Englewood Works Club is an after-school program focused on developing the whole person. We help students with homework and a weekly Bible study. This program is instrumental in preparing the youth for a brighter future.</p>
+                    <h3 class="text-2xl font-semibold mb-2 text-gray-800 dark:text-gray-200">Englewood Works Club</h3>
+                    <p class="text-gray-600 leading-relaxed dark:text-gray-400">
+                        Our Englewood Works Club is an after-school program focused on developing the whole person. We help students with homework and a weekly Bible study. This program is instrumental in preparing the youth for a brighter future.
+                    </p>
                 </a>
 
-                <div class="card-container">
+                <div class="bg-white rounded-lg shadow-md p-8 border-t-4 border-[#3684c6] flex flex-col items-center text-center group transition-transform duration-300 hover:scale-105 dark:bg-zinc-900 dark:border-amber-400">
                     <img src="/resources/school.jpg" alt="EFO Logo" class="rounded-full mb-4 dark:bg-slate-700">
-                    <h3 class="sub-title">A Classical Christian School</h3>
-                    <p class="body-paragraph">We are laying the groundwork to establish a K-12 classical Christian school in Englewood, providing students with an education rooted in truth, goodness, and beauty.</p>
+                    <h3 class="text-2xl font-semibold mb-2">A Classical Christian School</h3>
+                    <p class="text-gray-600 leading-relaxed dark:text-gray-400">
+                        We are laying the groundwork to establish a K-12 classical Christian school in Englewood, providing students with an education rooted in truth, goodness, and beauty.
+                    </p>
                 </div>
             </div>
         </section>
         
         <section id="school-vision" class="mb-12">
-            <h2 class="title-primary">Our Vision: A Classical Christian School</h2>
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-8">Our Vision: A Classical Christian School</h2>
             <div class="bg-white rounded-lg shadow-md p-8 max-w-5xl mx-auto flex flex-col md:flex-row items-center space-y-6 md:space-y-0 md:space-x-8 dark:bg-zinc-900">
                 <div class="md:w-1/2">
-                    <p class="body-text mb-4">
+                    <p class="text-gray-700 leading-relaxed text-lg mb-4 dark:text-gray-300">
                         We are actively working toward a long-term goal of establishing a K-12 classical Christian school right here in Englewood. This vision is founded on the belief that a robust education, centered on Christ and the pursuit of wisdom and virtue, is key to the lasting restoration of our community.
                     </p>
-                    <p class="body-text">
+                    <p class="text-gray-700 leading-relaxed text-lg dark:text-gray-300">
                         This school will seek to train the next generation of leaders, thinkers, and artisans to be a blessing to their families and neighbors for the glory of God. It's a vision for holistic transformation that starts with the heart and mind.
                     </p>
                 </div>
@@ -190,26 +170,26 @@
         </section>
 
         <section id="get-involved" class="bg-white rounded-lg shadow-md p-10 mb-8 text-center max-w-5xl mx-auto dark:bg-zinc-900">
-            <h2 class="title-primary mb-4">Partner With Us</h2>
-            <p class="body-text max-w-2xl mx-auto mb-6">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">Partner With Us</h2>
+            <p class="text-lg text-gray-700 max-w-2xl mx-auto mb-6 dark:text-gray-300">
                         Your partnership is vital to our ministry. You can help us serve the community in three key ways.
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div class="p-6 bg-gray-100 rounded-lg shadow-inner dark:bg-zinc-800">
-                    <h3 class="sub-title text-[#3684c6] dark:text-amber-400">Pray</h3>
-                    <p class="body-paragraph">Join us in praying for the spiritual and physical restoration of Englewood.</p>
-                    <a href="mailto:info@englewoodfamily.org?subject=Join%20Prayer%20Team" class="card-link">Email us to join our prayer team</a>
+                    <h3 class="text-xl font-bold text-[#3684c6] mb-2 dark:text-amber-400">Pray</h3>
+                    <p class="text-gray-600 mb-4 dark:text-gray-400">Join us in praying for the spiritual and physical restoration of Englewood.</p>
+                    <a href="mailto:info@englewoodfamily.org?subject=Join%20Prayer%20Team" class="text-[#3684c6] hover:text-[#21679f] font-semibold transition duration-300 dark:text-amber-500 dark:hover:text-amber-400">Email us to join our prayer team</a>
                 </div>
                 <div class="p-6 bg-gray-100 rounded-lg shadow-inner dark:bg-zinc-800">
-                    <h3 class="sub-title text-[#3684c6] dark:text-amber-400">Volunteer</h3>
-                    <p class="body-paragraph">Give your time and skills to serve alongside us in our programs.</p>
-                    <a href="mailto:info@englewoodfamily.org?subject=Volunteer%20Opportunities" class="card-link">Email us about volunteering</a>
+                    <h3 class="text-xl font-bold text-[#3684c6] mb-2 dark:text-amber-400">Volunteer</h3>
+                    <p class="text-gray-600 mb-4 dark:text-gray-400">Give your time and skills to serve alongside us in our programs.</p>
+                    <a href="mailto:info@englewoodfamily.org?subject=Volunteer%20Opportunities" class="text-[#3684c6] hover:text-[#21679f] font-semibold transition duration-300 dark:text-amber-500 dark:hover:text-amber-400">Email us about volunteering</a>
                 </div>
                 <div class="p-6 bg-gray-100 rounded-lg shadow-inner dark:bg-zinc-800">
-                    <h3 class="sub-title text-[#3684c6] dark:text-amber-400">Donate</h3>
-                    <p class="body-paragraph">Provide financial support to help us continue this vital ministry.</p>
-                    <a href="/donate" class="card-link">Donate Now</a>
-                    <a href="mailto:info@englewoodfamily.org?subject=Requesting%20Donation%20Information" class="block mt-2 card-link">Email us for more information</a>
+                    <h3 class="text-xl font-bold text-[#3684c6] mb-2 dark:text-amber-400">Donate</h3>
+                    <p class="text-gray-600 mb-4 dark:text-gray-400">Provide financial support to help us continue this vital ministry.</p>
+                    <a href="/donate" class="text-[#3684c6] hover:text-[#21679f] font-semibold transition duration-300 dark:text-amber-500 dark:hover:text-amber-400">Donate Now</a>
+                    <a href="mailto:info@englewoodfamily.org?subject=Requesting%20Donation%20Information" class="block mt-2 text-[#3684c6] hover:text-[#21679f] font-semibold transition duration-300 dark:text-amber-500 dark:hover:text-amber-400">Email us for more information</a>
                 </div>
             </div>
         </section>
@@ -227,16 +207,16 @@
                  | Email: <span id="email-contact">info@englewoodfamily.org</span>
             </p>
             <div class="mt-4 flex justify-center space-x-4">
-                <a href="https://www.facebook.com/EnglewoodFam/" target="_blank" class="social-link">
+                <a href="https://www.facebook.com/EnglewoodFam/" target="_blank" class="text-gray-600 hover:text-[#3684c6] transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">
                     <i class="fa-brands fa-facebook text-3xl"></i>
                 </a>
-                <a href="https://www.linkedin.com/company/englewoodfamily" target="_blank" class="social-link">
+                <a href="https://www.linkedin.com/company/englewoodfamily" target="_blank" class="text-gray-600 hover:text-[#3684c6] transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">
                     <i class="fa-brands fa-linkedin-in text-3xl"></i>
                 </a>
-                <a href="https://x.com/EnglewoodFamily" target="_blank" class="social-link">
+                <a href="https://x.com/EnglewoodFamily" target="_blank" class="text-gray-600 hover:text-[#3684c6] transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">
                     <i class="fa-brands fa-x-twitter text-3xl"></i>
                 </a>
-                <a href="https://youtube.com/channel/UCTwWoryLiV2E0zAr1Pz_zBw" target="_blank" class="social-link">
+                <a href="https://youtube.com/channel/UCTwWoryLiV2E0zAr1Pz_zBw" target="_blank" class="text-gray-600 hover:text-[#3684c6] transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">
                     <i class="fa-brands fa-youtube text-3xl"></i>
                 </a>
             </div>
