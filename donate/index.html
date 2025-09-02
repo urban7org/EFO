@@ -3,50 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Donate to Englewood Family Outreach</title>
+    <title>Support Englewood Family Outreach</title>
+    <link rel="icon" href="../resources/EFO Logo.png" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
         }
-        .hero-background {
-            background-image: url('/resources/background.jpg');
-            background-size: cover;
-            background-position: center;
-            position: relative;
+        .text-theme-light {
+            color: #3684c6;
         }
-        .hero-background::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            background: rgba(248, 250, 252, 0.7);
-            border-radius: 0.5rem;
+        .text-theme-dark {
+            color: #facc15;
+        }
+        .bg-theme-light {
+            background-color: #3684c6;
+        }
+        .bg-theme-dark {
+            background-color: #facc15;
+        }
+        .hover-text-theme-light:hover {
+            color: #21679f;
+        }
+        .hover-bg-theme-light:hover {
+            background-color: #21679f;
+        }
+        .hover-text-theme-dark:hover {
+            color: #fbbf24;
+        }
+        .hover-bg-theme-dark:hover {
+            background-color: #fbbf24;
+        }
+        /* CSS to handle the light/dark mode logo switch */
+        img#logo {
+            content: url("../resources/EFO Logo.png");
         }
         @media (prefers-color-scheme: dark) {
-            .hero-background {
-                background-image: url('/resources/background.jpg');
-            }
-            .hero-background::before {
-                background: rgba(30, 41, 59, 0.7);
-            }
-        }
-        .hero-content {
-            position: relative;
-            z-index: 10;
-            opacity: 0;
-            animation: fadeIn 1.5s ease-out forwards;
-        }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
+            img#logo {
+                content: url("../resources/EFO Logo_gold.png");
             }
         }
     </style>
@@ -56,14 +50,17 @@
 
     <header class="bg-white shadow-md p-4 sticky top-0 z-50 dark:bg-zinc-900">
         <div class="container mx-auto flex justify-between items-center">
-            <a href="/" class="text-2xl font-bold text-indigo-700 dark:text-amber-400">Englewood Family Outreach</a>
+            <a href="/" class="flex items-center space-x-2">
+                <img id="logo" alt="Englewood Family Outreach Logo" class="h-8 w-auto">
+                <span class="text-2xl font-bold text-theme-light dark:text-theme-dark">Englewood Family Outreach</span>
+            </a>
             <nav class="hidden md:flex space-x-6">
-                <a href="/#about" class="text-gray-600 hover:text-indigo-700 transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">About Us</a>
-                <a href="/#programs" class="text-gray-600 hover:text-indigo-700 transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">What We Do</a>
-                <a href="/#school-vision" class="text-gray-600 hover:text-indigo-700 transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">Our Vision</a>
-                <a href="/donate" class="text-gray-600 hover:text-indigo-700 transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">Get Involved</a>
+                <a href="/#about" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-dark">About Us</a>
+                <a href="/#programs" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-dark">What We Do</a>
+                <a href="/#school-vision" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-dark">Our Vision</a>
+                <a href="/donate" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-dark">Get Involved</a>
             </nav>
-            <button class="md:hidden text-gray-600 hover:text-indigo-700 focus:outline-none dark:text-gray-400 dark:hover:text-amber-400">
+            <button class="md:hidden text-gray-600 hover-text-theme-light focus:outline-none dark:text-gray-400 hover-text-theme-dark">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
@@ -72,85 +69,85 @@
     </header>
 
     <main class="flex-grow container mx-auto p-4 md:p-8">
-        <section class="bg-white rounded-lg shadow-md p-10 mb-8 text-center dark:bg-zinc-900">
-            <h1 class="text-4xl md:text-5xl font-extrabold mb-4">Support Our Work</h1>
+        <section class="text-zinc-900 rounded-lg p-10 mb-8 text-center shadow-lg dark:text-white">
+            <h1 class="text-4xl md:text-5xl font-extrabold mb-4 text-theme-light dark:text-theme-dark">Ways to Give</h1>
             <p class="text-lg md:text-xl max-w-2xl mx-auto mb-6 text-gray-700 dark:text-gray-300">
-                Your partnership is vital to our ministry and allows us to continue our mission to
-                <span class="text-indigo-700 dark:text-amber-400">C</span>onnect,
-                <span class="text-indigo-700 dark:text-amber-400">A</span>nchor,
-                <span class="text-indigo-700 dark:text-amber-400">R</span>estore, and
-                <span class="text-indigo-700 dark:text-amber-400">E</span>mpower the Englewood community.
+                Your partnership is vital to our ministry. You can help us serve the community through the following giving options.
             </p>
         </section>
 
-        <section id="other-ways-to-give" class="mb-12">
-            <h2 class="text-3xl md:text-4xl font-bold text-center mb-6">Ways to Give</h2>
-            <div class="bg-white rounded-lg shadow-md p-8 max-w-3xl mx-auto dark:bg-zinc-900">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div>
-                        <h3 class="text-2xl font-semibold mb-2">Give Online</h3>
-                        <div class="space-y-4">
-                            <div>
-                                <p class="text-gray-600 dark:text-gray-400 font-bold">
-                                    PayPal Giving Fund
-                                </p>
-                                <a href="https://www.paypal.com/us/fundraiser/charity/1783145" target="_blank" class="text-indigo-500 hover:text-indigo-700 font-semibold transition duration-300 dark:text-amber-500 dark:hover:text-amber-400">
-                                    <i class="fa-brands fa-paypal"></i> Donate
-                                </a>
-                            </div>
-                            <div>
-                                <p class="text-gray-600 dark:text-gray-400 font-bold">
-                                    Zelle
-                                </p>
-                                <p class="font-bold">Donate to: <span class="font-normal text-indigo-500 dark:text-amber-400">info@englewoodfamily.org</span></p>
-                            </div>
-                            <div>
-                                <p class="text-gray-600 dark:text-gray-400 font-bold">
-                                    Venmo
-                                </p>
-                                <a href="https://www.venmo.com/u/EnglewoodFamilyOutreach" target="_blank" class="text-indigo-500 hover:text-indigo-700 font-semibold transition duration-300 dark:text-amber-500 dark:hover:text-amber-400">
-                                    <i class="fa-brands fa-venmo"></i> Donate
-                                </a>
-                            </div>
-                            <div>
-                                <p class="text-gray-600 dark:text-gray-400 font-bold">
-                                    Facebook
-                                </p>
-                                <a href="https://www.facebook.com/EnglewoodFam/" target="_blank" class="text-indigo-500 hover:text-indigo-700 font-semibold transition duration-300 dark:text-amber-500 dark:hover:text-amber-400">
-                                    <i class="fa-brands fa-facebook"></i> Donate
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <h3 class="text-2xl font-semibold mb-2">Other Partnerships</h3>
-                        <p class="text-gray-600 leading-relaxed dark:text-gray-400">
-                            You can mail a donation directly to us. Please make checks payable to:
-                        </p>
-                        <p class="font-bold mt-2">Englewood Family Outreach</p>
-                        <p>1507 E 53rd St, Box 691</p>
-                        <p>Chicago, IL 60615</p>
-                        <p class="mt-4 text-gray-600 leading-relaxed dark:text-gray-400">
-                            For financial partnerships through stock, securities, or other means, please contact us for more information.
-                        </p>
-                        <a href="mailto:info@englewoodfamily.org?subject=Requesting%20Donation%20Information" class="text-indigo-500 hover:text-indigo-700 font-semibold transition duration-300 dark:text-amber-500 dark:hover:text-amber-400 mt-4 inline-block">
-                            Email us for more information
-                        </a>
-                    </div>
+        <section id="other-ways" class="mb-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <!-- Mailed Donations -->
+                <div class="bg-white rounded-lg shadow-md p-8 border-t-4 border-theme-light flex flex-col items-center text-center group transition-transform duration-300 hover:scale-105 dark:bg-zinc-900 dark:border-theme-dark">
+                    <i class="fa-solid fa-envelope text-6xl text-gray-600 mb-4 dark:text-gray-200"></i>
+                    <h3 class="text-2xl font-semibold mb-2">Mail a Donation</h3>
+                    <p class="text-gray-600 leading-relaxed dark:text-gray-400 text-center">
+                        Please make checks payable to: <br>
+                        Englewood Family Outreach <br>
+                        1507 E 53rd St, Box 691 <br>
+                        Chicago, IL 60615
+                    </p>
+                </div>
+
+                <!-- PayPal -->
+                <div class="bg-white rounded-lg shadow-md p-8 border-t-4 border-theme-light flex flex-col items-center text-center group transition-transform duration-300 hover:scale-105 dark:bg-zinc-900 dark:border-theme-dark">
+                    <img src="https://www.paypalobjects.com/paypal-ui/logos/svg/paypal-mark-color.svg" alt="PayPal Logo" class="h-16 mb-4">
+                    <h3 class="text-2xl font-semibold mb-2">Give through PayPal</h3>
+                    <a href="https://www.paypal.com/us/fundraiser/charity/1783145" target="_blank" class="mt-4 bg-theme-light text-white font-bold py-2 px-6 rounded-full shadow-lg hover-bg-theme-light transition duration-300 dark:bg-theme-dark dark:text-zinc-900 hover-bg-theme-dark">
+                        Donate
+                    </a>
+                </div>
+
+                <!-- Zelle -->
+                <div class="bg-white rounded-lg shadow-md p-8 border-t-4 border-theme-light flex flex-col items-center text-center group transition-transform duration-300 hover:scale-105 dark:bg-zinc-900 dark:border-theme-dark">
+                    <img src="https://www.zellepay.com/sites/default/files/styles/widescreen_16_9/public/2023-08/Zelle_Horizontal_Logo_2023_Blue.png" alt="Zelle Logo" class="h-16 mb-4">
+                    <h3 class="text-2xl font-semibold mb-2">Give through Zelle</h3>
+                    <p class="text-gray-600 leading-relaxed dark:text-gray-400">
+                        Make Zelle donations to: info@englewoodfamily.org
+                    </p>
+                </div>
+
+                <!-- Venmo -->
+                <div class="bg-white rounded-lg shadow-md p-8 border-t-4 border-theme-light flex flex-col items-center text-center group transition-transform duration-300 hover:scale-105 dark:bg-zinc-900 dark:border-theme-dark">
+                    <img src="https://images.ctfassets.net/j7pfe841y2n4/2Q9S1o4Uo9B8QkP2N5X3pP/76c66d21f8a846f45c9c991e23f0a0d4/venmo-logo-color.svg" alt="Venmo Logo" class="h-16 mb-4">
+                    <h3 class="text-2xl font-semibold mb-2">Give through Venmo</h3>
+                    <a href="https://www.venmo.com/u/EnglewoodFamilyOutreach" target="_blank" class="mt-4 bg-theme-light text-white font-bold py-2 px-6 rounded-full shadow-lg hover-bg-theme-light transition duration-300 dark:bg-theme-dark dark:text-zinc-900 hover-bg-theme-dark">
+                        Donate
+                    </a>
+                </div>
+
+                <!-- Facebook -->
+                <div class="bg-white rounded-lg shadow-md p-8 border-t-4 border-theme-light flex flex-col items-center text-center group transition-transform duration-300 hover:scale-105 dark:bg-zinc-900 dark:border-theme-dark">
+                    <i class="fa-brands fa-facebook text-6xl text-blue-600 mb-4 dark:text-gray-200"></i>
+                    <h3 class="text-2xl font-semibold mb-2">Give through Facebook</h3>
+                    <a href="https://www.facebook.com/EnglewoodFam/" target="_blank" class="mt-4 bg-theme-light text-white font-bold py-2 px-6 rounded-full shadow-lg hover-bg-theme-light transition duration-300 dark:bg-theme-dark dark:text-zinc-900 hover-bg-theme-dark">
+                        Donate
+                    </a>
+                </div>
+
+                <!-- Partnership Info -->
+                <div class="bg-white rounded-lg shadow-md p-8 border-t-4 border-theme-light flex flex-col items-center text-center group transition-transform duration-300 hover:scale-105 dark:bg-zinc-900 dark:border-theme-dark">
+                    <i class="fa-solid fa-handshake-angle text-6xl text-gray-600 mb-4 dark:text-gray-200"></i>
+                    <h3 class="text-2xl font-semibold mb-2">Financial Partnerships</h3>
+                    <p class="text-gray-600 leading-relaxed dark:text-gray-400">
+                        For financial partnerships through stock, securities, or other means, please contact us for more information.
+                    </p>
+                    <a href="mailto:info@englewoodfamily.org?subject=Requesting%20Donation%20Information" class="card-link block mt-2">Email us for more information</a>
                 </div>
             </div>
         </section>
 
-        <section id="zeffy-donations" class="mb-12">
-            <h2 class="text-3xl md:text-4xl font-bold text-center mb-6">Give Online with Zeffy</h2>
-            <div class="bg-white rounded-lg shadow-md p-6 max-w-xl mx-auto dark:bg-zinc-900">
-                <p class="text-center text-gray-700 leading-relaxed text-lg dark:text-gray-300 mb-4">
-                    Zeffy is a secure platform that allows you to make a one-time or recurring donation. You can change the optional platform fee to 0 if you wish.
-                </p>
-                <iframe title='Donation form powered by Zeffy' style='position: relative; border: 0; width:100%;height:600px;' src='https://www.zeffy.com/embed/donation-form/e94beca5-b293-4603-a786-807e4991d426' allowpaymentrequest allowTransparency="true"></iframe>
+        <!-- Zeffy Donation Form -->
+        <section id="zeffy-donation" class="bg-white rounded-lg shadow-md p-10 mt-12 text-center max-w-2xl mx-auto dark:bg-zinc-900">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4 text-theme-light dark:text-theme-dark">Online Donation</h2>
+            <p class="text-gray-700 mb-6 dark:text-gray-300">
+                Zeffy is a secure platform that allows you to make a one-time or recurring donation. You can change the optional platform fee to 0 if you wish.
+            </p>
+            <div style='position:relative;height:700px;'>
+                <iframe title='Donation form powered by Zeffy' style='position: absolute; border: 0; top:0;left:0;bottom:0;right:0;width:100%;height:100%' src='https://www.zeffy.com/embed/donation-form/e94beca5-b293-4603-a786-807e4991d426' allowpaymentrequest allowTransparency="true"></iframe>
             </div>
         </section>
-        
     </main>
 
     <footer class="bg-white shadow-inner p-4 mt-8 dark:bg-zinc-900">
@@ -165,20 +162,20 @@
                  | Email: <span id="email-contact">info@englewoodfamily.org</span>
             </p>
             <div class="mt-4 flex justify-center space-x-4">
-                <a href="https://www.facebook.com/EnglewoodFam/" target="_blank" class="text-gray-600 hover:text-indigo-700 transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">
+                <a href="https://www.facebook.com/EnglewoodFam/" target="_blank" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-dark">
                     <i class="fa-brands fa-facebook text-3xl"></i>
                 </a>
-                <a href="https://www.linkedin.com/company/englewoodfamily" target="_blank" class="text-gray-600 hover:text-indigo-700 transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">
+                <a href="https://www.linkedin.com/company/englewoodfamily" target="_blank" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-dark">
                     <i class="fa-brands fa-linkedin-in text-3xl"></i>
                 </a>
-                <a href="https://x.com/EnglewoodFamily" target="_blank" class="text-gray-600 hover:text-indigo-700 transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">
+                <a href="https://x.com/EnglewoodFamily" target="_blank" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-dark">
                     <i class="fa-brands fa-x-twitter text-3xl"></i>
                 </a>
-                <a href="https://youtube.com/channel/UCTwWoryLiV2E0zAr1Pz_zBw" target="_blank" class="text-gray-600 hover:text-indigo-700 transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">
+                <a href="https://youtube.com/channel/UCTwWoryLiV2E0zAr1Pz_zBw" target="_blank" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-dark">
                     <i class="fa-brands fa-youtube text-3xl"></i>
                 </a>
             </div>
-            <p class="mt-2">&copy; 2025 Englewood Family Outreach. All rights reserved.</p>
+            <p class="mt-2">© 2025 Englewood Family Outreach. All rights reserved.</p>
         </div>
     </footer>
     
