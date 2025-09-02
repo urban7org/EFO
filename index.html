@@ -10,6 +10,65 @@
         body {
             font-family: 'Inter', sans-serif;
         }
+        /* Custom colors for light and dark mode */
+        :root {
+            --primary-color-light: #3684c6;
+            --accent-color-light: #21679f;
+            --primary-color-dark: #facc15;
+            --accent-color-dark: #fbbf24;
+        }
+
+        .text-theme-light {
+            color: var(--primary-color-light);
+        }
+        .text-theme-dark {
+            color: var(--primary-color-dark);
+        }
+        .bg-theme-light {
+            background-color: var(--primary-color-light);
+        }
+        .bg-theme-dark {
+            background-color: var(--primary-color-dark);
+        }
+        .hover-text-theme-light:hover {
+            color: var(--accent-color-light);
+        }
+        .hover-bg-theme-light:hover {
+            background-color: var(--accent-color-light);
+        }
+        .hover-text-theme-dark:hover {
+            color: var(--accent-color-dark);
+        }
+        .hover-bg-theme-dark:hover {
+            background-color: var(--accent-color-dark);
+        }
+        @media (prefers-color-scheme: dark) {
+            .text-theme-light {
+                color: var(--primary-color-dark);
+            }
+            .text-theme-dark {
+                color: var(--primary-color-light);
+            }
+            .bg-theme-light {
+                background-color: var(--primary-color-dark);
+            }
+            .bg-theme-dark {
+                background-color: var(--primary-color-light);
+            }
+            .hover-text-theme-light:hover {
+                color: var(--accent-color-dark);
+            }
+            .hover-bg-theme-light:hover {
+                background-color: var(--accent-color-dark);
+            }
+            .hover-text-theme-dark:hover {
+                color: var(--accent-color-light);
+            }
+            .hover-bg-theme-dark:hover {
+                background-color: var(--accent-color-light);
+            }
+        }
+
         .hero-background {
             background-image: url('/resources/background.jpg');
             background-size: cover;
@@ -66,17 +125,17 @@
 
     <header class="bg-white shadow-md p-4 sticky top-0 z-50 dark:bg-zinc-900">
         <div class="container mx-auto flex justify-between items-center">
-            <a href="#" class="flex items-center space-x-2">
+            <a href="/" class="flex items-center space-x-2">
                 <img id="logo" alt="Englewood Family Outreach Logo" class="h-8 w-auto">
-                <span class="text-2xl font-bold text-[#3684c6] dark:text-amber-400">Englewood Family Outreach</span>
+                <span class="text-2xl font-bold text-theme-light dark:text-theme-dark">Englewood Family Outreach</span>
             </a>
             <nav class="hidden md:flex space-x-6">
-                <a href="#about" class="text-gray-600 hover:text-[#3684c6] transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">About Us</a>
-                <a href="#programs" class="text-gray-600 hover:text-[#3684c6] transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">What We Do</a>
-                <a href="#school-vision" class="text-gray-600 hover:text-[#3684c6] transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">Our Vision</a>
-                <a href="/donate" class="text-gray-600 hover:text-[#3684c6] transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">Get Involved</a>
+                <a href="#about" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-dark">About Us</a>
+                <a href="#programs" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-dark">What We Do</a>
+                <a href="#school-vision" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-dark">Our Vision</a>
+                <a href="/donate" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-dark">Get Involved</a>
             </nav>
-            <button class="md:hidden text-gray-600 hover:text-[#3684c6] focus:outline-none dark:text-gray-400 dark:hover:text-amber-400">
+            <button class="md:hidden text-gray-600 hover-text-theme-light focus:outline-none dark:text-gray-400 hover-text-theme-dark">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
@@ -88,15 +147,15 @@
         <section class="hero-background text-zinc-900 rounded-lg p-10 mb-8 text-center shadow-lg dark:text-white">
             <div class="hero-content">
                 <h1 class="text-4xl md:text-5xl font-extrabold mb-4">
-                    <span class="text-[#3684c6] dark:text-amber-400">C</span>onnect. 
-                    <span class="text-[#3684c6] dark:text-amber-400">A</span>nchor. 
-                    <span class="text-[#3684c6] dark:text-amber-400">R</span>estore. 
-                    <span class="text-[#3684c6] dark:text-amber-400">E</span>mpower.
+                    <span class="text-theme-light dark:text-theme-dark">C</span>onnecting. 
+                    <span class="text-theme-light dark:text-theme-dark">A</span>nchoring. 
+                    <span class="text-theme-light dark:text-theme-dark">R</span>estoring. 
+                    <span class="text-theme-light dark:text-theme-dark">E</span>mpowering.
                 </h1>
                 <p class="text-lg md:text-xl max-w-2xl mx-auto mb-6">
                     Our mission is to restore our communities in Englewood by proclaiming Christ, training in godliness, and empowering the vulnerable.
                 </p>
-                <a href="/donate" class="bg-[#3684c6] text-white font-bold py-3 px-6 rounded-full shadow-lg hover:bg-[#21679f] transition duration-300 dark:bg-amber-400 dark:text-zinc-900 dark:hover:bg-amber-300">
+                <a href="/donate" class="bg-theme-light text-white font-bold py-3 px-6 rounded-full shadow-lg hover-bg-theme-light transition duration-300 dark:bg-theme-dark dark:text-zinc-900 hover-bg-theme-dark">
                     Join Our CARE Mission
                 </a>
             </div>
@@ -121,7 +180,7 @@
         <section id="programs" class="mb-12">
             <h2 class="text-3xl md:text-4xl font-bold text-center mb-8">What We Do</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
-                <div class="bg-white rounded-lg shadow-md p-8 border-t-4 border-[#3684c6] flex flex-col items-center text-center group transition-transform duration-300 hover:scale-105 dark:bg-zinc-900 dark:border-amber-400">
+                <div class="bg-white rounded-lg shadow-md p-8 border-t-4 border-theme-light flex flex-col items-center text-center group transition-transform duration-300 hover:scale-105 dark:bg-zinc-900 dark:border-theme-dark">
                     <img src="/resources/bible.jpg" alt="EFO Logo" class="rounded-full mb-4 dark:bg-slate-700">
                     <h3 class="text-2xl font-semibold mb-2">Weekly Bible Studies</h3>
                     <p class="text-gray-600 leading-relaxed dark:text-gray-400">
@@ -129,7 +188,7 @@
                     </p>
                 </div>
                 
-                <a href="https://englewoodworks.org" target="_blank" class="bg-white rounded-lg shadow-md p-8 border-t-4 border-[#3684c6] flex flex-col items-center text-center group transition-transform duration-300 hover:scale-105 dark:bg-zinc-900 dark:border-amber-400">
+                <a href="https://englewoodworks.org" target="_blank" class="bg-white rounded-lg shadow-md p-8 border-t-4 border-theme-light flex flex-col items-center text-center group transition-transform duration-300 hover:scale-105 dark:bg-zinc-900 dark:border-theme-dark">
                     <img src="/resources/club.jpg" alt="EFO Banner" class="rounded-full mb-4 dark:bg-slate-700">
                     <h3 class="text-2xl font-semibold mb-2 text-gray-800 dark:text-gray-200">Englewood Works Club</h3>
                     <p class="text-gray-600 leading-relaxed dark:text-gray-400">
@@ -137,7 +196,7 @@
                     </p>
                 </a>
 
-                <div class="bg-white rounded-lg shadow-md p-8 border-t-4 border-[#3684c6] flex flex-col items-center text-center group transition-transform duration-300 hover:scale-105 dark:bg-zinc-900 dark:border-amber-400">
+                <div class="bg-white rounded-lg shadow-md p-8 border-t-4 border-theme-light flex flex-col items-center text-center group transition-transform duration-300 hover:scale-105 dark:bg-zinc-900 dark:border-theme-dark">
                     <img src="/resources/school.jpg" alt="EFO Logo" class="rounded-full mb-4 dark:bg-slate-700">
                     <h3 class="text-2xl font-semibold mb-2">A Classical Christian School</h3>
                     <p class="text-gray-600 leading-relaxed dark:text-gray-400">
@@ -176,20 +235,20 @@
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div class="p-6 bg-gray-100 rounded-lg shadow-inner dark:bg-zinc-800">
-                    <h3 class="text-xl font-bold text-[#3684c6] mb-2 dark:text-amber-400">Pray</h3>
+                    <h3 class="text-xl font-bold text-theme-light mb-2 dark:text-theme-dark">Pray</h3>
                     <p class="text-gray-600 mb-4 dark:text-gray-400">Join us in praying for the spiritual and physical restoration of Englewood.</p>
-                    <a href="mailto:info@englewoodfamily.org?subject=Join%20Prayer%20Team" class="text-[#3684c6] hover:text-[#21679f] font-semibold transition duration-300 dark:text-amber-500 dark:hover:text-amber-400">Email us to join our prayer team</a>
+                    <a href="mailto:info@englewoodfamily.org?subject=Join%20Prayer%20Team" class="text-theme-light hover-text-theme-light font-semibold transition duration-300 dark:text-theme-dark hover-text-theme-dark">Email us to join our prayer team</a>
                 </div>
                 <div class="p-6 bg-gray-100 rounded-lg shadow-inner dark:bg-zinc-800">
-                    <h3 class="text-xl font-bold text-[#3684c6] mb-2 dark:text-amber-400">Volunteer</h3>
+                    <h3 class="text-xl font-bold text-theme-light mb-2 dark:text-theme-dark">Volunteer</h3>
                     <p class="text-gray-600 mb-4 dark:text-gray-400">Give your time and skills to serve alongside us in our programs.</p>
-                    <a href="mailto:info@englewoodfamily.org?subject=Volunteer%20Opportunities" class="text-[#3684c6] hover:text-[#21679f] font-semibold transition duration-300 dark:text-amber-500 dark:hover:text-amber-400">Email us about volunteering</a>
+                    <a href="mailto:info@englewoodfamily.org?subject=Volunteer%20Opportunities" class="text-theme-light hover-text-theme-light font-semibold transition duration-300 dark:text-theme-dark hover-text-theme-dark">Email us about volunteering</a>
                 </div>
                 <div class="p-6 bg-gray-100 rounded-lg shadow-inner dark:bg-zinc-800">
-                    <h3 class="text-xl font-bold text-[#3684c6] mb-2 dark:text-amber-400">Donate</h3>
+                    <h3 class="text-xl font-bold text-theme-light mb-2 dark:text-theme-dark">Donate</h3>
                     <p class="text-gray-600 mb-4 dark:text-gray-400">Provide financial support to help us continue this vital ministry.</p>
-                    <a href="/donate" class="text-[#3684c6] hover:text-[#21679f] font-semibold transition duration-300 dark:text-amber-500 dark:hover:text-amber-400">Donate Now</a>
-                    <a href="mailto:info@englewoodfamily.org?subject=Requesting%20Donation%20Information" class="block mt-2 text-[#3684c6] hover:text-[#21679f] font-semibold transition duration-300 dark:text-amber-500 dark:hover:text-amber-400">Email us for more information</a>
+                    <a href="/donate" class="text-theme-light hover-text-theme-light font-semibold transition duration-300 dark:text-theme-dark hover-text-theme-dark">Donate Now</a>
+                    <a href="mailto:info@englewoodfamily.org?subject=Requesting%20Donation%20Information" class="block mt-2 text-theme-light hover-text-theme-light font-semibold transition duration-300 dark:text-theme-dark hover-text-theme-dark">Email us for more information</a>
                 </div>
             </div>
         </section>
@@ -207,20 +266,20 @@
                  | Email: <span id="email-contact">info@englewoodfamily.org</span>
             </p>
             <div class="mt-4 flex justify-center space-x-4">
-                <a href="https://www.facebook.com/EnglewoodFam/" target="_blank" class="text-gray-600 hover:text-[#3684c6] transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">
+                <a href="https://www.facebook.com/EnglewoodFam/" target="_blank" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-dark">
                     <i class="fa-brands fa-facebook text-3xl"></i>
                 </a>
-                <a href="https://www.linkedin.com/company/englewoodfamily" target="_blank" class="text-gray-600 hover:text-[#3684c6] transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">
+                <a href="https://www.linkedin.com/company/englewoodfamily" target="_blank" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-dark">
                     <i class="fa-brands fa-linkedin-in text-3xl"></i>
                 </a>
-                <a href="https://x.com/EnglewoodFamily" target="_blank" class="text-gray-600 hover:text-[#3684c6] transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">
+                <a href="https://x.com/EnglewoodFamily" target="_blank" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-dark">
                     <i class="fa-brands fa-x-twitter text-3xl"></i>
                 </a>
-                <a href="https://youtube.com/channel/UCTwWoryLiV2E0zAr1Pz_zBw" target="_blank" class="text-gray-600 hover:text-[#3684c6] transition duration-300 dark:text-gray-400 dark:hover:text-amber-400">
+                <a href="https://youtube.com/channel/UCTwWoryLiV2E0zAr1Pz_zBw" target="_blank" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-dark">
                     <i class="fa-brands fa-youtube text-3xl"></i>
                 </a>
             </div>
-            <p class="mt-2">© 2025 Englewood Family Outreach. All rights reserved.</p>
+            <p class="mt-2">&copy; 2025 Englewood Family Outreach. All rights reserved.</p>
         </div>
     </footer>
     
