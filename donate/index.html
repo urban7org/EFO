@@ -68,6 +68,15 @@
                 background-color: var(--accent-color-light);
             }
         }
+        /* CSS to handle the light/dark mode logo switch */
+        img#logo {
+            content: url("../resources/EFO Logo.png");
+        }
+        @media (prefers-color-scheme: dark) {
+            img#logo {
+                content: url("../resources/EFO Logo_gold.png");
+            }
+        }
         /* Style consolidation for repetitive elements */
         .card-heading {
             @apply text-2xl font-semibold mb-2 text-gray-800 dark:text-gray-200;
