@@ -24,12 +24,10 @@ body {
 <script>
   // This function runs once the page is fully loaded
   window.addEventListener('load', function() {
-    
     // --- Email Obfuscation ---
     var user = 'daniel';
     var domain = 'archerchristian.org';
     var emailEl = document.getElementById('email-placeholder');
-    
     // Check if the placeholder element exists before trying to use it
     if (emailEl) {
       // Build the email link and inject it into the HTML
@@ -37,13 +35,11 @@ body {
                           '" style="color: #ffffff; text-decoration: none;">' + 
                           user + '@' + domain + '</a>';
     }
-
     // --- Phone Obfuscation ---
     var p1 = '312';
     var p2 = '539';
     var p3 = '0644';
     var phoneEl = document.getElementById('phone-placeholder');
-    
     // Check if the placeholder element exists
     if (phoneEl) {
       // Build the phone link and inject it into the HTML
@@ -51,9 +47,11 @@ body {
                           '" style="color: #ffffff; text-decoration: none;">' + 
                           p1 + '-' + p2 + '-' + p3 + '</a>';
     }
-
   });
 </script>
+<link rel="icon" href="/archiconbk.svg" type="image/svg+xml">
+<link rel="icon" href="/archiconbk.svg" type="image/svg+xml" media="(prefers-color-scheme: light)">
+<link rel="icon" href="/archiconwt.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)">
 </head>
 
 <body>
@@ -99,5 +97,6 @@ body {
 </body>
 
 </html>
+
 
 
