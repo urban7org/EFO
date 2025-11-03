@@ -21,6 +21,39 @@ body {
 
 }
 </style>
+<script>
+  // This function runs once the page is fully loaded
+  window.addEventListener('load', function() {
+    
+    // --- Email Obfuscation ---
+    var user = 'daniel';
+    var domain = 'archerchristian.org';
+    var emailEl = document.getElementById('email-placeholder');
+    
+    // Check if the placeholder element exists before trying to use it
+    if (emailEl) {
+      // Build the email link and inject it into the HTML
+      emailEl.innerHTML = '<a href="mailto:' + user + '@' + domain + 
+                          '" style="color: #ffffff; text-decoration: none;">' + 
+                          user + '@' + domain + '</a>';
+    }
+
+    // --- Phone Obfuscation ---
+    var p1 = '312';
+    var p2 = '539';
+    var p3 = '0644';
+    var phoneEl = document.getElementById('phone-placeholder');
+    
+    // Check if the placeholder element exists
+    if (phoneEl) {
+      // Build the phone link and inject it into the HTML
+      phoneEl.innerHTML = '<a href="tel:+1' + p1 + p2 + p3 + 
+                          '" style="color: #ffffff; text-decoration: none;">' + 
+                          p1 + '-' + p2 + '-' + p3 + '</a>';
+    }
+
+  });
+</script>
 </head>
 
 <body>
@@ -50,9 +83,13 @@ body {
     <tr>
       <td height="180" align="center" valign="middle">&nbsp;</td>
     </tr>
-    <tr>
-      <td align="center" valign="middle" style="font-family: Segoe, 'Segoe UI', DejaVu Sans, Trebuchet MS, Verdana, sans-serif; font-size: 20px;"><a href="mailto:daniel@archerchristian.org" style="color: #ffffff; text-decoration: none;">daniel@archerchristian.org</a>&nbsp; &nbsp;<<a href="tel:+13125390644">312-539-0644</a></td>
-    </tr>
+  <tr>
+    <td align="center" valign="middle" style="font-family: Segoe, 'Segoe UI', DejaVu Sans, Trebuchet MS, Verdana, sans-serif; font-size: 20px;">  
+      <span id="email-placeholder"></span>
+      &nbsp; &nbsp;
+      <span id="phone-placeholder"></span>
+    </td>
+  </tr>
     <tr>
       <td height="50" align="center" valign="middle">&nbsp;</td>
     </tr>
@@ -62,4 +99,5 @@ body {
 </body>
 
 </html>
+
 
