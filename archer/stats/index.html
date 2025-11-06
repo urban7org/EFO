@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Case for a New School in Englewood</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-[#F0F7F4]">
+
+    <div class="container mx-auto p-4 md:p-8">
+        
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-[#0D1821] mb-2">An Opportunity for Englewood</h1>
+            <p class="text-lg md:text-xl text-[#344966] max-w-3xl mx-auto">Visualizing the Urgent Need for a New Classical Christian School</p>
+        </header>
+
+        <main>
+            <section id="academic-need" class="mb-16">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-[#0D1821]">The Educational Imperative</h2>
+                    <p class="text-md text-[#344966] mt-2 max-w-2xl mx-auto">Across Chicago, a significant portion of students are not meeting grade-level standards, with an even more pronounced need in communities like Englewood.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-center">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <p class="text-6xl font-extrabold text-[#BFCC94]">21.2%</p>
+                        <h3 class="text-xl font-semibold text-[#0D1821] mt-2">Proficiency in Mathematics</h3>
+                        <p class="text-gray-500 mt-1">Chicago Public Schools District-Wide Average</p>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <p class="text-6xl font-extrabold text-[#BFCC94]">29.9%</p>
+                        <h3 class="text-xl font-semibold text-[#0D1821] mt-2">Proficiency in ELA</h3>
+                        <p class="text-gray-500 mt-1">Chicago Public Schools District-Wide Average</p>
+                    </div>
+                </div>
+                 <p class="text-center text-sm text-gray-500 mt-4">Source: Illinois State Board of Education Report Card. Proficiency rates in many neighborhood schools within Englewood fall into the single digits.</p>
+            </section>
+
+            <section id="school-landscape" class="mb-16">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-[#0D1821]">A Scarcity of Choice</h2>
+                    <p class="text-md text-[#344966] mt-2 max-w-2xl mx-auto">When families seek alternatives, they discover a stark disparity in the availability of specialized private education models across the city.</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-2xl font-bold text-center text-[#0D1821] mb-6">Classical & Christian Schools by Area</h3>
+                    <div class="chart-container">
+                        <canvas id="schoolDistributionChart"></canvas>
+                    </div>
+                     <p class="text-center text-sm text-gray-500 mt-4">This chart illustrates the number of self-identified Classical and/or Christian private schools. The lack of options in Englewood is absolute, with very few choices across the entire South Side compared to the North Side.</p>
+                </div>
+            </section>
+            
+            <section id="community-profile" class="mb-16">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-[#0D1821]">Understanding the Englewood Community</h2>
+                    <p class="text-md text-[#344966] mt-2 max-w-2xl mx-auto">A successful school must be rooted in the context of the community it serves. Key demographic data for the Englewood area (zip code 60621) reveals a community of great potential facing significant economic hurdles.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-white rounded-lg shadow-md p-6 text-center md:col-span-2">
+                        <h3 class="text-2xl font-bold text-[#0D1821] mb-6">Community Demographics</h3>
+                        <div class="chart-container mx-auto !h-64 md:!h-80">
+                            <canvas id="demographicsChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="space-y-8">
+                        <div class="bg-white rounded-lg shadow-md p-6 text-center">
+                            <p class="text-4xl font-extrabold text-[#B49A67]">$28,554</p>
+                            <h3 class="text-lg font-semibold text-[#0D1821] mt-2">Median Household Income</h3>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-md p-6 text-center">
+                            <p class="text-4xl font-extrabold text-[#B49A67]">42%</p>
+                            <h3 class="text-lg font-semibold text-[#0D1821] mt-2">Population Below Poverty Line</h3>
+                        </div>
+                    </div>
+                </div>
+                 <p class="text-center text-sm text-gray-500 mt-4">Source: U.S. Census Bureau. The economic data highlights the need for an affordable private school model, likely reliant on scholarships and community support, while the demographic data shows a vibrant, established community.</p>
+            </section>
+
+            <section id="the-argument">
+                 <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-[#0D1821]">Synthesizing the Need</h2>
+                    <p class="text-md text-[#344966] mt-2 max-w-2xl mx-auto">The data converges to make a powerful, undeniable case for establishing a new Classical Christian school at a location like 67th and Union.</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-8">
+                    <div class="flow-root">
+                        <ul class="-mb-8">
+                            <li>
+                                <div class="relative pb-8">
+                                    <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
+                                    <div class="relative flex space-x-3">
+                                        <div>
+                                            <span class="h-8 w-8 rounded-full bg-[#BFCC94] flex items-center justify-center ring-8 ring-white">
+                                                <p class="text-white font-bold">1</p>
+                                            </span>
+                                        </div>
+                                        <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                                            <div>
+                                                <p class="text-lg font-semibold text-[#0D1821]">Clear Academic Need</p>
+                                                <p class="text-md text-gray-600">With local public school proficiency rates lagging far behind state and even city averages, Englewood families urgently need access to academically rigorous alternatives to ensure their children can thrive.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                             <li>
+                                <div class="relative pb-8">
+                                    <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
+                                    <div class="relative flex space-x-3">
+                                        <div>
+                                            <span class="h-8 w-8 rounded-full bg-[#B49A67] flex items-center justify-center ring-8 ring-white">
+                                                <p class="text-white font-bold">2</p>
+                                            </span>
+                                        </div>
+                                        <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                                            <div>
+                                                <p class="text-lg font-semibold text-[#0D1821]">An Educational Desert</p>
+                                                <p class="text-md text-gray-600">There are zero Classical Christian schools in Englewood and a profound lack of them on the entire South Side. A new school would not be competing; it would be filling a complete void.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="relative pb-0">
+                                    <div class="relative flex space-x-3">
+                                        <div>
+                                            <span class="h-8 w-8 rounded-full bg-[#344966] flex items-center justify-center ring-8 ring-white">
+                                               <p class="text-white font-bold">3</p>
+                                            </span>
+                                        </div>
+                                        <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                                            <div>
+                                                <p class="text-lg font-semibold text-[#0D1821]">High-Impact Location</p>
+                                                <p class="text-md text-gray-600">A neighborhood-based school provides a safe, walkable option for local families, reducing transportation barriers that often prevent access to quality education outside the immediate area. It can become a true anchor for the community.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <footer class="text-center mt-16 border-t pt-8">
+            <p class="text-gray-600">This infographic presents a data-driven case for educational investment in Englewood. The confluence of academic need, lack of options, and strong community creates a compelling opportunity for impact.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        const processLabels = (labels) => {
+            const maxLen = 16;
+            return labels.map(label => {
+                if (label.length <= maxLen) {
+                    return label;
+                }
+                const words = label.split(' ');
+                const newLabels = [];
+                let currentLine = '';
+                words.forEach(word => {
+                    if ((currentLine + ' ' + word).trim().length > maxLen) {
+                        newLabels.push(currentLine.trim());
+                        currentLine = word;
+                    } else {
+                        currentLine = (currentLine + ' ' + word).trim();
+                    }
+                });
+                if (currentLine) {
+                    newLabels.push(currentLine.trim());
+                }
+                return newLabels;
+            });
+        };
+
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+                return label.join(' ');
+            } else {
+                return label;
+            }
+        };
+        
+        const sharedChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: '#344966',
+                        font: {
+                           size: 14
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: tooltipTitleCallback
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: '#e0e0e0'
+                    },
+                    ticks: {
+                        color: '#344966'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        color: '#344966'
+                    }
+                }
+            }
+        };
+
+        const schoolDistData = {
+            labels: ['Englewood', 'South Side (Total)', 'North Side & Other Chicago'],
+            datasets: [{
+                label: 'Number of Schools',
+                data: [0, 4, 15],
+                backgroundColor: ['#B49A67', '#BFCC94', '#344966'],
+                borderColor: '#FFFFFF',
+                borderWidth: 2
+            }]
+        };
+
+        new Chart(document.getElementById('schoolDistributionChart'), {
+            type: 'bar',
+            data: schoolDistData,
+            options: { ...sharedChartOptions, indexAxis: 'y' }
+        });
+
+        const demographicsData = {
+            labels: ['Black or African American', 'Hispanic or Latino', 'White', 'Other'],
+            datasets: [{
+                label: 'Race/Ethnicity',
+                data: [96.5, 1.5, 1, 1],
+                backgroundColor: ['#344966', '#BFCC94', '#B49A67', '#F0F7F4'],
+                hoverOffset: 4
+            }]
+        };
+        
+        new Chart(document.getElementById('demographicsChart'), {
+            type: 'doughnut',
+            data: demographicsData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                           color: '#344966',
+                           font: { size: 14 }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: tooltipTitleCallback
+                        }
+                    }
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
