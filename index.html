@@ -1,1263 +1,347 @@
-Gemini
-
-Pinned chat
-Pinned chat
-Pinned chat
-Adding Donation Page to Website
-Science Fair Project Ideas for 7th Grade
-Presentation Revision for Assisted Living
-Lesson Plan: Korah's Rebellion
-Church Meeting: Finances, Bylaws, Move
-Archer Academy's Hedgehog Concept
-Preparing For A Fundraising Consultant Call
-Fundraiser Idea and Timeline
-Airsoft Sniper Sear System Failure
-School Financial Planning & Fundraising Needs
-Archer Cornerstone Fund Donations
-Crafting Weekly Academic Prompts
-History Review Game Ideas
-Latin Text Translation and Parsing
-Chemistry Glossary Table Creation
-Rewriting Fundraising and School Model
-Elder Meeting Minutes and Action Items
-ACA Social Media Fundraising Strategy
-Research Plan for Devices 11 and 12
-Brooks's Satanic Devices: Summary, Outline, Questions
-Helping User Express Thoughts
-Refining Christian Charity's Response
-Kingdom First Book Overview
-Worship Leader Guide Template
-Winterizing Potted Blueberry Bush
-Biblical Theology of Joy: A Guide
-Deep Work Family Work Program for Virtuous Living
-Christian Classical School Prospectus Guide
-Board Meeting Plan: Archer Christian Academy
-LinkedIn Post Boost Strategy: Engagement
-Conversation with Gemini
-Here is my code for my website (it's located in folder "archer" as index.html). i want to add a donation page that keeps the rest of the layout. can you add the attached javascript data below inserted to match my original page as closely as possible?
-
-
-
-<script type="text/javascript" src="https://secure.lglforms.com/form_engine/s/LcLqT_k9rJ1J-I2miS-6cA.js"></script><noscript><a href="https://secure.lglforms.com/form_engine/s/LcLqT_k9rJ1J-I2miS-6cA">Fill out my LGL Form!</a><br/></noscript>
-
-Certainly. I can help you create that new donation page.
-
-To "keep the rest of the layout," this new file uses the exact same structure as your index.html, including the logo , background color , fonts , and the JavaScript-powered contact information at the bottom.
-
-The key difference is that I have replaced the central content (the "Launching Fall 2027" heading , the subheading , and the two download buttons ) with the donation script you provided.
-
-There is one important consideration:
-
-The donation script from secure.lglforms.com will inject a form that is almost certainly designed with a white background and dark text.
-
-If we placed this directly onto your page's blue background with white text, the form would be unreadable.
-
-To solve this, I have placed your script inside a new, centered <div> container. I added a small amount of CSS to this new file (#donation-container) to give this container a white background and black text, ensuring your form is legible while still fitting cleanly into the page layout.
-
-I also added a "Back to Home" link so users can easily navigate back to your main page.
-
-New File: donate.html
-Here is the complete code for your new donation page.
-
-HTML
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8">
-  
-  <title>Donate - Archer Christian Academy</title>
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-
-  <link rel="icon" href="archiconbk.svg?v=1.0" type="image/svg+xml">
-  <link rel="icon" href="archiconbk.svg?v=1.0" type="image/svg+xml" media="(prefers-color-scheme: light)">
-  <link rel="icon" href="archiconwt.svg?v=1.0" type="image/svg+xml" media="(prefers-color-scheme: dark)">
-
-  <style type="text/css">
-    body,td,th {
-    	color: #FFFFFF;
-    }
-    body {
-    	background-color: #1d6ecb;
-    	margin-left: 0px;
-    	margin-top: 0px;
-    	margin-right: 0px;
-    	margin-bottom: 0px;
-    }
-    
-    /* --- NEW STYLES FOR DONATION FORM --- */
-    #donation-container {
-        background-color: #FFFFFF; /* White background for the form */
-        color: #333333;           /* Dark text for legibility */
-        padding: 24px;
-        border-radius: 8px;
-        max-width: 600px;         /* Constrains width */
-        margin-top: 20px;
-        margin-bottom: 20px;
-    }
-    /* Style links inside the donation form */
-    #donation-container a {
-        color: #1d6ecb; /* Blue links */
-        text-decoration: underline;
-    }
-  </style>
-  
-  <script>
-    // This function runs once the page is fully loaded
-    window.addEventListener('load', function() {
-      // --- Email Obfuscation ---
-      var user = 'daniel';
-      var domain = 'archerchristian.org';
-      var emailEl = document.getElementById('email-placeholder');
-      // Check if the placeholder element exists before trying to use it
-      if (emailEl) {
-        // Build the email link and inject it into the HTML
-        emailEl.innerHTML = '<a href="mailto:' + user + '@' + domain + 
-                            '" style="color: #ffffff; text-decoration: none;">' + 
-                            user + '@' + domain + '</a>';
-      }
-  
-      // --- Phone Obfuscation ---
-      var p1 = '312';
-      var p2 = '539';
-      var p3 = '0644';
-      var phoneEl = document.getElementById('phone-placeholder');
-      // Check if the placeholder element exists
-      if (phoneEl) {
-        // Build the phone link and inject it into the HTML
-        phoneEl.innerHTML = '<a href="tel:+1' + p1 + p2 + p3 + 
-                            '" style="color: #ffffff; text-decoration: none;">' + 
-                            p1 + '-' + p2 + '-' + p3 + '</a>';
-      }
-    });
-  </script>
-</head>
-
-<body>
-	<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
-    <tbody>
-      <tr>
-        <td height="100" align="center" valign="middle">&nbsp;</td>
-      </tr>
-      <tr>
-        <td align="center" valign="middle"><img src="archer-logo-bg.png" width="434" height="295" alt=""/></td>
-      </tr>
-      <tr>
-        <td height="30" align="center" valign="middle">&nbsp;</td>
-      </tr>
-      
-      <tr>
-        <td align="center" valign="middle" style="font-family: 'Montserrat', sans-serif; font-size: 16px;">
-          <a href="index.html" style="color: #ffffff; text-decoration: none; border: 1px solid #ffffff; padding: 8px 16px; border-radius: 5px;">&larr; Back to Home</a>
-        </td>
-      </tr>
-      <tr>
-        <td align="center" valign="middle">
-          
-          <div id="donation-container">
-            <script type="text/javascript" src="https://secure.lglforms.com/form_engine/s/LcLqT_k9rJ1J-I2miS-6cA.js"></script><noscript><a href="https://secure.lglforms.com/form_engine/s/LcLqT_k9rJ1J-I2miS-6cA">Fill out my LGL Form!</a><br/></noscript>
-          </div>
-          </td>
-      </tr>
-      <tr>
-        <td height="30" align="center" valign="middle">&nbsp;</td>
-      </tr>
-      <tr>
-        <td align="center" valign="middle" style="font-family: Segoe, 'Segoe UI', DejaVu Sans, Trebuchet MS, Verdana, sans-serif; font-size: 20px;">  
-          <br>
-          <span id="email-placeholder"></span>
-          &nbsp; &nbsp;
-          <span id="phone-placeholder"></span>
-        </td>
-      </tr>
-      <tr>
-        <td height="50" align="center" valign="middle">&nbsp;</td>
-      </tr>
-    </tbody>
-  </table>            
-</body>
-</html>
-Next Steps
-In your "archer" folder, create a new file and name it donate.html.
-
-Copy the entire code block above and paste it into that new file.
-
-Upload donate.html to your web server in the same directory as index.html.
-
-You can then test the page by visiting your-website-url/archer/donate.html.
-
-Would you now like me to help you add a "Donate" button to your main index.html page that links to this new donation page?
-
-i want to create it in archer/donate/index.html
-
-That is a great structural choice. Having the page at archer/donate/index.html will allow users to access it with a clean URL like .../archer/donate/.
-
-Because this new index.html file will be one level deeper in a subfolder, we must update the relative paths for your images (the logo and favicons) and the "Back to Home" link.
-
-I have updated the code I provided previously. The only changes are to add ../ to the beginning of those paths, which tells the browser to "go up one directory" to find the files in the main archer folder.
-
-New File: archer/donate/index.html
-Here is the complete, corrected code for you to place at archer/donate/index.html.
-
-HTML
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8">
-  
-  <title>Donate - Archer Christian Academy</title>
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-
-  <link rel="icon" href="../archiconbk.svg?v=1.0" type="image/svg+xml">
-  <link rel="icon" href="../archiconbk.svg?v=1.0" type="image/svg+xml" media="(prefers-color-scheme: light)">
-  <link rel="icon" href="../archiconwt.svg?v=1.0" type="image/svg+xml" media="(prefers-color-scheme: dark)">
-
-  <style type="text/css">
-    body,td,th {
-    	color: #FFFFFF;
-    }
-    body {
-    	background-color: #1d6ecb;
-    	margin-left: 0px;
-    	margin-top: 0px;
-    	margin-right: 0px;
-    	margin-bottom: 0px;
-    }
-    
-    /* --- STYLES FOR DONATION FORM --- */
-    #donation-container {
-        background-color: #FFFFFF; /* White background for the form */
-        color: #333333;           /* Dark text for legibility */
-        padding: 24px;
-        border-radius: 8px;
-        max-width: 600px;         /* Constrains width */
-        margin-top: 20px;
-        margin-bottom: 20px;
-    }
-    /* Style links inside the donation form */
-    #donation-container a {
-        color: #1d6ecb; /* Blue links */
-        text-decoration: underline;
-    }
-  </style>
-  
-  <script>
-    // This function runs once the page is fully loaded
-    window.addEventListener('load', function() {
-      // --- Email Obfuscation ---
-      var user = 'daniel';
-      var domain = 'archerchristian.org';
-      var emailEl = document.getElementById('email-placeholder');
-      // Check if the placeholder element exists before trying to use it
-      if (emailEl) {
-        // Build the email link and inject it into the HTML
-        emailEl.innerHTML = '<a href="mailto:' + user + '@' + domain + 
-                            '" style="color: #ffffff; text-decoration: none;">' + 
-                            user + '@' + domain + '</a>';
-      }
-  
-      // --- Phone Obfuscation ---
-      var p1 = '312';
-      var p2 = '539';
-      var p3 = '0644';
-      var phoneEl = document.getElementById('phone-placeholder');
-      // Check if the placeholder element exists
-      if (phoneEl) {
-        // Build the phone link and inject it into the HTML
-        phoneEl.innerHTML = '<a href="tel:+1' + p1 + p2 + p3 + 
-                            '" style="color: #ffffff; text-decoration: none;">' + 
-                            p1 + '-' + p2 + '-' + p3 + '</a>';
-      }
-    });
-  </script>
-</head>
-
-<body>
-	<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
-    <tbody>
-      <tr>
-        <td height="100" align="center" valign="middle">&nbsp;</td>
-      </tr>
-      <tr>
-        <td align="center" valign="middle"><img src="../archer-logo-bg.png" width="434" height="295" alt=""/></td>
-      </tr>
-      <tr>
-        <td height="30" align="center" valign="middle">&nbsp;</td>
-      </tr>
-      
-      <tr>
-        <td align="center" valign="middle" style="font-family: 'Montserrat', sans-serif; font-size: 16px;">
-          <a href="../index.html" style="color: #ffffff; text-decoration: none; border: 1px solid #ffffff; padding: 8px 16px; border-radius: 5px;">&larr; Back to Home</a>
-        </td>
-      </tr>
-      <tr>
-        <td align="center" valign="middle">
-          
-          <div id="donation-container">
-            <script type="text/javascript" src="https://secure.lglforms.com/form_engine/s/LcLqT_k9rJ1J-I2miS-6cA.js"></script><noscript><a href="https://secure.lglforms.com/form_engine/s/LcLqT_k9rJ1J-I2miS-6cA">Fill out my LGL Form!</a><br/></noscript>
-          </div>
-          </td>
-      </tr>
-      <tr>
-        <td height="30" align="center" valign="middle">&nbsp;</td>
-      </tr>
-      <tr>
-        <td align="center" valign="middle" style="font-family: Segoe, 'Segoe UI', DejaVu Sans, Trebuchet MS, Verdana, sans-serif; font-size: 20px;">  
-          <br>
-          <span id="email-placeholder"></span>
-          &nbsp; &nbsp;
-          <span id="phone-placeholder"></span>
-        </td>
-      </tr>
-      <tr>
-        <td height="50" align="center" valign="middle">&nbsp;</td>
-      </tr>
-    </tbody>
-  </table>            
-</body>
-</html>
-Summary of Next Steps
-In your archer folder, create a new folder named donate.
-
-Inside that donate folder, create a new file named index.html.
-
-Copy and paste the entire code block above into this new file.
-
-Now that this is set up, would you like me to help you add a "Donate" button to your main archer/index.html page that links to this new donation page?
-
-sure. can we get it to match the color of the other buttons (they are images)
-
-Yes, absolutely. This is a great next step to make the donation page accessible.
-
-You are correct that your current buttons for the Prospectus and Prayer Card are images (download-btn-bg.png and prayer-card-btn-bg.png).
-
-To "match the color," I will create a new button using pure CSS. This button will use the distinct gold/yellow color (#ffdd00) from your subheading, which will make it a clear call to action while matching your site's existing color palette.
-
-For a clean layout, I will add this new "Donate" button as a new row centered below your two existing image buttons.
-
-Here is the updated code block for your main archer/index.html file.
-
-Updated archer/index.html Code
-You will need to find the table that contains your buttons and replace it with the entire code block below. I have added comments (``) to show you exactly what is new.
-
-HTML
-<tr>
-      <td align="center" valign="middle">
-        
-        <table width="620" border="0" cellspacing="0" cellpadding="0">
-          <tbody>
-            <tr>
-               <td align="right"><a href="prospectus.pdf" target="new"><img src="download-btn-bg.png" width="276" height="43" alt="Download Prospectus"/> </a></td>
-              <td width="30"> </td>
-              <td align="left"><a href="prayer.pdf" target="new"><img src="prayer-card-btn-bg.png" width="276" height="43" alt="Download Prayer Card"/></a></td>
-            </tr>
-            
-            <tr>
-              <td height="15" colspan="3">&nbsp;</td>
-            </tr>
-            
-            <tr>
-              <td colspan="3" align="center">
-                <a href="donate/" style="
-                  display: inline-block;
-                  background-color: #ffdd00; 
-                  color: #1d6ecb; 
-                  font-family: 'Montserrat', sans-serif; 
-                  font-size: 18px; 
-                  font-weight: 700; 
-                  padding: 12px 40px; 
-                  text-decoration: none; 
-                  border-radius: 5px;
-                  text-transform: uppercase;
-                  letter-spacing: 0.05em;
-                ">
-                  Donate
-                </a>
-              </td>
-            </tr>
-            </tbody>
-        </table>
-        
-        </td>
-      </tr>
-      <tr>
-Summary of Changes
-Location: The new button is placed in a new row, spanning all three columns of your button table and centered.
-
-Link: It links to donate/, which will correctly load the archer/donate/index.html page you just created.
-
-Styling:
-
-
-Background: Uses the gold (#ffdd00) from your subheading.
-
-
-Text Color: Uses the blue (#1d6ecb) from your page background for strong, readable contrast.
-
-
-Font: Uses 'Montserrat' to match your main heading for a clean look.
-
-After you update your index.html file with this code, your main page will be complete and will link directly to your new donation page.
-
-Would you like me to review the accessibility or mobile responsiveness of these pages next?
-
-do i delete all this from the original?   <tr>
-
-              <td align="right"><a href="prospectus.pdf" target="new"><img src="download-btn-bg.png" width="276" height="43" alt=""/> </a></td>
-
-              <td width="30"> </td>
-
-              <td align="left"><a href="prayer.pdf" target="new"><img src="prayer-card-btn-bg.png" width="276" height="43" alt=""/></a></td>
-
-            </tr>
-
-No, do not delete that part.
-
-My apologies for any confusion. My new code block includes that original code for your two image buttons.
-
-You are replacing the entire table that holds those buttons with my new, larger table.
-
-Here is the step-by-step action:
-Find the start of the button table in your archer/index.html file. It looks like this:
-
-HTML
-<table width="620" border="0" cellspacing="0" cellpadding="0">
-Find the end of that same table. It looks like this:
-
-HTML
-</table>
-Delete everything from the starting <table...> tag to the ending </table> tag (and everything in between).
-
-Paste the new, complete code block I provided in that exact spot.
-
-The new code block I gave you already contains your original buttons and simply adds the new "Donate" button in a row below them. You are just swapping the old, smaller table for the new, larger table.
-
-let's add the thanks page (thanks.html) that will be loaded after they donate. it should look just like the donation page we just made. link to the other pages as appropriate. i would like it to have this content or something like it:
-
-
-
-Thank You for Laying the Foundation
-
-Your generous gift to The Archer Cornerstone Fund has been successfully processed.
-
-We are profoundly grateful for your partnership. This is a critical, "first-in" investment, and you are now part of the small group of founders who are turning this vision into a reality.
-
-Your contribution is not just a donation; it is a foundational act. It will be put to immediate, tangible use to:
-
-
-
-Secure Our Founding Team by bringing on key personnel and strategic partners.
-
-Establish Our Home by securing our physical location in Englewood.
-
-Build Our Plan by funding the essential legal and strategic work for a successful 2027 launch.
-
-Thank you for believing in this mission and for building with us.
-
--Daniel Bair
-
-Founder/Director
-
-Archer Christian Academy
-
-This is the perfect next step. A well-designed thank-you page is crucial.
-
-Here is the complete code for your new thank-you page.
-
-Location: This file should be saved as thanks.html inside your archer/donate/ folder. (Its full path will be archer/donate/thanks.html).
-
-Layout: It uses the exact same template as your archer/donate/index.html page, including the logo, footer, and the white content box for legibility.
-
-Content: I have formatted the thank-you text you provided to be clear and professional, using the site's 'Montserrat' and 'Noto Sans' fonts.
-
-Linking: It includes the same "Back to Home" link as the donation page, pointing users back to your main index.html.
-
-New File: archer/donate/thanks.html
-Here is the complete code for the new file.
-Thank You Page
-Nov 13, 10:51 PM
-
-I've generated this file for you.
-
-You will now need to configure your LGL form. In the LGL form settings, there should be an option to "Redirect to a custom URL" or "Set custom thank-you page" after a successful submission. You will need to set that URL to https://[your-website-domain.com]/archer/donate/thanks.html.
-
-Let me know if you need any other adjustments.
-
-to make this image a link, how do i do it?  is this correct?    
-
-<td align="center" valign="middle"><a href="../index.html"><img src="../archer-logo-bg.png" width="434" height="295" alt=""/></a></td>
-
-Yes, that is perfectly correct.
-
-You've done it exactly right. By wrapping the <img> tag (your logo) inside the <a> tag (the link), you've made the entire image a clickable link that will take the user to ../index.html.
-
-A small tip for accessibility: you might want to add a description to the alt attribute, like this:
-
-HTML
-<td align="center" valign="middle">
-  <a href="../index.html">
-    <img src="../archer-logo-bg.png" width="434" height="295" alt="Archer Christian Academy Logo - Back to Home"/>
-  </a>
-</td>
-This helps users who rely on screen readers understand what the link is for. But what you have is 100% functional and correct.
-
-i want to make my link on my main page header to Archer Christian Academy "pop" a bit. How can i do that? it is easy to miss as it is...
-
-
-
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Englewood Family Outreach</title>
-
     <link rel="icon" id="favicon" href="/resources/EFO Logo.png" type="image/png">
-
     <script src="https://cdn.tailwindcss.com"></script>
-
     <style>
-
         body {
-
             font-family: 'Inter', sans-serif;
-
         }
-
         /* Custom colors for light and dark mode. These are scrambled in the code; accent light and dark are swapped throughout. */
-
         :root {
-
             --primary-color-light: #3684c6;
-
             --accent-color-light: #3684c6;
-
             --primary-color-dark: #facc15;
-
             --accent-color-dark: #facc15;
-
         }
-
-
 
         .text-theme-light {
-
             color: var(--primary-color-light);
-
         }
-
         .text-theme-dark {
-
             color: var(--primary-color-dark);
-
         }
-
         .bg-theme-light {
-
             background-color: var(--primary-color-light);
-
         }
-
         .bg-theme-dark {
-
             background-color: var(--primary-color-dark);
-
         }
-
         .hover-text-theme-light:hover {
-
             color: var(--accent-color-light);
-
         }
-
         .hover-bg-theme-light:hover {
-
             background-color: var(--accent-color-light);
-
         }
-
         .hover-text-theme-dark:hover {
-
             color: var(--accent-color-dark);
-
         }
-
         .hover-bg-theme-dark:hover {
-
             background-color: var(--accent-color-dark);
-
         }
-
         @media (prefers-color-scheme: dark) {
-
             .text-theme-light {
-
                 color: var(--primary-color-dark);
-
             }
-
             .text-theme-dark {
-
                 color: var(--primary-color-light);
-
             }
-
             .bg-theme-light {
-
                 background-color: var(--primary-color-dark);
-
             }
-
             .bg-theme-dark {
-
                 background-color: var(--primary-color-light);
-
             }
-
             .hover-text-theme-light:hover {
-
                 color: var(--accent-color-dark);
-
             }
-
             .hover-bg-theme-light:hover {
-
                 background-color: var(--accent-color-dark);
-
             }
-
             .hover-text-theme-dark:hover {
-
                 color: var(--accent-color-light);
-
             }
-
             .hover-bg-theme-dark:hover {
-
                 background-color: var(--accent-color-light);
-
             }
-
         }
-
-
 
         .hero-background {
-
             background-image: url('/resources/background.jpg');
-
             background-size: cover;
-
             background-position: center;
-
             position: relative;
-
         }
-
         .hero-background::before {
-
             content: '';
-
             position: absolute;
-
             top: 0;
-
             right: 0;
-
             bottom: 0;
-
             left: 0;
-
             background: rgba(248, 250, 252, 0.7);
-
             border-radius: 0.5rem;
-
         }
-
         @media (prefers-color-scheme: dark) {
-
             .hero-background {
-
                 background-image: url('/resources/background.jpg');
-
             }
-
             .hero-background::before {
-
                 background: rgba(30, 41, 59, 0.7);
-
             }
-
         }
-
         .hero-content {
-
             position: relative;
-
             z-index: 10;
-
             opacity: 0;
-
             animation: fadeIn 1.5s ease-out forwards;
-
         }
-
         @keyframes fadeIn {
-
             from {
-
                 opacity: 0;
-
                 transform: translateY(20px);
-
             }
-
             to {
-
                 opacity: 1;
-
                 transform: translateY(0);
-
             }
-
         }
-
         /* CSS to handle the light/dark mode logo switch */
-
         img#logo {
-
             content: url("/resources/EFO Logo.png");
-
         }
-
         @media (prefers-color-scheme: dark) {
-
             img#logo {
-
                 content: url("/resources/EFO Logo_gold.png");
-
             }
-
         }
-
         .social-link-hover-gold:hover {
-
             color: #facc15;
-
         }
-
     </style>
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
 </head>
-
 <body class="bg-gray-100 text-gray-800 flex flex-col min-h-screen dark:bg-zinc-950 dark:text-gray-200">
 
-
-
     <header class="bg-white shadow-md p-4 sticky top-0 z-50 dark:bg-zinc-900">
-
-        <div class="container mx-auto flex justify-between items-center">
-
-            <a href="/" class="flex items-center space-x-2">
-
+        <div class="container mx-auto flex justify-between items-center gap-4">
+            
+            <!-- EFO Logo -->
+            <a href="/" class="flex items-center space-x-2 shrink-0">
                 <img id="logo" alt="EFO Logo" class="h-8 w-auto">
-
-                <span class="text-2xl font-bold text-theme-light dark:text-theme-dark">Englewood Family Outreach</span>
-
+                <span class="text-2xl font-bold text-theme-light dark:text-theme-dark hidden sm:block">Englewood Family Outreach</span>
+                <span class="text-xl font-bold text-theme-light dark:text-theme-dark sm:hidden">EFO</span>
+            </a>
+            
+            <!-- ARCHER LINK (Styled to Pop) -->
+            <!-- UPDATED: Dark mode hover now turns background Gold and text Black for readability -->
+            <a href="/archer/" class="group flex items-center space-x-2 bg-slate-50 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 px-4 py-2 rounded-full transition-all duration-300 shadow-sm hover:shadow-md dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-[#facc15] dark:hover:border-[#facc15]">
+                <img src="/archer/acatype.svg" alt="Acatype Logo" class="h-8 w-auto transform group-hover:scale-105 transition-transform duration-300">
+                <span class="font-bold text-slate-700 group-hover:text-[#1d6ecb] dark:text-slate-200 dark:group-hover:text-zinc-900 whitespace-nowrap">Archer Christian Academy</span>
             </a>
 
-            <a href="/archer/" class="flex items-center space-x-2">
-
-                <img src="/archer/acatype.svg" alt="Acatype Logo" class="h-8 w-auto">
-
-                <span>Archer Christian Academy</span>
-
-            </a>
-
-            <nav class="hidden md:flex space-x-6">
-
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex space-x-6 items-center">
                 <a href="#about" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-light">About Us</a>
-
                 <a href="#programs" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-light">What We Do</a>
-
                 <a href="#school-vision" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-light">Our Vision</a>
-
                 <a href="#get-involved" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-light">Get Involved</a>
-
                 <a href="/donate" class="text-theme-light hover-text-theme-light font-semibold transition duration-300 dark:text-theme-dark hover-text-theme-dark">Donate Now</a>
-
             </nav>
-
+            
+            <!-- Mobile Menu Button -->
             <button class="md:hidden text-gray-600 hover-text-theme-light focus:outline-none dark:text-gray-400 hover-text-theme-dark">
-
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-
                 </svg>
-
             </button>
-
         </div>
-
     </header>
 
-
-
     <main class="flex-grow container mx-auto p-4 md:p-8">
-
         <section class="hero-background text-zinc-900 rounded-lg p-10 mb-8 text-center shadow-lg dark:text-white">
-
             <div class="hero-content">
-
                 <h1 class="text-4xl md:text-5xl font-extrabold mb-4">
-
                     <span class="text-theme-light dark:text-theme-dark">C</span>onnect. 
-
                     <span class="text-theme-light dark:text-theme-dark">A</span>nchor. 
-
                     <span class="text-theme-light dark:text-theme-dark">R</span>estore. 
-
                     <span class="text-theme-light dark:text-theme-dark">E</span>mpower.
-
                 </h1>
-
                 <p class="text-lg md:text-xl max-w-2xl mx-auto mb-6">
-
                     Our mission is to restore our communities in Englewood by proclaiming Christ, training in godliness, and empowering the vulnerable.
-
                 </p>
-
                 <a href="/donate" class="bg-theme-light text-white font-bold py-3 px-6 rounded-full shadow-lg hover-bg-theme-light transition duration-300 dark:bg-theme-dark dark:text-zinc-900 hover-bg-theme-dark">
-
                     Join Our CARE Mission
-
                 </a>
-
             </div>
-
         </section>
-
-
 
         <section id="about" class="mb-12">
-
             <h2 class="text-3xl md:text-4xl font-bold text-center mb-6">Who We Are</h2>
-
             <div class="bg-white rounded-lg shadow-md p-6 max-w-3xl mx-auto dark:bg-zinc-900">
-
                 <p class="text-gray-700 leading-relaxed text-lg text-center dark:text-gray-300">
-
                     Englewood Family Outreach is a faith-based organization dedicated to serving the Englewood community of Chicago. As Executive Director, Daniel Bair leads our team in building relationships, providing resources, and facilitating programs that help families develop into healthy, Christ-centered entities. We believe in the power of the Gospel to transform lives and bring renewal to the community.
-
                 </p>
-
                 
-
                 <div class="mt-8 text-center">
-
                     <h3 class="text-2xl font-semibold mb-2">Executive Director: <a target="_blank" rel="noopener noreferrer" href="https://www.facebook.com/dmatb/">Daniel M. Bair</a></h3>
-
                     <p class="text-gray-700 dark:text-gray-300 leading-relaxed max-w-2xl mx-auto">
-
                         On staff since 2001, Daniel is a passionate leader with a deep commitment to the Englewood community. He leads efforts to alleviate poverty through relational approaches and envisions restoring Englewood residents to a right relationship with God, others, and creation. Daniel graduated from Moody Bible Institute and went on to earn an M.A. in biblical exegesis from Wheaton College Graduate School, grounding his ministry in a solid theological foundation.
-
                     </p>
-
                 </div>
-
             </div>
-
         </section>
-
-
 
         <section id="programs" class="mb-12">
-
             <h2 class="text-3xl md:text-4xl font-bold text-center mb-8">What We Do</h2>
-
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
-
                 <div class="bg-white rounded-lg shadow-md p-8 border-t-4 border-theme-light flex flex-col items-center text-center group transition-transform duration-300 hover:scale-105 dark:bg-zinc-900 dark:border-theme-dark">
-
                     <img src="/resources/bible.jpg" alt="EFO Logo" class="rounded-full mb-4 dark:bg-slate-700">
-
                     <h3 class="text-2xl font-semibold mb-2">Weekly Bible Studies</h3>
-
                     <p class="text-gray-600 leading-relaxed dark:text-gray-400">
-
                         We host regular Bible studies for boys, girls, and adults. These gatherings provide a space for deep discipleship, fellowship, and spiritual growth, helping to build a strong foundation in Christ.
-
                     </p>
-
                 </div>
-
                 
-
                 <a href="https://englewoodfamily.org/englewoodworks" target="_blank" class="bg-white rounded-lg shadow-md p-8 border-t-4 border-theme-light flex flex-col items-center text-center group transition-transform duration-300 hover:scale-105 dark:bg-zinc-900 dark:border-theme-dark">
-
                     <img src="/resources/club.jpg" alt="EFO Banner" class="rounded-full mb-4 dark:bg-slate-700">
-
                     <h3 class="text-2xl font-semibold mb-2 text-gray-800 dark:text-gray-200">Englewood Works Club</h3>
-
                     <p class="text-gray-600 leading-relaxed dark:text-gray-400">
-
                         Our Englewood Works Club is an after-school program focused on developing the whole person. We help students with homework and a weekly Bible study. This program is instrumental in preparing the youth for a brighter future.
-
                     </p>
-
                 </a>
-
-
 
                 <div class="bg-white rounded-lg shadow-md p-8 border-t-4 border-theme-light flex flex-col items-center text-center group transition-transform duration-300 hover:scale-105 dark:bg-zinc-900 dark:border-theme-dark">
-
                     <img src="/resources/school.jpg" alt="EFO Logo" class="rounded-full mb-4 dark:bg-slate-700">
-
                     <h3 class="text-2xl font-semibold mb-2">A Classical Christian School</h3>
-
                     <p class="text-gray-600 leading-relaxed dark:text-gray-400">
-
                         We are laying the groundwork to establish a K-12 classical Christian school in Englewood, providing students with an education rooted in truth, goodness, and beauty.
-
                     </p>
-
                 </div>
-
             </div>
-
         </section>
-
         
-
         <section id="school-vision" class="mb-12">
-
             <h2 class="text-3xl md:text-4xl font-bold text-center mb-8">Our Vision: A Classical Christian School</h2>
-
             <div class="bg-white rounded-lg shadow-md p-8 max-w-5xl mx-auto flex flex-col md:flex-row items-center space-y-6 md:space-y-0 md:space-x-8 dark:bg-zinc-900">
-
                 <div class="md:w-1/2">
-
                     <p class="text-gray-700 leading-relaxed text-lg mb-4 dark:text-gray-300">
-
                         We are actively working toward a long-term goal of establishing a K-12 classical Christian school right here in Englewood. This vision is founded on the belief that a robust education, centered on Christ and the pursuit of wisdom and virtue, is key to the lasting restoration of our community.
-
                     </p>
-
                     <p class="text-gray-700 leading-relaxed text-lg dark:text-gray-300">
-
                         This school will seek to train the next generation of leaders, thinkers, and artisans to be a blessing to their families and neighbors for the glory of God. It's a vision for holistic transformation that starts with the heart and mind.
-
                     </p>
-
                 </div>
-
                 <div class="md:w-1/2">
-
                 
-
                     <iframe class="w-full aspect-video rounded-lg shadow-lg"
-
                             src="https://www.youtube.com/embed/gXjmJ3Ke7J0?autoplay=1&mute=1&loop=1&playlist=gXjmJ3Ke7J0&controls=0"
-
                             frameborder="0"
-
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-
                             allowfullscreen>
-
                     </iframe>
-
                 </div>
-
             </div>
-
             <div class="text-center mt-8">
-
                 <a href="/archer/" class="bg-theme-light text-white font-bold py-3 px-6 rounded-full shadow-lg hover-bg-theme-light transition duration-300 dark:bg-theme-dark dark:text-zinc-900 hover-bg-theme-dark">
-
                     Visit Archer
-
                 </a>
-
             </div>
-
         </section>
-
-
 
         <section id="get-involved" class="bg-white rounded-lg shadow-md p-10 mb-8 text-center max-w-5xl mx-auto dark:bg-zinc-900">
-
             <h2 class="text-3xl md:text-4xl font-bold mb-4">Partner With Us</h2>
-
             <p class="text-lg text-gray-700 max-w-2xl mx-auto mb-6 dark:text-gray-300">
-
                         Your partnership is vital to our ministry. You can help us serve the community in three key ways.
-
             </p>
-
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-
                 <div class="p-6 bg-gray-100 rounded-lg shadow-inner dark:bg-zinc-800">
-
                     <h3 class="text-xl font-bold text-theme-light mb-2 dark:text-theme-dark">Pray</h3>
-
                     <p class="text-gray-600 mb-4 dark:text-gray-400">Join us in praying for the spiritual and physical restoration of Englewood.</p>
-
                     <a href="mailto:info@englewoodfamily.org?subject=Join%20Prayer%20Team" class="text-theme-light hover-text-theme-light font-semibold transition duration-300 dark:text-theme-dark hover-text-theme-dark">Email us to join our prayer team</a>
-
                 </div>
-
                 <div class="p-6 bg-gray-100 rounded-lg shadow-inner dark:bg-zinc-800">
-
                     <h3 class="text-xl font-bold text-theme-light mb-2 dark:text-theme-dark">Volunteer</h3>
-
                     <p class="text-gray-600 mb-4 dark:text-gray-400">Give your time and skills to serve alongside us in our programs.</p>
-
                     <a href="mailto:info@englewoodfamily.org?subject=Volunteer%20Opportunities" class="text-theme-light hover-text-theme-light font-semibold transition duration-300 dark:text-theme-dark hover-text-theme-dark">Email us about volunteering</a>
-
                 </div>
-
                 <div class="p-6 bg-gray-100 rounded-lg shadow-inner dark:bg-zinc-800">
-
                     <h3 class="text-xl font-bold text-theme-light mb-2 dark:text-theme-dark"><a href="/donate" class="text-theme-light hover-text-theme-light font-semibold transition duration-300 dark:text-theme-dark hover-text-theme-dark">Donate</a></h3>
-
                     <p class="text-gray-600 mb-4 dark:text-gray-400">Provide financial support to help us continue this vital ministry.</p>
-
                     <a href="/donate" class="text-theme-light hover-text-theme-light font-semibold transition duration-300 dark:text-theme-dark hover-text-theme-dark">Donate Now</a>
-
                     <a href="mailto:info@englewoodfamily.org?subject=Requesting%20Donation%20Information" class="block mt-2 text-theme-light hover-text-theme-light font-semibold transition duration-300 dark:text-theme-dark hover-text-theme-dark">Email us for more information</a>
-
                 </div>
-
             </div>
-
         </section>
-
     </main>
 
-
-
     <footer class="bg-white shadow-inner p-4 mt-8 dark:bg-zinc-900">
-
         <div class="container mx-auto text-center text-gray-600 dark:text-gray-400">
-
             <p>
-
                 <a href="https://www.google.com/maps/dir/?api=1&destination=672+W+Marquette+Rd%2C+Chicago%2C+IL+60621" target="_blank" class="hover:underline">
-
                     672 W Marquette Rd. Chicago, IL 60621
-
                 </a>
-
             </p>
-
             <p>
-
                 Phone: <a href="tel:+13129054290" class="hover:underline">(312) 905-4290</a>
-
                  | Email: <span id="email-contact">info@englewoodfamily.org</span>
-
             </p>
-
             <div class="mt-4 flex justify-center space-x-4">
-
                 <a href="https://www.facebook.com/EnglewoodFam/" target="_blank" class="text-gray-600 hover:text-[#facc15] transition duration-300 dark:text-gray-400 dark:hover:text-[#facc15]">
-
                     <i class="fa-brands fa-facebook text-3xl"></i>
-
                 </a>
-
                 <a href="https://www.linkedin.com/company/englewoodfamily" target="_blank" class="text-gray-600 hover:text-[#facc15] transition duration-300 dark:text-gray-400 dark:hover:text-[#facc15]">
-
                     <i class="fa-brands fa-linkedin-in text-3xl"></i>
-
                 </a>
-
                 <a href="https://x.com/EnglewoodFamily" target="_blank" class="text-gray-600 hover:text-[#facc15] transition duration-300 dark:text-gray-400 dark:hover:text-[#facc15]">
-
                     <i class="fa-brands fa-x-twitter text-3xl"></i>
-
                 </a>
-
                 <a href="https://youtube.com/channel/UCTwWoryLiV2E0zAr1Pz_zBw" target="_blank" class="text-gray-600 hover:text-[#facc15] transition duration-300 dark:text-gray-400 dark:hover:text-[#facc15]">
-
                     <i class="fa-brands fa-youtube text-3xl"></i>
-
                 </a>
-
             </div>
-
             <p class="mt-2">&copy; 2025 Englewood Family Outreach. All rights reserved.</p>
-
         </div>
-
     </footer>
-
     
-
     <script>
-
         document.addEventListener('DOMContentLoaded', function() {
-
             const emailSpan = document.getElementById('email-contact');
-
             if (emailSpan) {
-
                 const email = emailSpan.textContent;
-
                 const link = document.createElement('a');
-
                 link.href = 'mailto:' + email;
-
                 link.textContent = email;
-
                 link.className = 'hover:underline';
-
                 emailSpan.parentNode.replaceChild(link, emailSpan);
-
             }
-
         });
-
         
-
         // Favicon switch logic
-
         const favicon = document.getElementById('favicon');
-
         const lightModeFavicon = "/resources/EFO Logo.png";
-
         const darkModeFavicon = "/resources/EFO Logo_gold.png";
-
         
-
         const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-
         
-
         function updateFavicon(e) {
-
             if (e.matches) {
-
                 favicon.href = darkModeFavicon;
-
             } else {
-
                 favicon.href = lightModeFavicon;
-
             }
-
         }
-
         
-
         // Set initial favicon
-
         if (mediaQuery.matches) {
-
             favicon.href = darkModeFavicon;
-
         }
-
         
-
         // Listen for changes in color scheme
-
         mediaQuery.addEventListener('change', updateFavicon);
-
     </script>
-
 </body>
-
 </html>
-
-To make the "Archer Christian Academy" link stand out without overpowering your main logo, I recommend styling it as a "pill" or "badge" element.
-
-We can use Tailwind CSS to:
-
-Add Padding & Shape: Use px-4 py-2 rounded-full to give it a button-like shape.
-
-Add Background & Border: Use a very light background and a subtle border to separate it from the white header.
-
-Add Interaction: Add a shadow and a slight color shift on hover (hover:shadow-md, hover:bg-blue-50) to invite clicking.
-
-Typography: Make the text font-bold to match the weight of the logo.
-
-Here is the complete, updated index.html file.
-Main Site Index
-Nov 18, 4:47 PM
-
-Summary of Changes
-I replaced the simple flex items-center classes on the Archer link with this robust set of classes in the <header>:
-
-Button Shape: px-4 py-2 rounded-full gives it a "pill" shape.
-
-Subtle Colors: bg-slate-50 border border-slate-200 creates a distinct "card" look that lifts it off the white background without being too loud.
-
-Hover Effect: hover:shadow-md hover:bg-blue-50 hover:border-blue-300 makes it light up slightly when the user mouses over it, indicating it is a clickable, interactive element.
-
-Branding: I used group-hover:text-[#1d6ecb] so that when you hover over the button, the text turns to the specific Archer Blue color.
-
-Dark Mode: Added specific dark:bg-slate-800 and dark:border-slate-700 so it looks integrated in dark mode as well.
-
-This creates a visual hierarchy: EFO is the "Host", and Archer Christian Academy is a "Featured Application" or "Sub-site".
-
-do you understand how i have it coded to swap colors in light vs. dark mode? will this button do similarly?
-
-Yes, Daniel, I understand exactly how you have set it up. You are using a clever variable swap:
-
-Light Mode: You define primary-color-light as Blue.
-
-Dark Mode: You swap the variables so that .text-theme-light actually pulls the primary-color-dark variable, which is Gold (#facc15).
-
-The code I gave you previously used standard Tailwind colors (Blue in both modes), which would not have matched your specific "Gold in Dark Mode" logic.
-
-I have updated the code below. Now, the button will behave exactly like your other elements:
-
-Light Mode: Hovering turns the text/border Archer Blue.
-
-Dark Mode: Hovering turns the text/border EFO Gold (#facc15), matching your logo and accent styles perfectly.
-
-Here is the updated index.html:
-
-In dark mode, the white on hover is too bright to read the gold. instead, what if the button turns gold on hover and the font turns black (in dark mode).
-
-That is a much better accessibility choice, Daniel. High contrast is key in dark mode.
-
-Here is the updated code for index.html. I have modified the Archer Link section to apply a gold background (bg-[#facc15]) and dark text (text-zinc-900) specifically when hovering in dark mode.
-
-
-
-
-
-
-Gemini can make mistakes, so double-check it
-
-Main Site Index
-
-
-303304305306307308309310311312313314315316317318319320321322323324325326327328329330331332333334335336337338339340341342343344345346347
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Englewood Family Outreach</title>
-    <link rel="icon" id="favicon" href="/resources/EFO Logo.png" type="image/png">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-
