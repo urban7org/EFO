@@ -127,22 +127,32 @@
 <body class="bg-gray-100 text-gray-800 flex flex-col min-h-screen dark:bg-zinc-950 dark:text-gray-200">
 
     <header class="bg-white shadow-md p-4 sticky top-0 z-50 dark:bg-zinc-900">
-        <div class="container mx-auto flex justify-between items-center">
-            <a href="/" class="flex items-center space-x-2">
+        <div class="container mx-auto flex justify-between items-center gap-4">
+            
+            <!-- EFO Logo -->
+            <a href="/" class="flex items-center space-x-2 shrink-0">
                 <img id="logo" alt="EFO Logo" class="h-8 w-auto">
-                <span class="text-2xl font-bold text-theme-light dark:text-theme-dark">Englewood Family Outreach</span>
+                <span class="text-2xl font-bold text-theme-light dark:text-theme-dark hidden sm:block">Englewood Family Outreach</span>
+                <span class="text-xl font-bold text-theme-light dark:text-theme-dark sm:hidden">EFO</span>
             </a>
-            <a href="/archer/" class="flex items-center space-x-2">
-                <img src="/archer/acatype.svg" alt="Acatype Logo" class="h-8 w-auto">
-                <span>Archer Christian Academy</span>
+            
+            <!-- ARCHER LINK (Styled to Pop) -->
+            <!-- UPDATED: Now uses #facc15 (Gold) for dark mode hovers to match your theme -->
+            <a href="/archer/" class="group flex items-center space-x-2 bg-slate-50 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 px-4 py-2 rounded-full transition-all duration-300 shadow-sm hover:shadow-md dark:bg-slate-800 dark:border-slate-700 dark:hover:border-[#facc15]">
+                <img src="/archer/acatype.svg" alt="Acatype Logo" class="h-8 w-auto transform group-hover:scale-105 transition-transform duration-300">
+                <span class="font-bold text-slate-700 group-hover:text-[#1d6ecb] dark:text-slate-200 dark:group-hover:text-[#facc15] whitespace-nowrap">Archer Christian Academy</span>
             </a>
-            <nav class="hidden md:flex space-x-6">
+
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex space-x-6 items-center">
                 <a href="#about" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-light">About Us</a>
                 <a href="#programs" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-light">What We Do</a>
                 <a href="#school-vision" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-light">Our Vision</a>
                 <a href="#get-involved" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-light">Get Involved</a>
                 <a href="/donate" class="text-theme-light hover-text-theme-light font-semibold transition duration-300 dark:text-theme-dark hover-text-theme-dark">Donate Now</a>
             </nav>
+            
+            <!-- Mobile Menu Button -->
             <button class="md:hidden text-gray-600 hover-text-theme-light focus:outline-none dark:text-gray-400 hover-text-theme-dark">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -236,7 +246,7 @@
                 </div>
             </div>
             <div class="text-center mt-8">
-                <a href="/archer/" class="bg-theme-light text-white font-bold py-3 px-6 rounded-full shadow-lg hover-bg-theme-light transition duration-300 dark:bg-theme-dark dark:text-zinc-900 hover-bg-theme-dark">
+                <a href="/archer/" class="bg-theme-light text-white font-bold py-3 px-6 rounded-full shadow-lg hover-bg-theme-light transition duration-300 dark:bg-theme-dark dark:text-zinc-900 hover-bg-theme-dark">
                     Visit Archer
                 </a>
             </div>
