@@ -122,21 +122,42 @@
 
                 const content = pages[pageId].revisions[0]['*'];
                 
-                // Very basic Wikitext parsing strategy specifically for Latin
+                // parsing strategy
                 if (!content.includes('==Latin==')) return null;
 
-                // Extract Latin section
-                const latinSection = content.split('==Latin==')[1].split('==')[0];
+                // FIX: Better splitting to avoid cutting off at ===Subheaders===
+                const parts = content.split(/==\s*Latin\s*==/);
+                if (parts.length < 2) return null;
+                
+                let latinSection = parts[1];
+                // Check if there is another language section after this one (Level 2 header)
+                const nextLangMatch = latinSection.search(/\n==[^=]/);
+                if (nextLangMatch !== -1) {
+                    latinSection = latinSection.substring(0, nextLangMatch);
+                }
 
                 // 1. Look for Definition (lines starting with #)
                 let definition = "Definition not parsed";
-                const defMatch = latinSection.match(/\n#\s([^\n]+)/);
+                // Regex looks for a line starting with #, optionally followed by templates like {{lb|la|...}}
+                const defMatch = latinSection.match(/\n#\s*(\{\{[^}]+\}\})*\s*([^\n]+)/);
+                
                 if (defMatch) {
-                    // Remove [[wikilinks]] and templates like {{lb|la|...}}
-                    definition = defMatch[1]
-                        .replace(/\[\[([^\]|]+\|)?([^\]]+)\]\]/g, '$2') // Simplify links
-                        .replace(/\{\{[^}]+\}\}/g, '') // Remove templates
-                        .trim();
+                    // defMatch[2] captures the text after the # and optional initial templates
+                    let rawDef = defMatch[2] || defMatch[1]; 
+                    
+                    if (rawDef) {
+                        definition = rawDef
+                            .replace(/\[\[([^\]|]+\|)?([^\]]+)\]\]/g, '$2') // Simplify links [[link|text]] -> text
+                            .replace(/\{\{([^\}\|]+)(\|[^\}]+)?\}\}/g, '') // Remove templates
+                            .replace(/''/g, '') // Remove italics
+                            .replace(/&lt;[^&]+&gt;/g, '') // Remove html tags
+                            .trim();
+                            
+                        // Fallback if regex stripped everything
+                        if (!definition && defMatch[0]) {
+                             definition = defMatch[0].replace(/\n#\s*/, '').replace(/\{\{[^}]+\}\}/g, '').trim();
+                        }
+                    }
                 }
 
                 // 2. Look for Inflection Template (Parsing)
@@ -163,9 +184,13 @@
 
                     parse = tags.map(t => tagMap[t] || t).join(' ');
                 } else {
-                    if (latinSection.includes('{{la-noun')) parse = "Noun (See Lemma)";
-                    if (latinSection.includes('{{la-verb')) parse = "Verb (Main Entry)";
-                    if (latinSection.includes('{{la-adj')) parse = "Adjective";
+                    // Fallback checks for main entries
+                    if (latinSection.includes('{{la-noun')) parse = "Noun";
+                    else if (latinSection.includes('{{la-verb')) parse = "Verb";
+                    else if (latinSection.includes('{{la-adj')) parse = "Adjective";
+                    else if (latinSection.includes('{{la-prep')) parse = "Preposition";
+                    else if (latinSection.includes('{{la-adv')) parse = "Adverb";
+                    else if (latinSection.includes('{{la-conj')) parse = "Conjunction";
                 }
 
                 return { lemma, def: definition, parse, source: 'Wiktionary' };
