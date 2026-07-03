@@ -8,7 +8,7 @@
    This single file powers analytics for every page of the site,
    including the Archer pages. Nothing else needs editing.
    ============================================================== */
-var GA4_MEASUREMENT_ID = 'G-XXXXXXXXXX'; /* <-- REPLACE THIS, KEEP THE QUOTES */
+var GA4_MEASUREMENT_ID = 'G-B9TDT8VDZG';
 
 (function () {
   'use strict';
