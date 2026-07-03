@@ -36,6 +36,11 @@
             .hover-bg-theme-dark:hover { background-color: var(--accent-color-light); }
         }
     </style>
+    <script>
+        /* If this confirmation loaded inside the form's iframe, take over the full
+           window so the visitor sees the whole page (and the conversion fires once). */
+        if (window.self !== window.top) { window.top.location.replace(window.location.href); }
+    </script>
     <script src="/resources/analytics.js"></script>
 </head>
 <body class="bg-gray-100 text-gray-800 flex flex-col min-h-screen dark:bg-zinc-950 dark:text-gray-200">

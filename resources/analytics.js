@@ -33,13 +33,18 @@ var GA4_MEASUREMENT_ID = 'G-B9TDT8VDZG';
      Conversion events, fired automatically by page path.
      These become the "key events" imported into Google Ads.
      ------------------------------------------------------------ */
-  var path = window.location.pathname.toLowerCase();
+  /* Fire conversion events only when the page is the top-level window, not
+     inside a form iframe. The thank-you pages break out of the iframe on load,
+     so the event fires exactly once, in the top window. */
+  if (window.self === window.top) {
+    var path = window.location.pathname.toLowerCase();
 
-  if (path.indexOf('/archer/donate/thanks') === 0) {
-    window.gtag('event', 'donation_completed', { fund: 'archer' });
-  } else if (path.indexOf('/donate/thanks') === 0) {
-    window.gtag('event', 'donation_completed', { fund: 'efo' });
-  } else if (path.indexOf('/signup/thanks') === 0) {
-    window.gtag('event', 'newsletter_signup', { method: 'lgl_form' });
+    if (path.indexOf('/archer/donate/thanks') === 0) {
+      window.gtag('event', 'donation_completed', { fund: 'archer' });
+    } else if (path.indexOf('/donate/thanks') === 0) {
+      window.gtag('event', 'donation_completed', { fund: 'efo' });
+    } else if (path.indexOf('/signup/thanks') === 0) {
+      window.gtag('event', 'newsletter_signup', { method: 'lgl_form' });
+    }
   }
 })();
