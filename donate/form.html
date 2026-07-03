@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex">
+    <title>Online Donation Form</title>
+    <style>
+        html, body { margin: 0; padding: 0; background: #ffffff; }
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; padding: 8px; box-sizing: border-box; }
+    </style>
+</head>
+<body>
+    <!-- The LGL JavaScript embed. Isolated here with no other scripts so nothing
+         collides with it, while still auto-sizing (which the iframe embed can't do). -->
+    <script type="text/javascript" src="https://secure.lglforms.com/form_engine/s/Ng86U4MU13RK7nE7S7TLVQ.js"></script>
+    <noscript><a href="https://secure.lglforms.com/form_engine/s/Ng86U4MU13RK7nE7S7TLVQ">Make a Donation Today!</a></noscript>
+
+    <script>
+        /* Report our content height to the parent page so it can size the iframe
+           exactly to the form. Also catches the form growing when the donor
+           clicks "Enter payment information" and the card fields appear. */
+        (function () {
+            function postHeight() {
+                var h = document.body.scrollHeight;
+                if (window.parent) { window.parent.postMessage({ lglFormHeight: h }, '*'); }
+            }
+            window.addEventListener('load', postHeight);
+            window.addEventListener('resize', postHeight);
+            if (window.ResizeObserver) {
+                new ResizeObserver(postHeight).observe(document.body);
+            } else {
+                setInterval(postHeight, 400);
+            }
+        })();
+    </script>
+</body>
+</html>

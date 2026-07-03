@@ -127,12 +127,24 @@
                 The fastest and most secure way to give. You will receive a receipt by email immediately.
             </p>
             <div>
-                <iframe src="https://secure.lglforms.com/form_engine/s/Ng86U4MU13RK7nE7S7TLVQ"
+                <iframe id="lgl-form-frame"
+                        src="/donate/form.html"
                         title="Online donation form"
-                        loading="lazy"
-                        style="width:100%; min-height:1050px; border:0; display:block; border-radius:0.5rem; background:#ffffff;"></iframe>
-                <noscript><a href="https://secure.lglforms.com/form_engine/s/Ng86U4MU13RK7nE7S7TLVQ">Make a Donation Today!</a></noscript>
+                        style="width:100%; height:900px; border:0; display:block; border-radius:0.5rem; background:#ffffff;"></iframe>
             </div>
+            <script>
+                /* Resize the form frame to fit its content exactly, including when the
+                   donor opens the payment section and the card fields expand. */
+                (function () {
+                    var frame = document.getElementById('lgl-form-frame');
+                    window.addEventListener('message', function (e) {
+                        if (e.origin !== window.location.origin) { return; }
+                        if (e.data && typeof e.data.lglFormHeight === 'number' && e.data.lglFormHeight > 0) {
+                            frame.style.height = e.data.lglFormHeight + 'px';
+                        }
+                    });
+                })();
+            </script>
         </section>
         
         <div><p>&nbsp;</p></div>
