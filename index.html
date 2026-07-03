@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Englewood Family Outreach is a faith-based ministry restoring the Englewood neighborhood of Chicago through the Gospel — weekly Bible studies, an after-school club, and a coming classical Christian school.">
     <title>Englewood Family Outreach</title>
     <link rel="icon" id="favicon" href="/resources/EFO Logo.png" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -109,20 +110,13 @@
                 transform: translateY(0);
             }
         }
-        /* CSS to handle the light/dark mode logo switch */
-        img#logo {
-            content: url("/resources/EFO Logo.png");
-        }
-        @media (prefers-color-scheme: dark) {
-            img#logo {
-                content: url("/resources/EFO Logo_gold.png");
-            }
-        }
+
         .social-link-hover-gold:hover {
             color: #facc15;
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="/resources/analytics.js"></script>
 </head>
 <body class="bg-gray-100 text-gray-800 flex flex-col min-h-screen dark:bg-zinc-950 dark:text-gray-200">
 
@@ -131,7 +125,10 @@
             
             <!-- EFO Logo -->
             <a href="/" class="flex items-center space-x-2 shrink-0">
-                <img id="logo" alt="EFO Logo" class="h-8 w-auto">
+                <picture>
+                    <source srcset="/resources/EFO%20Logo_gold.png" media="(prefers-color-scheme: dark)">
+                    <img src="/resources/EFO%20Logo.png" alt="EFO Logo" class="h-8 w-auto">
+                </picture>
                 <span class="text-2xl font-bold text-theme-light dark:text-theme-dark hidden sm:block">Englewood Family Outreach</span>
                 <span class="text-xl font-bold text-theme-light dark:text-theme-dark sm:hidden">EFO</span>
             </a>
@@ -149,6 +146,7 @@
                 <a href="#programs" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-light">What We Do</a>
                 <a href="#school-vision" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-light">Our Vision</a>
                 <a href="#get-involved" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-light">Get Involved</a>
+                <a href="/signup/" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-light">Newsletter</a>
                 <a href="/donate" class="text-theme-light hover-text-theme-light font-semibold transition duration-300 dark:text-theme-dark hover-text-theme-dark">Donate Now</a>
             </nav>
             
@@ -257,7 +255,7 @@
             <p class="text-lg text-gray-700 max-w-2xl mx-auto mb-6 dark:text-gray-300">
                         Your partnership is vital to our ministry. You can help us serve the community in three key ways.
             </p>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div class="p-6 bg-gray-100 rounded-lg shadow-inner dark:bg-zinc-800">
                     <h3 class="text-xl font-bold text-theme-light mb-2 dark:text-theme-dark">Pray</h3>
                     <p class="text-gray-600 mb-4 dark:text-gray-400">Join us in praying for the spiritual and physical restoration of Englewood.</p>
@@ -273,6 +271,11 @@
                     <p class="text-gray-600 mb-4 dark:text-gray-400">Provide financial support to help us continue this vital ministry.</p>
                     <a href="/donate" class="text-theme-light hover-text-theme-light font-semibold transition duration-300 dark:text-theme-dark hover-text-theme-dark">Donate Now</a>
                     <a href="mailto:info@englewoodfamily.org?subject=Requesting%20Donation%20Information" class="block mt-2 text-theme-light hover-text-theme-light font-semibold transition duration-300 dark:text-theme-dark hover-text-theme-dark">Email us for more information</a>
+                </div>
+                <div class="p-6 bg-gray-100 rounded-lg shadow-inner dark:bg-zinc-800">
+                    <h3 class="text-xl font-bold text-theme-light mb-2 dark:text-theme-dark"><a href="/signup/" class="text-theme-light hover-text-theme-light font-semibold transition duration-300 dark:text-theme-dark hover-text-theme-dark">Stay Connected</a></h3>
+                    <p class="text-gray-600 mb-4 dark:text-gray-400">Receive stories and updates from the neighborhood in our newsletter.</p>
+                    <a href="/signup/" class="text-theme-light hover-text-theme-light font-semibold transition duration-300 dark:text-theme-dark hover-text-theme-dark">Sign up for the newsletter</a>
                 </div>
             </div>
         </section>
@@ -303,7 +306,7 @@
                     <i class="fa-brands fa-youtube text-3xl"></i>
                 </a>
             </div>
-            <p class="mt-2">&copy; 2025 Englewood Family Outreach. All rights reserved.</p>
+            <p class="mt-2">&copy; 2026 Englewood Family Outreach. All rights reserved.</p>
         </div>
     </footer>
     
