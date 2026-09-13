@@ -1,12 +1,9 @@
 /* ==============================================================
    Englewood Family Outreach — Google Analytics 4 (GA4) loader
    --------------------------------------------------------------
-   ONE-TIME SETUP: paste your GA4 Measurement ID on the line
-   below, replacing G-XXXXXXXXXX. It looks like G-AB12CD34EF.
-   (See GA4-SETUP-GUIDE.md in the repository root.)
-
-   This single file powers analytics for every page of the site,
-   including the Archer pages. Nothing else needs editing.
+   The GA4 Measurement ID is set on the line below. This single file
+   powers analytics for every page of the site; nothing else needs
+   editing. Pages load it with the "defer" attribute.
    ============================================================== */
 var GA4_MEASUREMENT_ID = 'G-B9TDT8VDZG';
 
@@ -39,9 +36,7 @@ var GA4_MEASUREMENT_ID = 'G-B9TDT8VDZG';
   if (window.self === window.top) {
     var path = window.location.pathname.toLowerCase();
 
-    if (path.indexOf('/archer/donate/thanks') === 0) {
-      window.gtag('event', 'donation_completed', { fund: 'archer' });
-    } else if (path.indexOf('/donate/thanks') === 0) {
+    if (path.indexOf('/donate/thanks') === 0) {
       window.gtag('event', 'donation_completed', { fund: 'efo' });
     } else if (path.indexOf('/signup/thanks') === 0) {
       window.gtag('event', 'newsletter_signup', { method: 'lgl_form' });

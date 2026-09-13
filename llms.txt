@@ -1,0 +1,44 @@
+# Englewood Family Outreach
+
+> Englewood Family Outreach (EFO) is a faith-based Christian ministry serving the Englewood neighborhood on the South Side of Chicago, Illinois, since 1986. Its mission is to restore communities in Englewood by proclaiming Christ, training in godliness, and empowering the vulnerable. EFO is a ministry of Urban Youth Outreach, a 501(c)(3) nonprofit (EIN 36-3382527); gifts are tax-deductible.
+
+Key facts:
+
+- Motto: Connect. Anchor. Restore. Empower. (the CARE mission)
+- Location: 672 W Marquette Rd, Chicago, IL 60621 (Englewood). Mailing address for gifts: Englewood Family Outreach, 1507 E 53rd St, Box 691, Chicago, IL 60615
+- Phone: (312) 905-4290. Email: info@englewoodfamily.org
+- Executive Director: Daniel M. Bair (on staff since 2001; Moody Bible Institute; M.A. in biblical exegesis, Wheaton College Graduate School)
+- Area served: Englewood, Chicago, Illinois
+
+Programs:
+
+- Weekly Bible Studies for boys, girls, and adults: discipleship, fellowship, and spiritual growth.
+- Englewood Works Club: an after-school program with homework help, weekly Bible study, hands-on trade skills (including woodworking with a CNC router), cooking classes, and life-skills enrichment.
+- Archer Christian Academy: a classical Christian school being established in Englewood (opening Fall 2027 with kindergarten through second grade, adding a grade each year). Its own site is https://archerchristian.org/.
+
+## Pages
+
+- [Home](https://englewoodfamily.org/): mission, who we are, what we do, the school vision, and ways to partner
+- [Give](https://englewoodfamily.org/donate/): secure online giving, plus mail, PayPal, Zelle, Venmo, Facebook, and stock or securities gifts
+- [Newsletter signup](https://englewoodfamily.org/signup/): stories and ministry updates from the neighborhood
+- [Englewood Works](https://englewoodfamily.org/englewoodworks/): the after-school club, its daily rhythm, and sponsorship levels
+- [Archer Christian Academy](https://archerchristian.org/): the school's own website
+
+## How to help
+
+- Pray for the spiritual and physical restoration of Englewood (email info@englewoodfamily.org to join the prayer team)
+- Volunteer time and skills in the programs (email info@englewoodfamily.org)
+- Give at https://englewoodfamily.org/donate/
+- Subscribe to the newsletter at https://englewoodfamily.org/signup/
+
+## Social profiles
+
+- Facebook: https://www.facebook.com/EnglewoodFam/
+- X (Twitter): https://x.com/EnglewoodFamily
+- LinkedIn: https://www.linkedin.com/company/englewoodfamily
+- YouTube: https://youtube.com/channel/UCTwWoryLiV2E0zAr1Pz_zBw
+
+## Optional
+
+- [Lector Latinus](https://englewoodfamily.org/latin/): an interactive Latin reader (John 1) maintained by the Executive Director for classical language students
+- Structured data: every page carries schema.org JSON-LD (Organization/NGO, Service, WebSite, WebPage, BreadcrumbList, DonateAction)

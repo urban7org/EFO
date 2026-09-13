@@ -1,346 +1,573 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Englewood Family Outreach is a faith-based ministry restoring the Englewood neighborhood of Chicago through the Gospel — weekly Bible studies, an after-school club, and a coming classical Christian school.">
-    <title>Englewood Family Outreach</title>
-    <link rel="icon" id="favicon" href="/resources/EFO Logo.png" type="image/png">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        /* Custom colors for light and dark mode. These are scrambled in the code; accent light and dark are swapped throughout. */
-        :root {
-            --primary-color-light: #3684c6;
-            --accent-color-light: #3684c6;
-            --primary-color-dark: #facc15;
-            --accent-color-dark: #facc15;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Englewood Family Outreach | Gospel Ministry in Englewood, Chicago</title>
+  <meta name="description" content="Gospel ministry in Englewood, Chicago, since 1986: weekly Bible studies, the Englewood Works after-school club, and a coming classical Christian school.">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="canonical" href="https://englewoodfamily.org/">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0b1626" media="(prefers-color-scheme: dark)">
+  <meta name="author" content="Englewood Family Outreach">
 
-        .text-theme-light {
-            color: var(--primary-color-light);
-        }
-        .text-theme-dark {
-            color: var(--primary-color-dark);
-        }
-        .bg-theme-light {
-            background-color: var(--primary-color-light);
-        }
-        .bg-theme-dark {
-            background-color: var(--primary-color-dark);
-        }
-        .hover-text-theme-light:hover {
-            color: var(--accent-color-light);
-        }
-        .hover-bg-theme-light:hover {
-            background-color: var(--accent-color-light);
-        }
-        .hover-text-theme-dark:hover {
-            color: var(--accent-color-dark);
-        }
-        .hover-bg-theme-dark:hover {
-            background-color: var(--accent-color-dark);
-        }
-        @media (prefers-color-scheme: dark) {
-            .text-theme-light {
-                color: var(--primary-color-dark);
-            }
-            .text-theme-dark {
-                color: var(--primary-color-light);
-            }
-            .bg-theme-light {
-                background-color: var(--primary-color-dark);
-            }
-            .bg-theme-dark {
-                background-color: var(--primary-color-light);
-            }
-            .hover-text-theme-light:hover {
-                color: var(--accent-color-dark);
-            }
-            .hover-bg-theme-light:hover {
-                background-color: var(--accent-color-dark);
-            }
-            .hover-text-theme-dark:hover {
-                color: var(--accent-color-light);
-            }
-            .hover-bg-theme-dark:hover {
-                background-color: var(--accent-color-light);
-            }
-        }
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Englewood Family Outreach">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:title" content="Englewood Family Outreach | Gospel Ministry in Englewood, Chicago">
+  <meta property="og:description" content="Gospel ministry in Englewood, Chicago, since 1986: weekly Bible studies, the Englewood Works after-school club, and a coming classical Christian school.">
+  <meta property="og:url" content="https://englewoodfamily.org/">
+  <meta property="og:image" content="https://englewoodfamily.org/resources/img/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Englewood Family Outreach: Connect. Anchor. Restore. Empower.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@EnglewoodFamily">
+  <meta name="twitter:title" content="Englewood Family Outreach | Gospel Ministry in Englewood, Chicago">
+  <meta name="twitter:description" content="Gospel ministry in Englewood, Chicago, since 1986: weekly Bible studies, the Englewood Works after-school club, and a coming classical Christian school.">
+  <meta name="twitter:image" content="https://englewoodfamily.org/resources/img/og-image.jpg">
 
-        .hero-background {
-            background-image: url('/resources/background.jpg');
-            background-size: cover;
-            background-position: center;
-            position: relative;
-        }
-        .hero-background::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            background: rgba(248, 250, 252, 0.7);
-            border-radius: 0.5rem;
-        }
-        @media (prefers-color-scheme: dark) {
-            .hero-background {
-                background-image: url('/resources/background.jpg');
-            }
-            .hero-background::before {
-                background: rgba(30, 41, 59, 0.7);
-            }
-        }
-        .hero-content {
-            position: relative;
-            z-index: 10;
-            opacity: 0;
-            animation: fadeIn 1.5s ease-out forwards;
-        }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="icon" href="/resources/img/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="/resources/img/favicon-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="/resources/img/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
 
-        .social-link-hover-gold:hover {
-            color: #facc15;
+  <link rel="preload" href="/resources/fonts/fraunces-latin-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/resources/fonts/inter-latin-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/resources/site.css">
+  <script>document.documentElement.classList.add('js');</script>
+  <link rel="preload" as="image" href="/resources/img/hero-skyline-1600.webp" imagesrcset="/resources/img/hero-skyline-800.webp 800w, /resources/img/hero-skyline-1200.webp 1200w, /resources/img/hero-skyline-1600.webp 1600w, /resources/img/hero-skyline-2000.webp 2000w" imagesizes="100vw">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": [
+        "NGO",
+        "Organization"
+      ],
+      "@id": "https://englewoodfamily.org/#organization",
+      "name": "Englewood Family Outreach",
+      "alternateName": "EFO",
+      "url": "https://englewoodfamily.org/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://englewoodfamily.org/resources/EFO%20Logo.png",
+        "width": 910,
+        "height": 910
+      },
+      "image": "https://englewoodfamily.org/resources/img/og-image.jpg",
+      "description": "Englewood Family Outreach is a faith-based ministry restoring the Englewood neighborhood of Chicago through the Gospel: weekly Bible studies for boys, girls, and adults; the Englewood Works after-school club; and Archer Christian Academy, a classical Christian school opening in Englewood. A ministry of Urban Youth Outreach, a 501(c)(3) nonprofit, serving one neighborhood on Chicago's South Side since 1986.",
+      "slogan": "Connect. Anchor. Restore. Empower.",
+      "foundingDate": "1986",
+      "nonprofitStatus": "https://schema.org/Nonprofit501c3",
+      "taxID": "36-3382527",
+      "email": "info@englewoodfamily.org",
+      "telephone": "+1-312-905-4290",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "672 W Marquette Rd",
+        "addressLocality": "Chicago",
+        "addressRegion": "IL",
+        "postalCode": "60621",
+        "addressCountry": "US"
+      },
+      "areaServed": [
+        {
+          "@type": "Place",
+          "name": "Englewood, Chicago, Illinois"
+        },
+        {
+          "@type": "City",
+          "name": "Chicago",
+          "sameAs": "https://en.wikipedia.org/wiki/Chicago"
         }
-    </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="/resources/analytics.js"></script>
+      ],
+      "sameAs": [
+        "https://www.facebook.com/EnglewoodFam/",
+        "https://x.com/EnglewoodFamily",
+        "https://www.linkedin.com/company/englewoodfamily",
+        "https://youtube.com/channel/UCTwWoryLiV2E0zAr1Pz_zBw",
+        "https://www.guidestar.org/profile/36-3382527"
+      ],
+      "parentOrganization": {
+        "@type": [
+          "NGO",
+          "Organization"
+        ],
+        "name": "Urban Youth Outreach",
+        "taxID": "36-3382527",
+        "nonprofitStatus": "https://schema.org/Nonprofit501c3",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "672 W Marquette Rd",
+          "addressLocality": "Chicago",
+          "addressRegion": "IL",
+          "postalCode": "60621",
+          "addressCountry": "US"
+        }
+      },
+      "employee": {
+        "@id": "https://englewoodfamily.org/#daniel-bair"
+      },
+      "knowsAbout": [
+        "Christian discipleship",
+        "Bible study",
+        "Youth ministry",
+        "After-school programs",
+        "Classical Christian education",
+        "Community development in Englewood, Chicago"
+      ],
+      "subOrganization": [
+        {
+          "@type": "Organization",
+          "@id": "https://englewoodfamily.org/englewoodworks/#program",
+          "name": "Englewood Works",
+          "url": "https://englewoodfamily.org/englewoodworks/",
+          "parentOrganization": {
+            "@id": "https://englewoodfamily.org/#organization"
+          },
+          "description": "An after-school club in Englewood offering homework help, weekly Bible study, hands-on trade skills, and life-skills enrichment."
+        },
+        {
+          "@type": [
+            "School",
+            "EducationalOrganization"
+          ],
+          "name": "Archer Christian Academy",
+          "url": "https://archerchristian.org/",
+          "description": "A classical Christian school opening in Englewood, Chicago, in Fall 2027, beginning with kindergarten through second grade and adding a grade each year.",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "672 W Marquette Rd",
+            "addressLocality": "Chicago",
+            "addressRegion": "IL",
+            "postalCode": "60621",
+            "addressCountry": "US"
+          },
+          "parentOrganization": {
+            "@id": "https://englewoodfamily.org/#organization"
+          }
+        }
+      ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Programs of Englewood Family Outreach",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Weekly Bible Studies",
+              "serviceType": "Bible study",
+              "description": "Regular Bible studies for boys, girls, and adults: a space for deep discipleship, fellowship, and spiritual growth.",
+              "provider": {
+                "@id": "https://englewoodfamily.org/#organization"
+              },
+              "areaServed": [
+                {
+                  "@type": "Place",
+                  "name": "Englewood, Chicago, Illinois"
+                },
+                {
+                  "@type": "City",
+                  "name": "Chicago",
+                  "sameAs": "https://en.wikipedia.org/wiki/Chicago"
+                }
+              ],
+              "audience": {
+                "@type": "Audience",
+                "audienceType": "Boys, girls, and adults in Englewood"
+              }
+            }
+          },
+          {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Englewood Works Club",
+              "serviceType": "After-school program",
+              "url": "https://englewoodfamily.org/englewoodworks/",
+              "description": "An after-school program focused on the whole person: homework help, weekly Bible study, hands-on trade skills, cooking classes, and life-skills training.",
+              "provider": {
+                "@id": "https://englewoodfamily.org/#organization"
+              },
+              "areaServed": [
+                {
+                  "@type": "Place",
+                  "name": "Englewood, Chicago, Illinois"
+                },
+                {
+                  "@type": "City",
+                  "name": "Chicago",
+                  "sameAs": "https://en.wikipedia.org/wiki/Chicago"
+                }
+              ],
+              "audience": {
+                "@type": "EducationalAudience",
+                "educationalRole": "student"
+              }
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Archer Christian Academy",
+              "serviceType": "Classical Christian education (K-12)",
+              "url": "https://archerchristian.org/",
+              "description": "A K-12 classical Christian school being established in Englewood, providing students with an education rooted in truth, goodness, and beauty.",
+              "provider": {
+                "@id": "https://englewoodfamily.org/#organization"
+              },
+              "areaServed": [
+                {
+                  "@type": "Place",
+                  "name": "Englewood, Chicago, Illinois"
+                },
+                {
+                  "@type": "City",
+                  "name": "Chicago",
+                  "sameAs": "https://en.wikipedia.org/wiki/Chicago"
+                }
+              ],
+              "audience": {
+                "@type": "EducationalAudience",
+                "educationalRole": "student"
+              }
+            }
+          }
+        ]
+      },
+      "potentialAction": {
+        "@type": "DonateAction",
+        "name": "Give to Englewood Family Outreach",
+        "target": "https://englewoodfamily.org/donate/",
+        "recipient": {
+          "@id": "https://englewoodfamily.org/#organization"
+        }
+      }
+    },
+    {
+      "@type": "Person",
+      "@id": "https://englewoodfamily.org/#daniel-bair",
+      "name": "Daniel M. Bair",
+      "givenName": "Daniel",
+      "familyName": "Bair",
+      "jobTitle": "Executive Director",
+      "worksFor": {
+        "@id": "https://englewoodfamily.org/#organization"
+      },
+      "alumniOf": [
+        {
+          "@type": "CollegeOrUniversity",
+          "name": "Moody Bible Institute"
+        },
+        {
+          "@type": "CollegeOrUniversity",
+          "name": "Wheaton College Graduate School"
+        }
+      ],
+      "sameAs": [
+        "https://www.facebook.com/dmatb/"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://englewoodfamily.org/#website",
+      "name": "Englewood Family Outreach",
+      "alternateName": "EFO",
+      "url": "https://englewoodfamily.org/",
+      "publisher": {
+        "@id": "https://englewoodfamily.org/#organization"
+      },
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://englewoodfamily.org/#webpage",
+      "url": "https://englewoodfamily.org/",
+      "name": "Englewood Family Outreach | Gospel Ministry in Englewood, Chicago",
+      "description": "Gospel ministry in Englewood, Chicago, since 1986: weekly Bible studies, the Englewood Works after-school club, and a coming classical Christian school.",
+      "isPartOf": {
+        "@id": "https://englewoodfamily.org/#website"
+      },
+      "about": {
+        "@id": "https://englewoodfamily.org/#organization"
+      },
+      "inLanguage": "en-US",
+      "dateModified": "2026-09-12",
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://englewoodfamily.org/resources/img/og-image.jpg"
+      }
+    }
+  ]
+}
+</script>
+  <script src="/resources/analytics.js" defer></script>
+  <script src="/resources/site.js" defer></script>
 </head>
-<body class="bg-gray-100 text-gray-800 flex flex-col min-h-screen dark:bg-zinc-950 dark:text-gray-200">
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="/">
+        <img class="logo-light" src="/resources/img/efo-logo-96.png" srcset="/resources/img/efo-logo-96.png 1x, /resources/img/efo-logo-192.png 2x" width="40" height="40" alt="">
+        <img class="logo-dark" src="/resources/img/efo-logo-gold-96.png" srcset="/resources/img/efo-logo-gold-96.png 1x, /resources/img/efo-logo-gold-192.png 2x" width="40" height="40" alt="">
+        <span class="brand-name">Englewood Family Outreach</span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+        <span class="visually-hidden">Menu</span>
+        <svg class="icon-menu" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        <svg class="icon-close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+      <nav class="site-nav" id="site-nav" aria-label="Primary">
+        <ul><li><a href="/#about">About Us</a></li><li><a href="/#programs">What We Do</a></li><li><a href="/#school-vision">Our Vision</a></li><li><a href="/#get-involved">Get Involved</a></li><li><a href="/signup/">Newsletter</a></li></ul>
+        <div class="nav-actions"><a class="archer-link" href="https://archerchristian.org"><img src="/archer/acatype.svg" alt="" width="32" height="19">Archer Christian Academy</a><a class="btn btn-gold small" href="/donate/">Give</a></div>
+      </nav>
+    </div>
+  </header>
 
-    <header class="bg-white shadow-md p-4 sticky top-0 z-50 dark:bg-zinc-900">
-        <div class="container mx-auto flex flex-col items-center gap-3">
-            <div class="flex flex-wrap justify-center items-center gap-x-4 gap-y-2">
-            
-            <!-- EFO Logo -->
-            <a href="/" class="flex items-center space-x-2 shrink-0">
-                <picture>
-                    <source srcset="/resources/EFO%20Logo_gold.png" media="(prefers-color-scheme: dark)">
-                    <img src="/resources/EFO%20Logo.png" alt="EFO Logo" class="h-8 w-auto">
-                </picture>
-                <span class="text-2xl font-bold text-theme-light dark:text-theme-dark hidden sm:block">Englewood Family Outreach</span>
-                <span class="text-xl font-bold text-theme-light dark:text-theme-dark sm:hidden">EFO</span>
-            </a>
-            
-            <!-- ARCHER LINK (Styled to Pop) -->
-            <!-- UPDATED: Dark mode hover now turns background Gold and text Black for readability -->
-            <a href="https://archerchristian.org" class="group flex items-center space-x-2 bg-slate-50 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 px-4 py-2 rounded-full transition-all duration-300 shadow-sm hover:shadow-md dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-[#facc15] dark:hover:border-[#facc15]">
-                <img src="/archer/acatype.svg" alt="Acatype Logo" class="h-8 w-auto transform group-hover:scale-105 transition-transform duration-300">
-                <span class="font-bold text-slate-700 group-hover:text-[#1d6ecb] dark:text-slate-200 dark:group-hover:text-zinc-900 whitespace-nowrap">Archer Christian Academy</span>
-            </a>
-
-            </div>
-
-            <!-- Nav -->
-            <nav class="flex flex-wrap justify-center gap-x-6 gap-y-2 items-center">
-                <a href="#about" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-light">About Us</a>
-                <a href="#programs" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-light">What We Do</a>
-                <a href="#school-vision" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-light">Our Vision</a>
-                <a href="#get-involved" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-light">Get Involved</a>
-                <a href="/signup/" class="text-gray-600 hover-text-theme-light transition duration-300 dark:text-gray-400 hover-text-theme-light">Newsletter</a>
-                <a href="/donate" class="text-theme-light hover-text-theme-light font-semibold transition duration-300 dark:text-theme-dark hover-text-theme-dark">Donate Now</a>
-            </nav>
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <picture>
+        <source type="image/webp" srcset="/resources/img/hero-skyline-800.webp 800w, /resources/img/hero-skyline-1200.webp 1200w, /resources/img/hero-skyline-1600.webp 1600w, /resources/img/hero-skyline-2000.webp 2000w" sizes="100vw">
+        <img class="hero-media" src="/resources/img/hero-skyline-1600.jpg" width="2000" height="1429" alt="The Chicago skyline at dusk, seen down the elevated train tracks from Englewood" fetchpriority="high" decoding="async">
+      </picture>
+      <div class="hero-scrim" aria-hidden="true"></div>
+      <div class="container hero-inner">
+        <div class="hero-content">
+          <p class="eyebrow">A Gospel ministry in Englewood, Chicago &middot; Since 1986</p>
+          <h1 id="hero-title"><span class="cap">C</span>onnect. <span class="cap">A</span>nchor. <span class="cap">R</span>estore. <span class="cap">E</span>mpower.</h1>
+          <p class="lead">Our mission is to restore our communities in Englewood by proclaiming Christ, training in godliness, and empowering the vulnerable.</p>
+          <div class="btn-row">
+            <a class="btn btn-gold" href="/donate/">Join Our CARE Mission <svg class="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+            <a class="btn btn-ghost" href="#programs">See What We Do</a>
+          </div>
+          <div class="hero-foot">
+            <span><svg class="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> 672 W Marquette Rd, Chicago</span>
+            <span><svg class="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg> A ministry of Urban Youth Outreach, a 501(c)(3)</span>
+            <span><svg class="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg> We live here, and we stay</span>
+          </div>
         </div>
-    </header>
+      </div>
+    </section>
 
-    <main class="flex-grow container mx-auto p-4 md:p-8">
-        <section class="hero-background text-zinc-900 rounded-lg p-10 mb-8 text-center shadow-lg dark:text-white">
-            <div class="hero-content">
-                <h1 class="text-4xl md:text-5xl font-extrabold mb-4">
-                    <span class="text-theme-light dark:text-theme-dark">C</span>onnect. 
-                    <span class="text-theme-light dark:text-theme-dark">A</span>nchor. 
-                    <span class="text-theme-light dark:text-theme-dark">R</span>estore. 
-                    <span class="text-theme-light dark:text-theme-dark">E</span>mpower.
-                </h1>
-                <p class="text-lg md:text-xl max-w-2xl mx-auto mb-6">
-                    Our mission is to restore our communities in Englewood by proclaiming Christ, training in godliness, and empowering the vulnerable.
-                </p>
-                <a href="/donate" class="bg-theme-light text-white font-bold py-3 px-6 rounded-full shadow-lg hover-bg-theme-light transition duration-300 dark:bg-theme-dark dark:text-zinc-900 hover-bg-theme-dark">
-                    Join Our CARE Mission
-                </a>
-            </div>
-        </section>
+    <section class="facts" aria-label="At a glance">
+      <div class="container">
+        <div class="fact"><div class="num">1986</div><div class="label">Serving Englewood since</div></div>
+        <div class="fact"><div class="num">40<small>+</small></div><div class="label">Years in one neighborhood on Chicago&rsquo;s South Side</div></div>
+        <div class="fact"><div class="num">3</div><div class="label">Ministries: weekly Bible studies, an after-school club, and a classical Christian school</div></div>
+        <div class="fact"><div class="num">K&ndash;12</div><div class="label">The school we are building for the children of Englewood</div></div>
+      </div>
+    </section>
 
-        <section id="about" class="mb-12">
-            <h2 class="text-3xl md:text-4xl font-bold text-center mb-6">Who We Are</h2>
-            <div class="bg-white rounded-lg shadow-md p-6 max-w-3xl mx-auto dark:bg-zinc-900">
-                <p class="text-gray-700 leading-relaxed text-lg text-center dark:text-gray-300">
-                    Englewood Family Outreach is a faith-based organization dedicated to serving the Englewood community of Chicago. As Executive Director, Daniel Bair leads our team in building relationships, providing resources, and facilitating programs that help families develop into healthy, Christ-centered entities. We believe in the power of the Gospel to transform lives and bring renewal to the community.
-                </p>
-                
-                <div class="mt-8 text-center">
-                    <h3 class="text-2xl font-semibold mb-2">Executive Director: <a target="_blank" rel="noopener noreferrer" href="https://www.facebook.com/dmatb/">Daniel M. Bair</a></h3>
-                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed max-w-2xl mx-auto">
-                        On staff since 2001, Daniel is a passionate leader with a deep commitment to the Englewood community. He leads efforts to alleviate poverty through relational approaches and envisions restoring Englewood residents to a right relationship with God, others, and creation. Daniel graduated from Moody Bible Institute and went on to earn an M.A. in biblical exegesis from Wheaton College Graduate School, grounding his ministry in a solid theological foundation.
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <section id="programs" class="mb-12">
-            <h2 class="text-3xl md:text-4xl font-bold text-center mb-8">What We Do</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
-                <div class="bg-white rounded-lg shadow-md p-8 border-t-4 border-theme-light flex flex-col items-center text-center group transition-transform duration-300 hover:scale-105 dark:bg-zinc-900 dark:border-theme-dark">
-                    <img src="/resources/bible.jpg" alt="EFO Logo" class="rounded-full mb-4 dark:bg-slate-700">
-                    <h3 class="text-2xl font-semibold mb-2">Weekly Bible Studies</h3>
-                    <p class="text-gray-600 leading-relaxed dark:text-gray-400">
-                        We host regular Bible studies for boys, girls, and adults. These gatherings provide a space for deep discipleship, fellowship, and spiritual growth, helping to build a strong foundation in Christ.
-                    </p>
-                </div>
-                
-                <a href="https://englewoodfamily.org/englewoodworks" target="_blank" class="bg-white rounded-lg shadow-md p-8 border-t-4 border-theme-light flex flex-col items-center text-center group transition-transform duration-300 hover:scale-105 dark:bg-zinc-900 dark:border-theme-dark">
-                    <img src="/resources/club.jpg" alt="EFO Banner" class="rounded-full mb-4 dark:bg-slate-700">
-                    <h3 class="text-2xl font-semibold mb-2 text-gray-800 dark:text-gray-200">Englewood Works Club</h3>
-                    <p class="text-gray-600 leading-relaxed dark:text-gray-400">
-                        Our Englewood Works Club is an after-school program focused on developing the whole person. We help students with homework and a weekly Bible study. This program is instrumental in preparing the youth for a brighter future.
-                    </p>
-                </a>
-
-                <div class="bg-white rounded-lg shadow-md p-8 border-t-4 border-theme-light flex flex-col items-center text-center group transition-transform duration-300 hover:scale-105 dark:bg-zinc-900 dark:border-theme-dark">
-                    <img src="/resources/school.jpg" alt="EFO Logo" class="rounded-full mb-4 dark:bg-slate-700">
-                    <h3 class="text-2xl font-semibold mb-2">A Classical Christian School</h3>
-                    <p class="text-gray-600 leading-relaxed dark:text-gray-400">
-                        We are laying the groundwork to establish a K-12 classical Christian school in Englewood, providing students with an education rooted in truth, goodness, and beauty.
-                    </p>
-                </div>
-            </div>
-        </section>
-        
-        <section id="school-vision" class="mb-12">
-            <h2 class="text-3xl md:text-4xl font-bold text-center mb-8">Our Vision: A Classical Christian School</h2>
-            <div class="bg-white rounded-lg shadow-md p-8 max-w-5xl mx-auto flex flex-col md:flex-row items-center space-y-6 md:space-y-0 md:space-x-8 dark:bg-zinc-900">
-                <div class="md:w-1/2">
-                    <p class="text-gray-700 leading-relaxed text-lg mb-4 dark:text-gray-300">
-                        We are actively working toward a long-term goal of establishing a K-12 classical Christian school right here in Englewood. This vision is founded on the belief that a robust education, centered on Christ and the pursuit of wisdom and virtue, is key to the lasting restoration of our community.
-                    </p>
-                    <p class="text-gray-700 leading-relaxed text-lg dark:text-gray-300">
-                        This school will seek to train the next generation of leaders, thinkers, and artisans to be a blessing to their families and neighbors for the glory of God. It's a vision for holistic transformation that starts with the heart and mind.
-                    </p>
-                </div>
-                <div class="md:w-1/2">
-                
-                    <iframe class="w-full aspect-video rounded-lg shadow-lg"
-                            src="https://www.youtube.com/embed/gXjmJ3Ke7J0?autoplay=1&mute=1&loop=1&playlist=gXjmJ3Ke7J0&controls=0"
-                            frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen>
-                    </iframe>
-                </div>
-            </div>
-            <div class="text-center mt-8">
-                <a href="https://archerchristian.org" class="bg-theme-light text-white font-bold py-3 px-6 rounded-full shadow-lg hover-bg-theme-light transition duration-300 dark:bg-theme-dark dark:text-zinc-900 hover-bg-theme-dark">
-                    Visit Archer
-                </a>
-            </div>
-        </section>
-
-        <section id="get-involved" class="bg-white rounded-lg shadow-md p-10 mb-8 text-center max-w-5xl mx-auto dark:bg-zinc-900">
-            <h2 class="text-3xl md:text-4xl font-bold mb-4">Partner With Us</h2>
-            <p class="text-lg text-gray-700 max-w-2xl mx-auto mb-6 dark:text-gray-300">
-                        Your partnership is vital to our ministry. You can help us serve the community in three key ways.
-            </p>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="p-6 bg-gray-100 rounded-lg shadow-inner dark:bg-zinc-800">
-                    <h3 class="text-xl font-bold text-theme-light mb-2 dark:text-theme-dark">Pray</h3>
-                    <p class="text-gray-600 mb-4 dark:text-gray-400">Join us in praying for the spiritual and physical restoration of Englewood.</p>
-                    <a href="mailto:info@englewoodfamily.org?subject=Join%20Prayer%20Team" class="text-theme-light hover-text-theme-light font-semibold transition duration-300 dark:text-theme-dark hover-text-theme-dark">Email us to join our prayer team</a>
-                </div>
-                <div class="p-6 bg-gray-100 rounded-lg shadow-inner dark:bg-zinc-800">
-                    <h3 class="text-xl font-bold text-theme-light mb-2 dark:text-theme-dark">Volunteer</h3>
-                    <p class="text-gray-600 mb-4 dark:text-gray-400">Give your time and skills to serve alongside us in our programs.</p>
-                    <a href="mailto:info@englewoodfamily.org?subject=Volunteer%20Opportunities" class="text-theme-light hover-text-theme-light font-semibold transition duration-300 dark:text-theme-dark hover-text-theme-dark">Email us about volunteering</a>
-                </div>
-                <div class="p-6 bg-gray-100 rounded-lg shadow-inner dark:bg-zinc-800">
-                    <h3 class="text-xl font-bold text-theme-light mb-2 dark:text-theme-dark"><a href="/donate" class="text-theme-light hover-text-theme-light font-semibold transition duration-300 dark:text-theme-dark hover-text-theme-dark">Donate</a></h3>
-                    <p class="text-gray-600 mb-4 dark:text-gray-400">Provide financial support to help us continue this vital ministry.</p>
-                    <a href="/donate" class="text-theme-light hover-text-theme-light font-semibold transition duration-300 dark:text-theme-dark hover-text-theme-dark">Donate Now</a>
-                    <a href="mailto:info@englewoodfamily.org?subject=Requesting%20Donation%20Information" class="block mt-2 text-theme-light hover-text-theme-light font-semibold transition duration-300 dark:text-theme-dark hover-text-theme-dark">Email us for more information</a>
-                </div>
-                <div class="p-6 bg-gray-100 rounded-lg shadow-inner dark:bg-zinc-800">
-                    <h3 class="text-xl font-bold text-theme-light mb-2 dark:text-theme-dark"><a href="/signup/" class="text-theme-light hover-text-theme-light font-semibold transition duration-300 dark:text-theme-dark hover-text-theme-dark">Stay Connected</a></h3>
-                    <p class="text-gray-600 mb-4 dark:text-gray-400">Receive stories and updates from the neighborhood in our newsletter.</p>
-                    <a href="/signup/" class="text-theme-light hover-text-theme-light font-semibold transition duration-300 dark:text-theme-dark hover-text-theme-dark">Sign up for the newsletter</a>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer class="bg-white shadow-inner p-4 mt-8 dark:bg-zinc-900">
-        <div class="container mx-auto text-center text-gray-600 dark:text-gray-400">
-            <p>
-                <a href="https://www.google.com/maps/dir/?api=1&destination=672+W+Marquette+Rd%2C+Chicago%2C+IL+60621" target="_blank" class="hover:underline">
-                    672 W Marquette Rd. Chicago, IL 60621
-                </a>
-            </p>
-            <p>
-                Phone: <a href="tel:+13129054290" class="hover:underline">(312) 905-4290</a>
-                 | Email: <span id="email-contact">info@englewoodfamily.org</span>
-            </p>
-            <div class="mt-4 flex justify-center space-x-4">
-                <a href="https://www.facebook.com/EnglewoodFam/" target="_blank" class="text-gray-600 hover:text-[#facc15] transition duration-300 dark:text-gray-400 dark:hover:text-[#facc15]">
-                    <i class="fa-brands fa-facebook text-3xl"></i>
-                </a>
-                <a href="https://www.linkedin.com/company/englewoodfamily" target="_blank" class="text-gray-600 hover:text-[#facc15] transition duration-300 dark:text-gray-400 dark:hover:text-[#facc15]">
-                    <i class="fa-brands fa-linkedin-in text-3xl"></i>
-                </a>
-                <a href="https://x.com/EnglewoodFamily" target="_blank" class="text-gray-600 hover:text-[#facc15] transition duration-300 dark:text-gray-400 dark:hover:text-[#facc15]">
-                    <i class="fa-brands fa-x-twitter text-3xl"></i>
-                </a>
-                <a href="https://youtube.com/channel/UCTwWoryLiV2E0zAr1Pz_zBw" target="_blank" class="text-gray-600 hover:text-[#facc15] transition duration-300 dark:text-gray-400 dark:hover:text-[#facc15]">
-                    <i class="fa-brands fa-youtube text-3xl"></i>
-                </a>
-            </div>
-            <p class="mt-2">&copy; 2026 Englewood Family Outreach. All rights reserved.</p>
+    <section id="about" class="section">
+      <div class="container">
+        <div class="mission">
+          <div>
+            <p class="eyebrow">Who We Are</p>
+            <h2>Present in one neighborhood, for the long haul</h2>
+            <p class="lead">Englewood Family Outreach is a faith-based organization dedicated to serving the Englewood community of Chicago.</p>
+            <p>As Executive Director, Daniel Bair leads our team in building relationships, providing resources, and facilitating programs that help families develop into healthy, Christ-centered entities. We believe in the power of the Gospel to transform lives and bring renewal to the community.</p>
+            <p>We do not parachute in. We live here, we know our neighbors by name, and we stay.</p>
+          </div>
+          <div>
+            <blockquote class="mission-quote">
+              &ldquo;Restore our communities in Englewood by proclaiming Christ, training in godliness, and empowering the vulnerable.&rdquo;
+              <footer>Our mission</footer>
+            </blockquote>
+            <ul class="care" aria-label="The CARE mission">
+              <li><b>Connect</b></li>
+              <li><b>Anchor</b></li>
+              <li><b>Restore</b></li>
+              <li><b>Empower</b></li>
+            </ul>
+          </div>
         </div>
-    </footer>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const emailSpan = document.getElementById('email-contact');
-            if (emailSpan) {
-                const email = emailSpan.textContent;
-                const link = document.createElement('a');
-                link.href = 'mailto:' + email;
-                link.textContent = email;
-                link.className = 'hover:underline';
-                emailSpan.parentNode.replaceChild(link, emailSpan);
-            }
-        });
-        
-        // Favicon switch logic
-        const favicon = document.getElementById('favicon');
-        const lightModeFavicon = "/resources/EFO Logo.png";
-        const darkModeFavicon = "/resources/EFO Logo_gold.png";
-        
-        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-        
-        function updateFavicon(e) {
-            if (e.matches) {
-                favicon.href = darkModeFavicon;
-            } else {
-                favicon.href = lightModeFavicon;
-            }
-        }
-        
-        // Set initial favicon
-        if (mediaQuery.matches) {
-            favicon.href = darkModeFavicon;
-        }
-        
-        // Listen for changes in color scheme
-        mediaQuery.addEventListener('change', updateFavicon);
-    </script>
+
+        <div class="leader mt-3">
+          <div class="monogram" aria-hidden="true">DB</div>
+          <div>
+            <p class="role">Executive Director</p>
+            <h3><a href="https://www.facebook.com/dmatb/" target="_blank" rel="noopener noreferrer">Daniel M. Bair</a></h3>
+            <p>On staff since 2001, Daniel is a passionate leader with a deep commitment to the Englewood community. He leads efforts to alleviate poverty through relational approaches and envisions restoring Englewood residents to a right relationship with God, others, and creation. Daniel graduated from Moody Bible Institute and went on to earn an M.A. in biblical exegesis from Wheaton College Graduate School, grounding his ministry in a solid theological foundation.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="programs" class="section band-alt">
+      <div class="container">
+        <div class="section-head center">
+          <p class="eyebrow center">What We Do</p>
+          <h2>Three ways we serve Englewood</h2>
+          <p>Discipleship, an after-school club, and a school in the making: each one is a way of proclaiming Christ, training in godliness, and empowering the vulnerable.</p>
+        </div>
+        <div class="grid cols-3">
+          <article class="card lift">
+            <div class="card-media">
+              <picture>
+                <source type="image/webp" srcset="/resources/img/bible-720.webp 720w, /resources/img/bible-1080.webp 1080w" sizes="(min-width: 64rem) 24rem, (min-width: 40rem) 50vw, 100vw">
+                <img src="/resources/img/bible-720.jpg" width="720" height="480" alt="Neighbors gathered around tables under a tent for an outdoor Bible study" loading="lazy" decoding="async">
+              </picture>
+            </div>
+            <div class="card-body">
+              <span class="card-kicker">Discipleship</span>
+              <h3>Weekly Bible Studies</h3>
+              <p>We host regular Bible studies for boys, girls, and adults. These gatherings provide a space for deep discipleship, fellowship, and spiritual growth, helping to build a strong foundation in Christ.</p>
+            </div>
+          </article>
+          <a class="card" href="/englewoodworks/">
+            <div class="card-media">
+              <picture>
+                <source type="image/webp" srcset="/resources/img/club-720.webp 720w, /resources/img/club-1080.webp 1080w" sizes="(min-width: 64rem) 24rem, (min-width: 40rem) 50vw, 100vw">
+                <img src="/resources/img/club-720.jpg" width="720" height="480" alt="Students working at long tables during the Englewood Works after-school club" loading="lazy" decoding="async">
+              </picture>
+            </div>
+            <div class="card-body">
+              <span class="card-kicker">After School</span>
+              <h3>Englewood Works Club</h3>
+              <p>Our Englewood Works Club is an after-school program focused on developing the whole person. We help students with homework and a weekly Bible study. This program is instrumental in preparing the youth for a brighter future.</p>
+              <span class="arrow-link">Learn about the club <svg class="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+            </div>
+          </a>
+          <a class="card" href="https://archerchristian.org">
+            <div class="card-media">
+              <picture>
+                <source type="image/webp" srcset="/resources/img/school-720.webp 720w, /resources/img/school-1080.webp 1080w" sizes="(min-width: 64rem) 24rem, (min-width: 40rem) 50vw, 100vw">
+                <img src="/resources/img/school-720.jpg" width="720" height="480" alt="Children reading together at a table" loading="lazy" decoding="async">
+              </picture>
+            </div>
+            <div class="card-body">
+              <span class="card-kicker">Education</span>
+              <h3>A Classical Christian School</h3>
+              <p>We are laying the groundwork to establish a K-12 classical Christian school in Englewood, providing students with an education rooted in truth, goodness, and beauty.</p>
+              <span class="arrow-link">Visit Archer Christian Academy <svg class="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="school-vision" class="section band-navy">
+      <div class="container">
+        <div class="vision-grid">
+          <div>
+            <p class="eyebrow">Our Vision</p>
+            <h2>A Classical Christian School in Englewood</h2>
+            <p class="lead">We are actively working toward a long-term goal of establishing a K-12 classical Christian school right here in Englewood. This vision is founded on the belief that a robust education, centered on Christ and the pursuit of wisdom and virtue, is key to the lasting restoration of our community.</p>
+            <p>This school will seek to train the next generation of leaders, thinkers, and artisans to be a blessing to their families and neighbors for the glory of God. It is a vision for holistic transformation that starts with the heart and mind.</p>
+            <ul class="check-list">
+              <li><svg class="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg><span>Archer Christian Academy opens in Fall 2027, beginning with kindergarten through second grade and adding a grade each year.</span></li>
+              <li><svg class="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg><span>Rooted in Englewood, at 672 W Marquette Rd, so that families have a school they can walk to.</span></li>
+              <li><svg class="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg><span>An education in truth, goodness, and beauty, centered on Christ.</span></li>
+            </ul>
+            <div class="btn-row mt-2">
+              <a class="btn btn-gold" href="https://archerchristian.org">Visit Archer Christian Academy <svg class="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a>
+            </div>
+          </div>
+          <div class="video-frame">
+            <iframe src="https://www.youtube-nocookie.com/embed/gXjmJ3Ke7J0?autoplay=1&mute=1&loop=1&playlist=gXjmJ3Ke7J0&controls=0&rel=0" title="Archer Christian Academy: the vision for a classical Christian school in Englewood" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="get-involved" class="section">
+      <div class="container">
+        <div class="section-head center">
+          <p class="eyebrow center">Partner With Us</p>
+          <h2>Your partnership is vital to our ministry</h2>
+          <p>You can help us serve the community through prayer, presence, and provision, and you can follow the story as it unfolds.</p>
+        </div>
+        <div class="grid cols-4 ways">
+          <div class="card lift">
+            <div class="card-body">
+              <div class="icon-badge"><svg class="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3v18"/><path d="M6 9h12"/></svg></div>
+              <h3>Pray</h3>
+              <p>Join us in praying for the spiritual and physical restoration of Englewood.</p>
+              <a class="arrow-link" href="mailto:info@englewoodfamily.org?subject=Join%20Prayer%20Team">Join the prayer team <svg class="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+            </div>
+          </div>
+          <div class="card lift">
+            <div class="card-body">
+              <div class="icon-badge"><svg class="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+              <h3>Volunteer</h3>
+              <p>Give your time and skills to serve alongside us in our programs.</p>
+              <a class="arrow-link" href="mailto:info@englewoodfamily.org?subject=Volunteer%20Opportunities">Ask about volunteering <svg class="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+            </div>
+          </div>
+          <div class="card lift">
+            <div class="card-body">
+              <div class="icon-badge"><svg class="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg></div>
+              <h3>Give</h3>
+              <p>Provide financial support to help us continue this vital ministry. Every gift is tax-deductible.</p>
+              <a class="arrow-link" href="/donate/">Give now <svg class="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+            </div>
+          </div>
+          <div class="card lift">
+            <div class="card-body">
+              <div class="icon-badge"><svg class="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></div>
+              <h3>Stay Connected</h3>
+              <p>Receive stories and updates from the neighborhood in our newsletter.</p>
+              <a class="arrow-link" href="/signup/">Sign up for the newsletter <svg class="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section tight band-alt">
+      <div class="container narrow text-center">
+        <p class="eyebrow center">Give to the Work</p>
+        <h2>Your gift sustains a presence that stays</h2>
+        <p class="lead">It keeps our weekly Bible studies gathering, keeps the Englewood Works Club tutoring and discipling students after school, and carries forward the vision of a classical Christian school that will serve the children of this neighborhood for generations.</p>
+        <div class="btn-row center mt-2">
+          <a class="btn btn-navy" href="/donate/">Give Online <svg class="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+          <a class="btn btn-outline" href="/signup/">Follow the Story</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="container footer-top">
+      <div>
+        <a class="footer-brand" href="/"><img src="/resources/img/efo-logo-gold-96.png" srcset="/resources/img/efo-logo-gold-96.png 1x, /resources/img/efo-logo-gold-192.png 2x" width="44" height="44" alt="">Englewood Family Outreach</a>
+        <p class="footer-mission">Restoring our communities in Englewood by proclaiming Christ, training in godliness, and empowering the vulnerable.</p>
+        <div class="social"><a href="https://www.facebook.com/EnglewoodFam/" target="_blank" rel="noopener" aria-label="Englewood Family Outreach on Facebook"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a><a href="https://x.com/EnglewoodFamily" target="_blank" rel="noopener" aria-label="Englewood Family Outreach on X"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg></a><a href="https://www.linkedin.com/company/englewoodfamily" target="_blank" rel="noopener" aria-label="Englewood Family Outreach on LinkedIn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a><a href="https://youtube.com/channel/UCTwWoryLiV2E0zAr1Pz_zBw" target="_blank" rel="noopener" aria-label="Englewood Family Outreach on YouTube"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a></div>
+      </div>
+      <div>
+        <p class="footer-heading">Visit or reach us</p>
+        <ul class="footer-list">
+          <li><svg class="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg><a href="https://www.google.com/maps/dir/?api=1&destination=672+W+Marquette+Rd%2C+Chicago%2C+IL+60621" target="_blank" rel="noopener">672 W Marquette Rd<br>Chicago, IL 60621</a></li>
+          <li><svg class="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg><a href="tel:+13129054290">(312) 905-4290</a></li>
+          <li><svg class="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg><a href="mailto:info@englewoodfamily.org">info@englewoodfamily.org</a></li>
+          <li><svg class="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg><span>Mail gifts to<br>Englewood Family Outreach<br>1507 E 53rd St, Box 691<br>Chicago, IL 60615</span></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-heading">Explore</p>
+        <ul class="footer-list">
+          <li><a href="/#about">About Us</a></li>
+          <li><a href="/#programs">What We Do</a></li>
+          <li><a href="/englewoodworks/">Englewood Works Club</a></li>
+          <li><a href="https://archerchristian.org">Archer Christian Academy</a></li>
+          <li><a href="/signup/">Newsletter</a></li>
+          <li><a href="/donate/">Give</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <span>&copy; <span data-year>2026</span> Englewood Family Outreach. All rights reserved.</span>
+      <span>A ministry of Urban Youth Outreach, a 501(c)(3) nonprofit &middot; EIN 36-3382527</span>
+    </div>
+  </footer>
 </body>
 </html>
