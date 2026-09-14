@@ -494,6 +494,8 @@ a.card:hover .card-media img { transform: scale(1.04); }
 .way p + p { margin-top: 0.35rem; }
 .way .arrow-link { font-size: 0.95rem; margin-top: 0.4rem; }
 .fineprint { font-size: 0.9rem; color: var(--muted); }
+.tax-note { max-width: 46rem; margin: clamp(2rem, 4vw, 3rem) auto 0; padding-top: 1.5rem; border-top: 1px solid var(--line); text-align: center; }
+.lgl-card .update-note { margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--line); color: #4b5563; }
 
 /* signup */
 .signup-grid { display: grid; gap: clamp(1.5rem, 3vw, 2.5rem); grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: start; }
