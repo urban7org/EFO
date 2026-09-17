@@ -193,6 +193,22 @@
             word-break: break-word;
         }
 
+        /* Highlight pending cards that are threatened by the active turn */
+        .threat-rank {
+            color: #ef4444 !important;
+            font-weight: bold;
+            background: rgba(239, 68, 68, 0.15);
+            padding: 1px 4px;
+            border-radius: 3px;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            animation: pulseThreat 1.5s infinite alternate;
+        }
+
+        @keyframes pulseThreat {
+            0% { box-shadow: 0 0 2px rgba(239, 68, 68, 0.4); }
+            100% { box-shadow: 0 0 8px rgba(239, 68, 68, 0.8); }
+        }
+
         /* Play Table */
         .table-area {
             background: #064e3b;
@@ -280,8 +296,9 @@
 
         .card.busting-card {
             border: 4px solid var(--accent-red) !important;
-            box-shadow: 0 0 20px var(--accent-red) !important;
+            box-shadow: 0 0 22px var(--accent-red) !important;
             animation: shake 0.4s ease-in-out;
+            z-index: 10;
         }
 
         .card-badge {
@@ -296,6 +313,7 @@
         }
         .badge-steal { background: var(--accent-gold); }
         .badge-run { background: var(--accent-green); }
+        .badge-bust { background: var(--accent-red); box-shadow: 0 0 8px red; }
 
         .card-rank { font-size: 1.1rem; }
         .card-suit { font-size: 1.4rem; text-align: center; }
@@ -312,12 +330,15 @@
             40%, 80% { transform: translateX(6px); }
         }
 
-        /* Probability Meter */
+        /* Stats & Meter Display */
         .prob-meter {
             text-align: center;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             margin-bottom: 10px;
             color: #cbd5e1;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
         }
         .prob-val { font-weight: bold; }
         .prob-low { color: var(--accent-green); }
@@ -354,8 +375,20 @@
         .btn-stay { background: var(--accent-gold); color: white; }
         .btn-stay:hover:not(:disabled) { background: #d97706; transform: translateY(-2px); }
 
-        .btn-continue { background: var(--accent-red); color: white; }
+        .btn-continue { 
+            background: var(--accent-red); 
+            color: white; 
+            font-size: 1.1rem;
+            padding: 12px 30px;
+            animation: pulseBtn 1.2s infinite;
+        }
         .btn-continue:hover { background: #dc2626; }
+
+        @keyframes pulseBtn {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
 
         .btn-primary { background: var(--accent-purple); color: white; width: 100%; }
         .btn-primary:hover { background: #7c3aed; }
@@ -480,7 +513,9 @@
             <div class="cards-container" id="play-area"></div>
 
             <div class="prob-meter" id="prob-meter">
-                Bust Chance: <span class="prob-val prob-low" id="prob-val">0%</span>
+                <div>Turn Points: <span id="turn-points-val" style="font-weight:bold; color:var(--accent-gold);">0 pts</span></div>
+                <div>|</div>
+                <div>Bust Chance: <span class="prob-val prob-low" id="prob-val">0%</span></div>
             </div>
 
             <div class="controls" id="controls-box">
@@ -519,7 +554,7 @@
 
                 <h3>Pending Piles & Stealing</h3>
                 <ul>
-                    <li>When you bank your turn, cards move to your <strong>Pending Pile</strong>.</li>
+                    <li>When you bank your turn, non-Joker cards move to your <strong>Pending Pile</strong>. Jokers are discarded and can <strong>never</strong> be banked or stolen!</li>
                     <li>Pending cards convert to your safe Score Tally at the start of your <strong>next turn</strong>.</li>
                     <li>If an opponent draws a card matching a rank in your Pending Pile, they <strong>steal</strong> those cards into their pile upon banking!</li>
                 </ul>
@@ -529,7 +564,7 @@
                     <li>A sequence of 5+ consecutive ranks forms a <strong>Run</strong>.</li>
                     <li>When banking a Run, choose:
                         <br>1. <strong>Score Immediately:</strong> Double run points straight to safe Tally.
-                        <br>2. <strong>Move to Pending:</strong> Move cards to Pending (unscored) to help steal or defend.</li>
+                        <br>2. <strong>Move to Pending:</strong> Move non-Joker cards to Pending (unscored) to help steal or defend.</li>
                 </ul>
 
                 <h3>Gems & Safeguards</h3>
@@ -605,7 +640,6 @@
             const now = audioCtx.currentTime;
 
             if (type === 'card') {
-                // Crispy Card Snap Sound
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
                 osc.type = 'triangle';
@@ -617,7 +651,6 @@
                 osc.start(now); osc.stop(now + 0.05);
             } 
             else if (type === 'bust') {
-                // Harsh Pitch Down
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
                 osc.type = 'sawtooth';
@@ -629,7 +662,6 @@
                 osc.start(now); osc.stop(now + 0.35);
             } 
             else if (type === 'doublebust') {
-                // Deep Sub-Drop Alarm
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
                 osc.type = 'sawtooth';
@@ -641,7 +673,6 @@
                 osc.start(now); osc.stop(now + 0.6);
             }
             else if (type === 'steal') {
-                // Two-tone sly chime
                 [523, 659].forEach((freq, idx) => {
                     const osc = audioCtx.createOscillator();
                     const gain = audioCtx.createGain();
@@ -654,7 +685,6 @@
                 });
             } 
             else if (type === 'run' || type === 'gem') {
-                // Shimmering Arpeggio
                 [261.6, 329.6, 392.0, 523.2, 659.3].forEach((f, i) => {
                     const osc = audioCtx.createOscillator();
                     const gain = audioCtx.createGain();
@@ -667,7 +697,6 @@
                 });
             }
             else if (type === 'fanfare') {
-                // Royal Brass Victory Fanfare
                 const notes = [
                     { f: 261.63, d: 0.15, t: 0 },
                     { f: 329.63, d: 0.15, t: 0.15 },
@@ -848,7 +877,6 @@
             const card = deck.pop();
             drawnCardStage = card;
             playSound('card');
-            render();
 
             const allCurrent = [...playArea, card];
             const jokers = allCurrent.filter(c => c.rank === 'JKR');
@@ -871,7 +899,6 @@
                 card.isBustingCard = true;
                 const p = players[turnIndex];
 
-                // DOUBLE BUST (2 Jokers) cannot be saved with Gems
                 if (bustType === 'joker') {
                     playSound('doublebust');
                     executeBust(bustType);
@@ -880,10 +907,10 @@
 
                 playSound('bust');
 
-                // Standard Match Bust can be saved with 2 Gems
                 if (p.gems >= 2) {
                     pendingBustState = { card, bustType };
                     if (p.isHuman) {
+                        render();
                         document.getElementById('gem-modal').style.display = 'flex';
                     } else {
                         const useGems = allCurrent.length > 3;
@@ -896,6 +923,7 @@
                 return true;
             }
 
+            render();
             return false;
         }
 
@@ -921,12 +949,13 @@
 
         function executeBust(bustType) {
             const p = players[turnIndex];
+            awaitingBustConfirm = true;
 
             if (bustType === 'joker') {
                 log(`💣 ${p.name} DREW A SECOND JOKER! DOUBLE BUST! Tally Wiped to 0!`, 'log-wipe');
-                p.tally = 0; // Score resets to 0
+                p.tally = 0; 
                 log(`${p.name} gets 1 Pity Gem for a Double Bust.`, 'log-steal');
-                addGem(p); // Grants 1 Gem automatically (if this hits 3, adds +50 after reset)
+                addGem(p);
             } else {
                 log(`💥 ${p.name} BUSTED with ${drawnCardStage ? drawnCardStage.rank : 'a match'}!`, 'log-bust');
                 const totalCards = playArea.length + (drawnCardStage ? 1 : 0);
@@ -936,23 +965,20 @@
                 }
             }
 
-            // Immediately clear turn cards so they don't persist
-            playArea = [];
-            drawnCardStage = null;
-
+            // Keep cards on table temporarily so player/bots can see the busting card
             render();
 
-            awaitingBustConfirm = true;
-
             if (!p.isHuman) {
-                setTimeout(confirmBust, 1800);
-            } else {
-                render();
+                // Pause for bots so human can see what caused the bust
+                setTimeout(confirmBust, 2500);
             }
         }
 
         function confirmBust() {
             awaitingBustConfirm = false;
+            // Now clear cards off the board
+            playArea = [];
+            drawnCardStage = null;
             endTurn();
         }
 
@@ -1021,7 +1047,8 @@
             players.forEach(op => {
                 if (op.id !== p.id && op.pending.length > 0) {
                     const myRanks = leftoverCards.map(c => c.rank);
-                    const toSteal = op.pending.filter(c => myRanks.includes(c.rank));
+                    // Standard cards only, Jokers cannot be stolen
+                    const toSteal = op.pending.filter(c => c.rank !== 'JKR' && myRanks.includes(c.rank));
                     if (toSteal.length > 0) {
                         playSound('steal');
                         log(`${p.name} STOLE ${toSteal.length} card(s) from ${op.name}!`, 'log-steal');
@@ -1031,8 +1058,16 @@
                 }
             });
 
-            p.pending.push(...leftoverCards, ...stolenCards);
+            // STRICT JOKER RULE: Filter out ALL Jokers so they are NEVER added to Pending!
+            const nonJokerLeftovers = leftoverCards.filter(c => c.rank !== 'JKR');
+            const nonJokerStolen = stolenCards.filter(c => c.rank !== 'JKR');
+
+            p.pending.push(...nonJokerLeftovers, ...nonJokerStolen);
             pendingRunState = null;
+            
+            // Clear board
+            playArea = [];
+            drawnCardStage = null;
             endTurn();
         }
 
@@ -1113,8 +1148,6 @@
         }
 
         function endTurn() {
-            playArea = [];
-            drawnCardStage = null;
             render();
             turnIndex = (turnIndex + 1) % players.length;
             setTimeout(startTurn, 1000);
@@ -1136,14 +1169,22 @@
             box.scrollTop = box.scrollHeight;
         }
 
-        function formatPendingCards(cards) {
+        function formatPendingCards(cards, activeRanks) {
             if (!cards || cards.length === 0) return '<em>None</em>';
             const counts = {};
             cards.forEach(c => {
                 counts[c.rank] = (counts[c.rank] || 0) + 1;
             });
+
             return Object.entries(counts)
-                .map(([rank, count]) => `${rank}${count > 1 ? ` (x${count})` : ''}`)
+                .map(([rank, count]) => {
+                    const text = `${rank}${count > 1 ? `(x${count})` : ''}`;
+                    // Highlight red if matching active cards on the table
+                    if (activeRanks.includes(rank)) {
+                        return `<span class="threat-rank" title="Threatened by current turn!">🔥 ${text}</span>`;
+                    }
+                    return text;
+                })
                 .join(', ');
         }
 
@@ -1184,12 +1225,18 @@
                 document.getElementById('btn-stay').disabled = !isHuman || handTotal <= 1;
             }
 
+            // Get active turn ranks to highlight threatened pending cards
+            const activeTableCards = [...playArea];
+            if (drawnCardStage) activeTableCards.push(drawnCardStage);
+            const activeRanks = activeTableCards.map(c => c.rank);
+
             const sb = document.getElementById('scoreboard');
             sb.innerHTML = '';
             players.forEach((p, idx) => {
                 const pendPts = p.pending.reduce((a,b) => a + b.val, 0);
+                const isCurrent = idx === turnIndex;
                 const card = document.createElement('div');
-                card.className = `player-card ${idx === turnIndex ? 'active' : ''}`;
+                card.className = `player-card ${isCurrent ? 'active' : ''}`;
                 card.innerHTML = `
                     <div class="player-name">
                         ${p.name}
@@ -1198,7 +1245,7 @@
                     <div class="stat-row"><span>Tally (Safe):</span><span class="stat-val tally-val">${p.tally}</span></div>
                     <div class="stat-row"><span>Pending:</span><span class="stat-val pending-val">${pendPts} pts (${p.pending.length} cards)</span></div>
                     <div class="stat-row"><span>Gems:</span><span class="stat-val gem-val">${'💎'.repeat(p.gems)} (${p.gems}/3)</span></div>
-                    <div class="pending-cards-list"><strong>Pending:</strong> ${formatPendingCards(p.pending)}</div>
+                    <div class="pending-cards-list"><strong>Pending:</strong> ${formatPendingCards(p.pending, !isCurrent ? activeRanks : [])}</div>
                 `;
                 sb.appendChild(card);
             });
@@ -1216,15 +1263,13 @@
 
             if (drawnCardStage) {
                 stageLabel.style.display = 'block';
-                stageContainer.appendChild(createCardElement(drawnCardStage, opponentPendingRanks, [...playArea, drawnCardStage]));
+                stageContainer.appendChild(createCardElement(drawnCardStage, opponentPendingRanks, activeTableCards));
             } else {
                 stageLabel.style.display = 'none';
             }
 
             const sortedHand = [...playArea];
-            const allHandCards = drawnCardStage ? [...playArea, drawnCardStage] : [...playArea];
-            const runInfo = checkRun(allHandCards);
-
+            const runInfo = checkRun(activeTableCards);
             const hasAceLowRun = runInfo.hasRun && runInfo.runCards.some(c => c.rank === 'A') && runInfo.runCards.some(c => c.rank === '2');
 
             sortedHand.sort((a, b) => {
@@ -1237,10 +1282,14 @@
             const pa = document.getElementById('play-area');
             pa.innerHTML = '';
             sortedHand.forEach(c => {
-                pa.appendChild(createCardElement(c, opponentPendingRanks, allHandCards));
+                pa.appendChild(createCardElement(c, opponentPendingRanks, activeTableCards));
             });
 
-            const prob = calculateBustProbability(allHandCards);
+            // Turn points and Bust Meter update
+            const totalTurnPoints = activeTableCards.reduce((a, b) => a + b.val, 0);
+            document.getElementById('turn-points-val').innerText = `${totalTurnPoints} pts`;
+
+            const prob = calculateBustProbability(activeTableCards);
             const probVal = document.getElementById('prob-val');
             probVal.innerText = `${prob}%`;
             probVal.className = `prob-val ${prob > 40 ? 'prob-high' : prob > 20 ? 'prob-med' : 'prob-low'}`;
@@ -1259,7 +1308,10 @@
             let extraClasses = '';
             let badge = '';
 
-            if (isRunCard) {
+            if (isBusting) {
+                extraClasses += ' busting-card';
+                badge = '<span class="card-badge badge-bust">BUST!</span>';
+            } else if (isRunCard) {
                 extraClasses += ' run-highlight';
                 badge = '<span class="card-badge badge-run">RUN</span>';
             } else if (isStealCard) {
@@ -1267,7 +1319,7 @@
                 badge = '<span class="card-badge badge-steal">STEAL</span>';
             }
 
-            el.className = `card ${isRed ? 'red' : ''} ${isJoker ? 'joker' : ''} ${isBusting ? 'busting-card' : ''} ${extraClasses}`;
+            el.className = `card ${isRed ? 'red' : ''} ${isJoker ? 'joker' : ''} ${extraClasses}`;
             el.innerHTML = `
                 ${badge}
                 <div class="card-rank">${c.rank}</div>
