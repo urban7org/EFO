@@ -477,10 +477,18 @@
                 <h3>Objective</h3>
                 <p>First player to reach <strong>150 points</strong> in their safe Score Tally wins!</p>
 
+                <h3>138-Card Custom Deck Breakdown</h3>
+                <ul>
+                    <li><strong>2 through 5:</strong> 12 copies each (48 cards) • Face value (2–5 pts)</li>
+                    <li><strong>6 through 9:</strong> 10 copies each (40 cards) • Face value (6–9 pts)</li>
+                    <li><strong>10, J, Q, K:</strong> 8 copies each (32 cards) • <strong>10 pts each</strong></li>
+                    <li><strong>Aces (A):</strong> 12 copies (12 cards) • <strong>15 pts each!</strong></li>
+                    <li><strong>Jokers (JKR):</strong> 6 copies • <strong>0 pts (Wild for Runs)</strong></li>
+                </ul>
+
                 <h3>On Your Turn</h3>
                 <ul>
                     <li>Draw cards one by one to build your hand.</li>
-                    <li>Cards face values are added to your pending total.</li>
                     <li><strong>Bust Rule:</strong> Drawing a duplicate rank or 2 Jokers ends your turn instantly and forfeits all drawn cards.</li>
                 </ul>
 
@@ -502,7 +510,7 @@
                 <h3>Gems & Safeguards</h3>
                 <ul>
                     <li>Busting on 3 or fewer cards grants a <strong>Pity Gem</strong>.</li>
-                    <li>If you have <strong>2+ Gems</strong> when drawing a bust card, you can spend 2 Gems to cancel and discard the drawn card!</li>
+                    <li>If you have <strong>2+ Gems</strong> when drawing a bust card, spend 2 Gems to cancel and discard the drawn card!</li>
                     <li>Accumulating 3 Gems automatically converts into <strong>+50 Bonus Points</strong>.</li>
                 </ul>
             </div>
@@ -608,8 +616,8 @@
         }
 
         // --- GAME ENGINE ---
-        const RANKS = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A', 'JKR'];
-        const VALUES = { '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 1, 'JKR': 0 };
+        // Point Map: Faces = 10, Aces = 15
+        const VALUES = { '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 10, 'Q': 10, 'K': 10, 'A': 15, 'JKR': 0 };
         const SUITS = ['♠', '♥', '♦', '♣'];
 
         let deck = [];
@@ -647,23 +655,31 @@
 
         window.onload = updateHumanDropdown;
 
+        // Custom Pyramid Deck Generator (138 total cards)
         function createDeck() {
             deck = [];
-            for (let d = 0; d < 3; d++) {
-                ['2','3','4','5','6','7','A'].forEach(r => {
-                    SUITS.forEach(s => deck.push({ rank: r, suit: s, val: VALUES[r] }));
+            const distribution = [
+                { ranks: ['2', '3', '4', '5'], count: 12 },
+                { ranks: ['6', '7', '8', '9'], count: 10 },
+                { ranks: ['10', 'J', 'Q', 'K'], count: 8 },
+                { ranks: ['A'], count: 12 }
+            ];
+
+            distribution.forEach(group => {
+                group.ranks.forEach(r => {
+                    for (let i = 0; i < group.count; i++) {
+                        const s = SUITS[i % 4];
+                        deck.push({ rank: r, suit: s, val: VALUES[r] });
+                    }
                 });
-                ['8','9','10','J','Q','K'].forEach(r => {
-                    SUITS.forEach(s => {
-                        if (deck.filter(c => c.rank === r).length < 8) {
-                            deck.push({ rank: r, suit: s, val: VALUES[r] });
-                        }
-                    });
-                });
-            }
-            while (deck.filter(c => c.rank === 'JKR').length < 6) {
+            });
+
+            // Add 6 Jokers
+            for (let j = 0; j < 6; j++) {
                 deck.push({ rank: 'JKR', suit: '★', val: 0 });
             }
+
+            // Shuffle
             for (let i = deck.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [deck[i], deck[j]] = [deck[j], deck[i]];
@@ -729,7 +745,6 @@
         function drawCard() {
             if (deck.length === 0) createDeck();
             
-            // Move previous staged card into sorted hand
             if (drawnCardStage) {
                 playArea.push(drawnCardStage);
                 drawnCardStage = null;
@@ -1023,6 +1038,7 @@
                 .join(', ');
         }
 
+        // Precise Probability Engine mapped to exact 138-card deck composition
         function calculateBustProbability(hand) {
             if (hand.length === 0 || deck.length === 0) return 0;
             const currentRanks = hand.map(c => c.rank);
@@ -1105,7 +1121,6 @@
             const allHandCards = drawnCardStage ? [...playArea, drawnCardStage] : [...playArea];
             const runInfo = checkRun(allHandCards);
 
-            // Check if Ace should be low (A-5 run exists)
             const hasAceLowRun = runInfo.hasRun && runInfo.runCards.some(c => c.rank === 'A') && runInfo.runCards.some(c => c.rank === '2');
 
             sortedHand.sort((a, b) => {
