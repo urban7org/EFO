@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Push Yer Luck!</title>
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-gold: #f59e0b;
+            --accent-purple: #8b5cf6;
+            --text-light: #f8fafc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--accent-gold);
+            text-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        /* Setup Screen */
+        #setup-screen {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            max-width: 450px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #cbd5e1;
+            font-weight: 600;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: white;
+            font-size: 1rem;
+        }
+
+        /* Main Game Layout */
+        #game-screen {
+            display: none;
+            width: 100%;
+            max-width: 1100px;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .scoreboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .player-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 15px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .player-card.active {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .player-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .player-type {
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: #334155;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 0.9rem;
+        }
+
+        .stat-val {
+            font-weight: bold;
+        }
+
+        .pending-val { color: var(--accent-gold); }
+        .tally-val { color: var(--accent-green); }
+        .gem-val { color: var(--accent-purple); }
+
+        /* Play Table */
+        .table-area {
+            background: #064e3b;
+            border: 8px solid #042f2e;
+            border-radius: 16px;
+            padding: 25px;
+            min-height: 320px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+        }
+
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 20px 0;
+            min-height: 120px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Card Styling */
+        .card {
+            width: 80px;
+            height: 115px;
+            background: white;
+            border-radius: 8px;
+            color: #0f172a;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 8px;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            user-select: none;
+        }
+
+        .card.red { color: var(--accent-red); }
+        .card.joker { 
+            background: linear-gradient(135deg, #a855f7, #6366f1);
+            color: white; 
+        }
+
+        .card-rank { font-size: 1.2rem; }
+        .card-suit { font-size: 1.5rem; text-align: center; }
+        .card-val { font-size: 0.75rem; text-align: right; opacity: 0.8; }
+
+        @keyframes popIn {
+            0% { transform: scale(0) translateY(-50px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        button {
+            padding: 12px 28px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-hit { background: var(--accent-green); color: white; }
+        .btn-hit:hover:not(:disabled) { background: #059669; transform: translateY(-2px); }
+
+        .btn-stay { background: var(--accent-gold); color: white; }
+        .btn-stay:hover:not(:disabled) { background: #d97706; transform: translateY(-2px); }
+
+        .btn-primary { background: var(--accent-purple); color: white; width: 100%; }
+        .btn-primary:hover { background: #7c3aed; }
+
+        /* Game Logs / Message Overlay */
+        #log-box {
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 6px;
+            padding: 10px;
+            height: 100px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: #cbd5e1;
+        }
+
+        .log-entry { margin-bottom: 4px; }
+        .log-bust { color: var(--accent-red); }
+        .log-steal { color: var(--accent-gold); }
+        .log-run { color: var(--accent-green); }
+        .log-wipe { color: #f43f5e; font-weight: bold; }
+
+        /* Modal Overlay */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .modal-content h2 { color: var(--accent-gold); margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>PUSH YER LUCK</h1>
+        <div class="subtitle">First to 150 Points • High-Volatility Card Game</div>
+    </header>
+
+    <!-- SETUP SCREEN -->
+    <div id="setup-screen">
+        <h2 style="margin-bottom:20px;">Game Setup</h2>
+        <div class="form-group">
+            <label for="total-players">Total Players (2–6):</label>
+            <select id="total-players">
+                <option value="3" selected>3 Players</option>
+                <option value="2">2 Players</option>
+                <option value="4">4 Players</option>
+                <option value="5">5 Players</option>
+                <option value="6">6 Players</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="human-players">Human Players:</label>
+            <select id="human-players">
+                <option value="1" selected>1 Human (vs AIs)</option>
+                <option value="2">2 Humans</option>
+                <option value="3">3 Humans</option>
+                <option value="0">0 (Watch AI vs AI)</option>
+            </select>
+        </div>
+        <button class="btn-primary" onclick="initGame()">Start Game</button>
+    </div>
+
+    <!-- MAIN GAME SCREEN -->
+    <div id="game-screen">
+        <div class="scoreboard" id="scoreboard"></div>
+
+        <div class="table-area">
+            <div class="table-header">
+                <div>Current Turn: <span id="current-player-display" style="font-weight:bold; color:var(--accent-gold);"></span></div>
+                <div>Deck Remaining: <span id="deck-count" style="font-weight:bold;">138</span></div>
+            </div>
+
+            <div class="cards-container" id="play-area"></div>
+
+            <div class="controls">
+                <button class="btn-hit" id="btn-hit" onclick="humanHit()">HIT / DRAW</button>
+                <button class="btn-stay" id="btn-stay" onclick="humanStay()">STOP & BANK</button>
+            </div>
+        </div>
+
+        <div id="log-box"></div>
+    </div>
+
+    <!-- WINNER MODAL -->
+    <div class="modal" id="win-modal">
+        <div class="modal-content">
+            <h2 id="winner-title">PLAYER WINS!</h2>
+            <p id="winner-details" style="margin-bottom: 20px;"></p>
+            <button class="btn-primary" onclick="location.reload()">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        // --- AUDIO SYNTHESIZER (Web Audio API) ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            if (type === 'card') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + 0.08);
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.08);
+            } else if (type === 'bust') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                osc.frequency.linearRampToValueAtTime(40, audioCtx.currentTime + 0.3);
+                gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+            } else if (type === 'steal') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                osc.frequency.setValueAtTime(800, audioCtx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.2);
+            } else if (type === 'run') {
+                osc.type = 'sine';
+                [261, 329, 392, 523].forEach((f, i) => {
+                    const o = audioCtx.createOscillator();
+                    const g = audioCtx.createGain();
+                    o.connect(g); g.connect(audioCtx.destination);
+                    o.frequency.setValueAtTime(f, audioCtx.currentTime + i * 0.08);
+                    g.gain.setValueAtTime(0.2, audioCtx.currentTime + i * 0.08);
+                    g.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.08 + 0.15);
+                    o.start(audioCtx.currentTime + i * 0.08);
+                    o.stop(audioCtx.currentTime + i * 0.08 + 0.15);
+                });
+            }
+        }
+
+        // --- GAME ENGINE ---
+        const RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'JKR'];
+        const VALUES = { 'A': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'JKR': 0 };
+        const SUITS = ['♠', '♥', '♦', '♣'];
+
+        let deck = [];
+        let players = [];
+        let turnIndex = 0;
+        let playArea = [];
+        let isProcessing = false;
+
+        function createDeck() {
+            deck = [];
+            // 3 Decks combined: A-7 (12 each), 8-K (8 each), 6 Jokers
+            for (let d = 0; d < 3; d++) {
+                ['A','2','3','4','5','6','7'].forEach(r => {
+                    SUITS.forEach(s => deck.push({ rank: r, suit: s, val: VALUES[r] }));
+                });
+                ['8','9','10','J','Q','K'].forEach(r => {
+                    SUITS.forEach(s => {
+                        if (deck.filter(c => c.rank === r).length < 8) {
+                            deck.push({ rank: r, suit: s, val: VALUES[r] });
+                        }
+                    });
+                });
+            }
+            while (deck.filter(c => c.rank === 'JKR').length < 6) {
+                deck.push({ rank: 'JKR', suit: '★', val: 0 });
+            }
+            // Shuffle
+            for (let i = deck.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [deck[i], deck[j]] = [deck[j], deck[i]];
+            }
+        }
+
+        function initGame() {
+            const total = parseInt(document.getElementById('total-players').value);
+            const humans = parseInt(document.getElementById('human-players').value);
+
+            players = [];
+            for (let i = 0; i < total; i++) {
+                players.push({
+                    id: i,
+                    name: `Player ${i + 1}`,
+                    isHuman: i < humans,
+                    tally: 0,
+                    pending: [],
+                    gems: 0
+                });
+            }
+
+            createDeck();
+            document.getElementById('setup-screen').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'flex';
+            
+            log(`Game started with ${total} players! Target score: 150`);
+            startTurn();
+        }
+
+        function startTurn() {
+            if (deck.length < 15) createDeck(); // Reshuffle deck if running low
+            playArea = [];
+            
+            const p = players[turnIndex];
+            
+            // Step 1: Secure Loot
+            if (p.pending.length > 0) {
+                const points = p.pending.reduce((a, b) => a + b.val, 0);
+                p.tally += points;
+                log(`${p.name} secured ${points} pts from Pending to Tally!`, 'log-run');
+                p.pending = [];
+            }
+
+            render();
+
+            if (p.tally >= 150) {
+                endGame(p);
+                return;
+            }
+
+            log(`--- ${p.name}'s Turn ---`);
+
+            // Automatic Card 1 Draw (Cannot bust on Card 1)
+            drawCard();
+
+            if (!p.isHuman) {
+                setTimeout(aiLogic, 1000);
+            }
+        }
+
+        function drawCard() {
+            if (deck.length === 0) createDeck();
+            const card = deck.pop();
+            playArea.push(card);
+            playSound('card');
+            render();
+
+            // Check Double Joker
+            const jokers = playArea.filter(c => c.rank === 'JKR');
+            if (jokers.length >= 2) {
+                playSound('bust');
+                log(`${players[turnIndex].name} DREW A SECOND JOKER! Tally Wiped to 0!`, 'log-wipe');
+                players[turnIndex].tally = 0;
+                addGem(players[turnIndex]);
+                endTurn(true);
+                return true;
+            }
+
+            // Check Match Bust (Ignore Card 1)
+            if (playArea.length > 1) {
+                const ranks = playArea.map(c => c.rank);
+                const hasDuplicate = ranks.some((r, idx) => r !== 'JKR' && ranks.indexOf(r) !== idx);
+                if (hasDuplicate) {
+                    playSound('bust');
+                    log(`${players[turnIndex].name} BUSTED with duplicate ${card.rank}!`, 'log-bust');
+                    if (playArea.length <= 3) {
+                        log(`${players[turnIndex].name} receives 1 Pity Gem for early bust.`, 'log-steal');
+                        addGem(players[turnIndex]);
+                    }
+                    endTurn(true);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function addGem(player) {
+            player.gems++;
+            if (player.gems >= 3) {
+                player.gems = 0;
+                player.tally += 50;
+                playSound('run');
+                log(`${player.name} converted 3 Gems into +50 Points!`, 'log-run');
+            }
+        }
+
+        function humanHit() {
+            if (isProcessing || !players[turnIndex].isHuman) return;
+            const busted = drawCard();
+            if (!busted && !players[turnIndex].isHuman) {
+                setTimeout(aiLogic, 1000);
+            }
+        }
+
+        function humanStay() {
+            if (isProcessing || !players[turnIndex].isHuman) return;
+            bankTurn();
+        }
+
+        function bankTurn() {
+            const p = players[turnIndex];
+            const run = checkRun(playArea);
+
+            let leftoverCards = [...playArea];
+            
+            if (run.hasRun) {
+                playSound('run');
+                const runVal = run.runCards.reduce((a, b) => a + b.val, 0) * 2;
+                p.tally += runVal;
+                log(`${p.name} banked a ${run.runCards.length}-Card RUN for ${runVal} PTS!`, 'log-run');
+                
+                // Remove run cards from leftovers
+                run.runCards.forEach(rc => {
+                    const idx = leftoverCards.indexOf(rc);
+                    if (idx > -1) leftoverCards.splice(idx, 1);
+                });
+            }
+
+            // Stealing Mechanics
+            let stolenCards = [];
+            players.forEach(op => {
+                if (op.id !== p.id && op.pending.length > 0) {
+                    const myRanks = leftoverCards.map(c => c.rank);
+                    const toSteal = op.pending.filter(c => myRanks.includes(c.rank));
+                    if (toSteal.length > 0) {
+                        playSound('steal');
+                        log(`${p.name} STOLE ${toSteal.length} card(s) from ${op.name}!`, 'log-steal');
+                        stolenCards.push(...toSteal);
+                        op.pending = op.pending.filter(c => !toSteal.includes(c));
+                    }
+                }
+            });
+
+            p.pending.push(...leftoverCards, ...stolenCards);
+            endTurn(false);
+        }
+
+        function checkRun(cards) {
+            // Evaluates if 5+ sequential cards exist (Jokers Wild)
+            const jokers = cards.filter(c => c.rank === 'JKR').length;
+            const nonJokers = cards.filter(c => c.rank !== 'JKR');
+            const uniqueVals = [...new Set(nonJokers.map(c => c.val))].sort((a,b) => a-b);
+
+            // Edge check for Ace-High
+            if (uniqueVals.includes(1)) uniqueVals.push(14); 
+
+            let bestRun = [];
+            
+            // Sliding window to find longest run possible with wild jokers
+            for (let start = 1; start <= 10; start++) {
+                let currentRun = [];
+                let jokersLeft = jokers;
+                
+                for (let v = start; v < start + 14; v++) {
+                    const match = nonJokers.find(c => c.val === v || (v === 14 && c.val === 1));
+                    if (match) {
+                        currentRun.push(match);
+                    } else if (jokersLeft > 0) {
+                        currentRun.push(cards.find(c => c.rank === 'JKR'));
+                        jokersLeft--;
+                    } else {
+                        break;
+                    }
+                }
+                if (currentRun.length > bestRun.length) {
+                    bestRun = currentRun;
+                }
+            }
+
+            return { hasRun: bestRun.length >= 5, runCards: bestRun };
+        }
+
+        function aiLogic() {
+            if (players[turnIndex].isHuman) return;
+            isProcessing = true;
+
+            const p = players[turnIndex];
+            const runInfo = checkRun(playArea);
+            
+            // Risk assessment
+            const cardCount = playArea.length;
+            let stopProbability = 0;
+
+            if (cardCount <= 2) stopProbability = 0;
+            else if (cardCount === 3) stopProbability = 0.1;
+            else if (cardCount === 4) stopProbability = 0.3;
+            else if (cardCount === 5) stopProbability = 0.6;
+            else stopProbability = 0.85;
+
+            if (runInfo.hasRun) stopProbability = 0.95; // Almost always bank a run
+
+            if (Math.random() < stopProbability && cardCount > 1) {
+                log(`${p.name} decides to STOP and BANK.`);
+                bankTurn();
+                isProcessing = false;
+            } else {
+                log(`${p.name} decides to PUSH...`);
+                const busted = drawCard();
+                isProcessing = false;
+                if (!busted) {
+                    setTimeout(aiLogic, 1000);
+                }
+            }
+        }
+
+        function endTurn(busted) {
+            playArea = [];
+            render();
+            turnIndex = (turnIndex + 1) % players.length;
+            setTimeout(startTurn, 1200);
+        }
+
+        function endGame(winner) {
+            document.getElementById('winner-title').innerText = `${winner.name.toUpperCase()} WINS!`;
+            document.getElementById('winner-details').innerText = `Final Score: ${winner.tally} Points`;
+            document.getElementById('win-modal').style.display = 'flex';
+        }
+
+        function log(msg, className = '') {
+            const box = document.getElementById('log-box');
+            const div = document.createElement('div');
+            div.className = `log-entry ${className}`;
+            div.innerText = msg;
+            box.appendChild(div);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function render() {
+            // Update Deck
+            document.getElementById('deck-count').innerText = deck.length;
+            document.getElementById('current-player-display').innerText = players[turnIndex].name;
+
+            // Update Controls
+            const isHuman = players[turnIndex].isHuman;
+            document.getElementById('btn-hit').disabled = !isHuman || playArea.length === 0;
+            document.getElementById('btn-stay').disabled = !isHuman || playArea.length <= 1;
+
+            // Render Scoreboard
+            const sb = document.getElementById('scoreboard');
+            sb.innerHTML = '';
+            players.forEach((p, idx) => {
+                const pendPts = p.pending.reduce((a,b) => a + b.val, 0);
+                const card = document.createElement('div');
+                card.className = `player-card ${idx === turnIndex ? 'active' : ''}`;
+                card.innerHTML = `
+                    <div class="player-name">
+                        ${p.name}
+                        <span class="player-type">${p.isHuman ? 'Human' : 'AI'}</span>
+                    </div>
+                    <div class="stat-row"><span>Tally (Safe):</span><span class="stat-val tally-val">${p.tally}</span></div>
+                    <div class="stat-row"><span>Pending:</span><span class="stat-val pending-val">${pendPts} pts (${p.pending.length} cards)</span></div>
+                    <div class="stat-row"><span>Gems:</span><span class="stat-val gem-val">${'💎'.repeat(p.gems)} (${p.gems}/3)</span></div>
+                `;
+                sb.appendChild(card);
+            });
+
+            // Render Play Area
+            const pa = document.getElementById('play-area');
+            pa.innerHTML = '';
+            playArea.forEach(c => {
+                const el = document.createElement('div');
+                const isRed = c.suit === '♥' || c.suit === '♦';
+                const isJoker = c.rank === 'JKR';
+                
+                el.className = `card ${isRed ? 'red' : ''} ${isJoker ? 'joker' : ''}`;
+                el.innerHTML = `
+                    <div class="card-rank">${c.rank}</div>
+                    <div class="card-suit">${c.suit}</div>
+                    <div class="card-val">${c.val}pts</div>
+                `;
+                pa.appendChild(el);
+            });
+        }
+    </script>
+</body>
+</html>
