@@ -10,6 +10,7 @@
             --card-bg: #1e293b;
             --accent-green: #10b981;
             --accent-red: #ef4444;
+            --accent-red-bright: #f87171;
             --accent-gold: #f59e0b;
             --accent-purple: #8b5cf6;
             --accent-blue: #3b82f6;
@@ -178,8 +179,8 @@
         }
 
         .pill.threatened {
-            background: rgba(239, 68, 68, 0.2);
-            color: var(--accent-red);
+            background: rgba(239, 68, 68, 0.35);
+            color: var(--accent-red-bright);
             border: 1px solid var(--accent-red);
             animation: pulse 1s infinite alternate;
         }
@@ -232,7 +233,6 @@
             text-transform: uppercase;
         }
 
-        /* Deck Graphic */
         .deck-stack {
             width: 60px;
             height: 84px;
@@ -254,7 +254,6 @@
             outline-offset: -4px;
         }
 
-        /* Discard Pile Graphic */
         .discard-stack {
             width: 60px;
             height: 84px;
@@ -302,6 +301,7 @@
             position: relative;
             margin-left: -26px;
             border: 1px solid #cbd5e1;
+            transition: transform 0.2s, z-index 0.2s;
         }
 
         .card.new-card {
@@ -315,7 +315,7 @@
         .card.busting-card {
             border: 3px solid var(--accent-red) !important;
             box-shadow: 0 0 15px var(--accent-red) !important;
-            z-index: 10;
+            z-index: 30 !important;
         }
 
         .card-badge {
@@ -455,7 +455,17 @@
 
         @media (max-width: 768px) {
             #game-screen { grid-template-columns: 1fr; }
-            .sidebar { max-height: 180px; }
+            .sidebar { max-height: none; }
+            .scoreboard-grid {
+                display: flex;
+                overflow-x: auto;
+                padding-bottom: 6px;
+                gap: 10px;
+            }
+            .player-card {
+                min-width: 150px;
+                flex-shrink: 0;
+            }
         }
     </style>
 </head>
@@ -564,7 +574,7 @@
             <h2 style="color:var(--accent-gold); margin-bottom:10px;">📜 Rules of Play</h2>
             <div class="rules-text">
                 <h3>Objective</h3>
-                <p>First player to reach <strong>150 points</strong> in Score wins!</p>
+                <p>First player to reach <strong>150 points</strong> wins!</p>
 
                 <h3>138-Card Deck Breakdown</h3>
                 <ul>
@@ -578,7 +588,7 @@
                 <h3>On Your Turn</h3>
                 <ul>
                     <li>Draw cards sequentially. Drawing a matching rank causes a standard <strong>Bust</strong>.</li>
-                    <li><strong>Double Bust (2 Jokers):</strong> Instantly resets Score to 0!</li>
+                    <li><strong>Double Joker Bust:</strong> Instantly resets Score to 0! (And grants a Pity Gem).</li>
                 </ul>
 
                 <h3>Pending Piles & Stealing</h3>
@@ -591,7 +601,7 @@
                 <ul>
                     <li>Busting early (3 or fewer cards) gives 1 Pity Gem. Spend 2 Gems to cancel a drawn bust card!</li>
                     <li>Collect <strong>3 Gems</strong> to automatically convert them into <strong>+50 Bonus Score Points</strong>!</li>
-                    <li>5+ card runs can be doubled directly to Score or sent unscored to Pending. If scored directly, remaining non-run cards go to Pending.</li>
+                    <li>5+ card runs can be doubled directly to Score or sent unscored to Pending. Straight sequences support High (10-J-Q-K-A) or Low (A-2-3-4-5) without wrapping.</li>
                 </ul>
             </div>
             <button class="btn-primary" style="margin-top:15px;" onclick="toggleModal('rules-modal', false)">Close Rules</button>
@@ -639,20 +649,43 @@
     </div>
 
     <script>
-        // Audio Engine
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        let isMuted = false;
+        // Centralized Config Constants
+        const CONFIG = {
+            TARGET_SCORE: 150,
+            SAFEGUARD_GEM_COST: 2,
+            GEM_BONUS_THRESHOLD: 3,
+            GEM_BONUS_PTS: 50,
+            PITY_GEM_HAND_LIMIT: 3
+        };
+
         const AI_NAMES = ["R34P3R-Bot", "Risk-0-Matic", "RNG-Tron 3000", "Bluffer-9000", "PushBot-v2"];
         const RANK_ORDER = { '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14, 'JKR': 99 };
+        const VALUES = { '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 10, 'Q': 10, 'K': 10, 'A': 15, 'JKR': 0 };
+        const SUITS = ['♠', '♥', '♦', '♣'];
+
+        // Audio Engine (Lazily Initialized)
+        let audioCtx = null;
+        let isMuted = false;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
 
         function toggleMute() {
+            initAudio();
             isMuted = !isMuted;
             document.getElementById('mute-btn').innerText = isMuted ? '🔇 Muted' : '🔊 Sound On';
         }
 
         function playSound(type) {
             if (isMuted) return;
-            if (audioCtx.state === 'suspended') audioCtx.resume();
+            initAudio();
+            if (!audioCtx) return;
             const now = audioCtx.currentTime;
 
             if (type === 'card') {
@@ -684,10 +717,7 @@
             }
         }
 
-        // --- GAME ENGINE ---
-        const VALUES = { '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 10, 'Q': 10, 'K': 10, 'A': 15, 'JKR': 0 };
-        const SUITS = ['♠', '♥', '♦', '♣'];
-
+        // State Tracking
         let deck = [];
         let discardPile = [];
         let players = [];
@@ -699,6 +729,15 @@
         let selectedRunIndex = 0;
         let isDrawerOpen = false;
         let lastWinnerId = null;
+        let aiTimer = null;
+        let cardIdCounter = 0;
+
+        function clearAiTimer() {
+            if (aiTimer) {
+                clearTimeout(aiTimer);
+                aiTimer = null;
+            }
+        }
 
         function toggleModal(id, show) {
             document.getElementById(id).style.display = show ? 'flex' : 'none';
@@ -743,6 +782,7 @@
 
         function createDeck() {
             deck = [];
+            cardIdCounter = 0;
             const distribution = [
                 { ranks: ['2', '3', '4', '5'], count: 12 },
                 { ranks: ['6', '7', '8', '9'], count: 10 },
@@ -753,12 +793,12 @@
             distribution.forEach(group => {
                 group.ranks.forEach(r => {
                     for (let i = 0; i < group.count; i++) {
-                        deck.push({ rank: r, suit: SUITS[i % 4], val: VALUES[r] });
+                        deck.push({ id: ++cardIdCounter, rank: r, suit: SUITS[i % 4], val: VALUES[r] });
                     }
                 });
             });
 
-            for (let j = 0; j < 6; j++) deck.push({ rank: 'JKR', suit: '★', val: 0 });
+            for (let j = 0; j < 6; j++) deck.push({ id: ++cardIdCounter, rank: 'JKR', suit: '★', val: 0 });
 
             for (let i = deck.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -779,6 +819,8 @@
         }
 
         function initGame() {
+            initAudio();
+            clearAiTimer();
             const total = parseInt(document.getElementById('total-players').value);
             const humans = parseInt(document.getElementById('human-players').value);
 
@@ -800,11 +842,12 @@
             lastWinnerId = null;
             document.getElementById('setup-screen').style.display = 'none';
             document.getElementById('game-screen').style.display = 'grid';
-            log(`Game started! First to 150 points wins.`);
+            log(`Game started! First to ${CONFIG.TARGET_SCORE} points wins.`);
             startTurn();
         }
 
         function startTurn() {
+            clearAiTimer();
             if (deck.length === 0) recycleDiscards();
             playArea = [];
             awaitingBustConfirm = false;
@@ -821,14 +864,14 @@
 
             render(false);
 
-            if (p.tally >= 150) {
+            if (p.tally >= CONFIG.TARGET_SCORE) {
                 endGame(p);
                 return;
             }
 
             drawCard();
 
-            if (!p.isHuman) setTimeout(aiLogic, 1000);
+            if (!p.isHuman) aiTimer = setTimeout(aiLogic, 1000);
         }
 
         function drawCard() {
@@ -881,13 +924,13 @@
                     return true;
                 }
 
-                if (p.gems >= 2) {
+                if (p.gems >= CONFIG.SAFEGUARD_GEM_COST) {
                     pendingBustState = { card, bustType, originalMatchIndex };
                     if (p.isHuman) {
                         render(true);
                         toggleModal('gem-modal', true);
                     } else {
-                        resolveGemSafeguard(playArea.length > 3);
+                        resolveGemSafeguard(playArea.length > CONFIG.PITY_GEM_HAND_LIMIT);
                     }
                     return true;
                 }
@@ -904,15 +947,15 @@
             toggleModal('gem-modal', false);
             const p = players[turnIndex];
 
-            if (useGems && p.gems >= 2) {
-                p.gems -= 2;
+            if (useGems && p.gems >= CONFIG.SAFEGUARD_GEM_COST) {
+                p.gems -= CONFIG.SAFEGUARD_GEM_COST;
                 const savedCard = playArea.pop();
                 discardPile.push(savedCard);
                 playArea.forEach(c => c.isBustingCard = false);
-                log(`💎 ${p.name} SPENT 2 GEMS to cancel drawing ${savedCard.rank}!`, 'log-steal');
-                showToast(`${p.name} spent 2 Gems to cancel bust!`);
+                log(`💎 ${p.name} SPENT ${CONFIG.SAFEGUARD_GEM_COST} GEMS to cancel drawing ${savedCard.rank}!`, 'log-steal');
+                showToast(`${p.name} spent ${CONFIG.SAFEGUARD_GEM_COST} Gems to cancel bust!`);
                 render(false);
-                if (!p.isHuman) setTimeout(aiLogic, 1000);
+                if (!p.isHuman) aiTimer = setTimeout(aiLogic, 1000);
             } else {
                 executeBust(pendingBustState.bustType);
             }
@@ -928,12 +971,12 @@
                 p.tally = 0;
             }
 
-            if (playArea.length <= 3) addGem(p);
+            if (playArea.length <= CONFIG.PITY_GEM_HAND_LIMIT) addGem(p);
 
             discardPile.push(...playArea);
             render(false);
 
-            if (!p.isHuman) setTimeout(confirmBust, 2200);
+            if (!p.isHuman) aiTimer = setTimeout(confirmBust, 2200);
         }
 
         function confirmBust() {
@@ -944,20 +987,22 @@
 
         function addGem(player) {
             player.gems++;
-            if (player.gems >= 3) {
+            if (player.gems >= CONFIG.GEM_BONUS_THRESHOLD) {
                 player.gems = 0;
-                player.tally += 50;
-                log(`💎 ${player.name} converted 3 Gems into +50 Bonus Score!`, 'log-run');
-                showToast(`${player.name} converted 3 Gems into +50 Score!`);
+                player.tally += CONFIG.GEM_BONUS_PTS;
+                log(`💎 ${player.name} converted ${CONFIG.GEM_BONUS_THRESHOLD} Gems into +${CONFIG.GEM_BONUS_PTS} Bonus Score!`, 'log-run');
+                showToast(`${player.name} converted ${CONFIG.GEM_BONUS_THRESHOLD} Gems into +${CONFIG.GEM_BONUS_PTS} Score!`);
             }
         }
 
         function humanHit() {
+            initAudio();
             if (awaitingBustConfirm || !players[turnIndex].isHuman) return;
             drawCard();
         }
 
         function humanStay() {
+            initAudio();
             if (awaitingBustConfirm || !players[turnIndex].isHuman) return;
             const runs = findAllRuns(playArea);
             if (runs.length > 0) {
@@ -1012,7 +1057,7 @@
                 log(`🎯 ${p.name} scored a ${runCards.length}-Card RUN directly to Score for ${runVal} PTS!`, 'log-run');
                 
                 runCards.forEach(rc => {
-                    const idx = leftovers.indexOf(rc);
+                    const idx = leftovers.findIndex(c => c.id === rc.id);
                     if (idx > -1) {
                         const removed = leftovers.splice(idx, 1)[0];
                         discardPile.push(removed);
@@ -1057,16 +1102,14 @@
 
             for (let start = 1; start <= 10; start++) {
                 let currentRun = [];
-                let jokersLeft = jokers.length;
-                let jCount = 0;
+                let jokersLeft = [...jokers];
 
                 for (let v = start; v < start + 14; v++) {
                     const match = nonJokers.find(c => valMap[c.rank] === v || (v === 14 && c.rank === 'A'));
                     if (match) {
                         currentRun.push(match);
-                    } else if (jokersLeft > 0) {
-                        currentRun.push(jokers[jCount++]);
-                        jokersLeft--;
+                    } else if (jokersLeft.length > 0) {
+                        currentRun.push(jokersLeft.shift());
                     } else {
                         break;
                     }
@@ -1085,7 +1128,7 @@
             const unique = [];
             const keys = new Set();
             allValidRuns.forEach(r => {
-                const key = r.map(c => `${c.rank}${c.suit}`).sort().join('|');
+                const key = r.map(c => c.id).sort((a,b) => a - b).join('|');
                 if (!keys.has(key)) {
                     keys.add(key);
                     unique.push(r);
@@ -1096,18 +1139,18 @@
         }
 
         function aiLogic() {
+            clearAiTimer();
             if (players[turnIndex].isHuman || awaitingBustConfirm) return;
             const p = players[turnIndex];
             const runs = findAllRuns(playArea);
             const count = playArea.length;
 
-            // Ramped Endgame Desperation AI logic
             let leader = null;
             let highestTotal = -1;
             players.forEach(op => {
                 if (op.id !== p.id) {
                     const oppScore = op.tally + op.pending.reduce((a, b) => a + b.val, 0);
-                    if (oppScore >= 150 && oppScore > highestTotal) {
+                    if (oppScore >= CONFIG.TARGET_SCORE && oppScore > highestTotal) {
                         highestTotal = oppScore;
                         leader = op;
                     }
@@ -1117,7 +1160,6 @@
             let stopProb;
 
             if (leader) {
-                // Calculate how many players are remaining between the current AI and the leader
                 const totalP = players.length;
                 let playersBetween = 0;
                 let curr = (turnIndex + 1) % totalP;
@@ -1129,17 +1171,13 @@
                 const myTotal = p.tally + p.pending.reduce((a, b) => a + b.val, 0) + playArea.reduce((a, b) => a + b.val, 0);
 
                 if (playersBetween >= 2) {
-                    // Moderate aggression: hit enough to knock some points/steal, but okay to stop early and rely on others
-                    stopProb = myTotal >= 150 ? 0.95 : count <= 2 ? 0.1 : 0.5;
+                    stopProb = myTotal >= CONFIG.TARGET_SCORE ? 0.95 : count <= 2 ? 0.1 : 0.5;
                 } else if (playersBetween === 1) {
-                    // High aggression: only one player left to help, risk more
-                    stopProb = myTotal >= 150 ? 0.95 : count <= 3 ? 0.05 : 0.25;
+                    stopProb = myTotal >= CONFIG.TARGET_SCORE ? 0.95 : count <= 3 ? 0.05 : 0.25;
                 } else {
-                    // Zero players between: Last line of defense! Win or bust!
-                    stopProb = myTotal >= 150 ? 0.95 : 0.0;
+                    stopProb = myTotal >= CONFIG.TARGET_SCORE ? 0.95 : 0.0;
                 }
             } else {
-                // Standard turn logic
                 stopProb = count <= 1 ? 0 : count === 2 ? 0.1 : count === 3 ? 0.25 : count === 4 ? 0.5 : 0.8;
                 if (runs.length > 0) stopProb = 0.95;
             }
@@ -1148,17 +1186,19 @@
                 bankTurn(runs.length > 0);
             } else {
                 const busted = drawCard();
-                if (!busted && !awaitingBustConfirm) setTimeout(aiLogic, 1000);
+                if (!busted && !awaitingBustConfirm) aiTimer = setTimeout(aiLogic, 1000);
             }
         }
 
         function endTurn() {
+            clearAiTimer();
             render(false);
             turnIndex = (turnIndex + 1) % players.length;
-            setTimeout(startTurn, 800);
+            aiTimer = setTimeout(startTurn, 800);
         }
 
         function endGame(winner) {
+            clearAiTimer();
             lastWinnerId = winner.id;
             document.getElementById('winner-title').innerText = `🏆 ${winner.name.toUpperCase()} WINS! 🏆`;
             document.getElementById('winner-details').innerText = `Final Score: ${winner.tally} Points`;
@@ -1166,6 +1206,7 @@
         }
 
         function rematchGame() {
+            clearAiTimer();
             toggleModal('win-modal', false);
             players.forEach(p => {
                 p.tally = 0;
@@ -1181,12 +1222,14 @@
         }
 
         function resetToSetup() {
+            clearAiTimer();
             toggleModal('win-modal', false);
             document.getElementById('game-screen').style.display = 'none';
             document.getElementById('setup-screen').style.display = 'block';
         }
 
         function endSession() {
+            clearAiTimer();
             toggleModal('win-modal', false);
             showToast("Thanks for playing Push Yer Luck!");
         }
@@ -1265,7 +1308,6 @@
                 document.getElementById('btn-stay').style.display = 'inline-block';
                 document.getElementById('btn-continue').style.display = 'none';
                 document.getElementById('btn-hit').disabled = !isHuman;
-                // Allow stopping and banking on card 1 or more
                 document.getElementById('btn-stay').disabled = !isHuman || playArea.length < 1;
             }
 
@@ -1289,13 +1331,14 @@
                 }).join('');
 
                 const isWinnerStar = p.id === lastWinnerId ? ' ⭐' : '';
+                const gemDisplay = p.gems > 0 ? '💎'.repeat(p.gems) : '';
 
                 card.innerHTML = `
                     <div class="p-header">
                         ${p.name}${isWinnerStar} <span class="p-type">${p.isHuman ? 'Human' : 'AI'}</span>
                     </div>
                     <div class="p-stat"><span>Score:</span><span class="p-val" style="color:var(--accent-green);">${p.tally}</span></div>
-                    <div class="p-stat"><span>Gems:</span><span class="p-val">${'💎'.repeat(p.gems) || '0'}</span></div>
+                    <div class="p-stat"><span>Gems:</span><span class="p-val">${gemDisplay}</span></div>
                     <div class="p-stat"><span>Pending:</span><span class="p-val" style="color:var(--accent-gold);">${pendPts}</span></div>
                     <div class="pending-pills">${p.pending.length ? pills : '<span style="font-size:0.65rem; color:#64748b;">No pending</span>'}</div>
                 `;
@@ -1318,7 +1361,7 @@
                 const isRed = c.suit === '♥' || c.suit === '♦';
                 const isJoker = c.rank === 'JKR';
                 const isBusting = c.isBustingCard;
-                const isRunCard = primaryRun.includes(c);
+                const isRunCard = primaryRun.some(rc => rc.id === c.id);
                 const isStealCard = opponentPendingRanks.includes(c.rank) && !isJoker;
 
                 let extra = ''; let badge = '';
@@ -1329,6 +1372,7 @@
                 const isNewCard = hasNewDraw && index === playArea.length - 1;
 
                 el.className = `card ${isRed ? 'red' : ''} ${isJoker ? 'joker' : ''} ${extra} ${isNewCard ? 'new-card' : ''}`;
+                el.style.zIndex = index + 1;
                 el.innerHTML = `${badge}<div class="card-rank">${c.rank}</div><div class="card-suit">${c.suit}</div><div class="card-val">${c.val}pt</div>`;
                 pa.appendChild(el);
             });
