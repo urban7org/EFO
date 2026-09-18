@@ -20,458 +20,411 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            user-select: none;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
             background-color: var(--bg-dark);
             color: var(--text-light);
-            min-height: 100vh;
+            height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            padding: 15px;
+            overflow: hidden;
+            padding: 10px 15px;
         }
 
         header {
-            text-align: center;
-            margin-bottom: 15px;
-            position: relative;
-            width: 100%;
-            max-width: 1100px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #334155;
+            height: 48px;
         }
 
         h1 {
-            font-size: 2.2rem;
+            font-size: 1.5rem;
             color: var(--accent-gold);
             text-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
-            flex-grow: 1;
-            text-align: center;
         }
 
         .header-btns {
             display: flex;
-            gap: 10px;
+            gap: 8px;
         }
 
         .hdr-btn {
             background: #334155;
             color: white;
             border: 1px solid #475569;
-            padding: 8px 14px;
+            padding: 6px 12px;
             border-radius: 20px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             cursor: pointer;
             transition: all 0.2s;
+            position: relative;
         }
         .hdr-btn:hover { background: #475569; }
+
+        .badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: var(--accent-red);
+            color: white;
+            border-radius: 10px;
+            font-size: 0.65rem;
+            padding: 1px 5px;
+            font-weight: bold;
+        }
 
         /* Setup Screen */
         #setup-screen {
             background: var(--card-bg);
-            padding: 25px;
+            padding: 20px;
             border-radius: 12px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
             max-width: 480px;
             width: 100%;
+            margin: auto;
             text-align: center;
-            margin-top: 15px;
         }
 
-        .form-group {
-            margin-bottom: 15px;
-            text-align: left;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 6px;
-            color: #cbd5e1;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
+        .form-group { margin-bottom: 12px; text-align: left; }
+        label { display: block; margin-bottom: 4px; color: #cbd5e1; font-weight: 600; font-size: 0.85rem; }
         select, input[type="text"] {
-            width: 100%;
-            padding: 9px;
-            border-radius: 6px;
-            border: 1px solid #334155;
-            background: #0f172a;
-            color: white;
-            font-size: 0.95rem;
+            width: 100%; padding: 8px; border-radius: 6px;
+            border: 1px solid #334155; background: #0f172a; color: white; font-size: 0.9rem;
         }
 
         .player-inputs {
+            display: flex; flex-direction: column; gap: 6px;
+            max-height: 180px; overflow-y: auto; margin-bottom: 12px;
+        }
+        .player-input-row { display: flex; align-items: center; gap: 8px; }
+        .player-input-row span { font-size: 0.8rem; width: 65px; color: #94a3b8; }
+
+        /* App Main Grid (Single Screen Layout) */
+        #game-screen {
+            display: none;
+            flex: 1;
+            grid-template-columns: 320px 1fr;
+            gap: 12px;
+            height: calc(100vh - 60px);
+            margin-top: 8px;
+        }
+
+        /* 2-Column Responsive Scoreboard Sidebar */
+        .sidebar {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 10px;
             display: flex;
             flex-direction: column;
             gap: 8px;
-            max-height: 220px;
             overflow-y: auto;
-            margin-bottom: 15px;
-            padding-right: 5px;
+            border: 1px solid #334155;
         }
 
-        .player-input-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .player-input-row span {
+        .scoreboard-title {
             font-size: 0.85rem;
-            width: 70px;
-            color: #94a3b8;
+            font-weight: bold;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 4px;
         }
 
-        /* Main Game Layout */
-        #game-screen {
-            display: none;
-            width: 100%;
-            max-width: 1100px;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .scoreboard {
+        .scoreboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
         }
 
         .player-card {
-            background: var(--card-bg);
+            background: #0f172a;
             border-radius: 8px;
-            padding: 12px;
+            padding: 8px;
             border: 2px solid transparent;
-            transition: all 0.3s ease;
+            transition: all 0.2s;
             position: relative;
         }
 
         .player-card.active {
             border-color: var(--accent-gold);
-            box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
-            transform: translateY(-2px);
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
+            background: #1e293b;
         }
 
-        .player-name {
-            font-weight: bold;
-            font-size: 0.95rem;
+        .p-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-
-        .player-type {
-            font-size: 0.7rem;
-            padding: 2px 6px;
-            border-radius: 4px;
-            background: #334155;
-        }
-
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 5px;
-            font-size: 0.85rem;
-        }
-
-        .stat-val { font-weight: bold; }
-        .pending-val { color: var(--accent-gold); }
-        .tally-val { color: var(--accent-green); }
-        .gem-val { color: var(--accent-purple); }
-
-        .pending-cards-list {
-            margin-top: 6px;
-            padding-top: 5px;
-            border-top: 1px dashed #334155;
-            font-size: 0.75rem;
-            color: #94a3b8;
-            word-break: break-word;
-        }
-
-        /* Highlight pending cards that are threatened by the active turn */
-        .threat-rank {
-            color: #ef4444 !important;
             font-weight: bold;
-            background: rgba(239, 68, 68, 0.15);
-            padding: 1px 4px;
-            border-radius: 3px;
-            border: 1px solid rgba(239, 68, 68, 0.4);
-            animation: pulseThreat 1.5s infinite alternate;
+            font-size: 0.8rem;
+            margin-bottom: 4px;
         }
 
-        @keyframes pulseThreat {
-            0% { box-shadow: 0 0 2px rgba(239, 68, 68, 0.4); }
-            100% { box-shadow: 0 0 8px rgba(239, 68, 68, 0.8); }
-        }
+        .p-type { font-size: 0.65rem; background: #334155; padding: 1px 4px; border-radius: 3px; }
+        .p-stat { font-size: 0.75rem; color: #94a3b8; display: flex; justify-content: space-between; margin-top: 2px; }
+        .p-val { font-weight: bold; color: white; }
 
-        /* Play Table */
-        .table-area {
-            background: #064e3b;
-            border: 6px solid #042f2e;
-            border-radius: 16px;
-            padding: 20px;
-            min-height: 420px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
-            position: relative;
-        }
-
-        .table-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid rgba(255,255,255,0.1);
-            padding-bottom: 8px;
-            font-size: 0.95rem;
-        }
-
-        /* Drawn Card Stage */
-        .stage-area {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 10px;
-            min-height: 120px;
-        }
-
-        .stage-label {
-            font-size: 0.75rem;
-            letter-spacing: 1px;
-            color: var(--accent-gold);
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        .cards-container {
+        .pending-pills {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin: 15px 0;
-            min-height: 120px;
-            align-items: center;
-            justify-content: center;
+            gap: 3px;
+            margin-top: 6px;
+            padding-top: 4px;
+            border-top: 1px dashed #334155;
+            min-height: 24px;
         }
 
-        /* Card Styling */
+        .pill {
+            background: #334155;
+            color: #f8fafc;
+            border-radius: 4px;
+            padding: 1px 5px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .pill.threatened {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--accent-red);
+            border: 1px solid var(--accent-red);
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 2px var(--accent-red); }
+            100% { box-shadow: 0 0 6px var(--accent-red); }
+        }
+
+        /* Play Table Area */
+        .table-area {
+            background: radial-gradient(circle at center, #064e3b 0%, #042f2e 100%);
+            border: 4px solid #0f172a;
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
+        }
+
+        .table-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #cbd5e1;
+        }
+
+        /* Visual Interactive Deck */
+        .deck-widget {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .deck-widget:hover { transform: scale(1.05); }
+
+        .deck-stack {
+            width: 70px;
+            height: 98px;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border: 2px solid var(--accent-gold);
+            border-radius: 6px;
+            box-shadow: -2px -2px 0 #334155, -4px -4px 0 #1e293b, 0 8px 15px rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: var(--accent-gold);
+            font-size: 0.9rem;
+        }
+
+        /* Overlapping Table Card Fan */
+        .card-fan-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 140px;
+            width: 100%;
+            margin: 10px 0;
+        }
+
         .card {
-            width: 75px;
-            height: 110px;
+            width: 70px;
+            height: 102px;
             background: white;
-            border-radius: 8px;
+            border-radius: 6px;
             color: #0f172a;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 6px;
+            padding: 5px;
             font-weight: bold;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
-            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
             position: relative;
-            user-select: none;
-            border: 2px solid #cbd5e1;
+            margin-left: -28px; /* Horizontal overlapping */
+            transition: all 0.2s;
+            animation: dealCard 0.25s ease-out;
+            border: 1px solid #cbd5e1;
         }
 
+        .card:first-child { margin-left: 0; }
         .card.red { color: var(--accent-red); }
-        .card.joker { 
-            background: linear-gradient(135deg, #a855f7, #6366f1);
-            color: white; 
-        }
-
-        .card.steal-highlight {
-            border: 3px solid var(--accent-gold);
-            box-shadow: 0 0 12px var(--accent-gold);
-        }
-
-        .card.run-highlight {
-            border: 3px solid var(--accent-green);
-            box-shadow: 0 0 12px var(--accent-green);
-        }
+        .card.joker { background: linear-gradient(135deg, #a855f7, #6366f1); color: white; }
 
         .card.busting-card {
-            border: 4px solid var(--accent-red) !important;
-            box-shadow: 0 0 22px var(--accent-red) !important;
-            animation: shake 0.4s ease-in-out;
+            border: 3px solid var(--accent-red) !important;
+            box-shadow: 0 0 15px var(--accent-red) !important;
             z-index: 10;
         }
 
         .card-badge {
             position: absolute;
-            top: -8px;
-            right: -8px;
-            font-size: 0.65rem;
-            padding: 2px 5px;
-            border-radius: 10px;
-            color: white;
-            font-weight: bold;
+            top: -6px; right: -6px;
+            font-size: 0.55rem; padding: 2px 4px;
+            border-radius: 8px; color: white; font-weight: bold;
         }
         .badge-steal { background: var(--accent-gold); }
         .badge-run { background: var(--accent-green); }
-        .badge-bust { background: var(--accent-red); box-shadow: 0 0 8px red; }
+        .badge-bust { background: var(--accent-red); }
 
-        .card-rank { font-size: 1.1rem; }
-        .card-suit { font-size: 1.4rem; text-align: center; }
-        .card-val { font-size: 0.7rem; text-align: right; opacity: 0.8; }
+        .card-rank { font-size: 0.95rem; }
+        .card-suit { font-size: 1.2rem; text-align: center; }
+        .card-val { font-size: 0.6rem; text-align: right; opacity: 0.8; }
 
-        @keyframes popIn {
-            0% { transform: scale(0) translateY(-30px); opacity: 0; }
-            100% { transform: scale(1) translateY(0); opacity: 1; }
+        @keyframes dealCard {
+            from { transform: translateY(-30px) scale(0.8); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
         }
 
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-6px); }
-            40%, 80% { transform: translateX(6px); }
-        }
-
-        /* Stats & Meter Display */
-        .prob-meter {
-            text-align: center;
-            font-size: 0.9rem;
-            margin-bottom: 10px;
-            color: #cbd5e1;
+        /* Controls Section */
+        .controls-bar {
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 8px;
+            padding: 10px;
             display: flex;
-            justify-content: center;
-            gap: 20px;
+            justify-content: space-between;
+            align-items: center;
         }
+
+        .prob-info { font-size: 0.85rem; }
         .prob-val { font-weight: bold; }
         .prob-low { color: var(--accent-green); }
         .prob-med { color: var(--accent-gold); }
         .prob-high { color: var(--accent-red); }
 
-        /* Controls */
-        .controls {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-        }
+        .controls-btns { display: flex; gap: 8px; }
 
         button {
-            padding: 10px 22px;
-            font-size: 1rem;
-            font-weight: bold;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            padding: 8px 18px; font-size: 0.9rem; font-weight: bold;
+            border: none; border-radius: 6px; cursor: pointer; transition: all 0.2s;
         }
-
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none !important;
-        }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .btn-hit { background: var(--accent-green); color: white; }
-        .btn-hit:hover:not(:disabled) { background: #059669; transform: translateY(-2px); }
+        .btn-hit:hover:not(:disabled) { background: #059669; }
 
         .btn-stay { background: var(--accent-gold); color: white; }
-        .btn-stay:hover:not(:disabled) { background: #d97706; transform: translateY(-2px); }
+        .btn-stay:hover:not(:disabled) { background: #d97706; }
 
-        .btn-continue { 
-            background: var(--accent-red); 
-            color: white; 
-            font-size: 1.1rem;
-            padding: 12px 30px;
-            animation: pulseBtn 1.2s infinite;
-        }
-        .btn-continue:hover { background: #dc2626; }
-
-        @keyframes pulseBtn {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
+        .btn-continue { background: var(--accent-red); color: white; }
         .btn-primary { background: var(--accent-purple); color: white; width: 100%; }
-        .btn-primary:hover { background: #7c3aed; }
 
-        /* Game Logs */
-        #log-box {
-            background: rgba(15, 23, 42, 0.8);
-            border-radius: 6px;
-            padding: 10px;
-            height: 90px;
-            overflow-y: auto;
-            font-family: monospace;
-            font-size: 0.8rem;
-            color: #cbd5e1;
+        /* Toasts Overlay */
+        .toast-container {
+            position: absolute;
+            top: 15px; left: 50%; transform: translateX(-50%);
+            z-index: 80; display: flex; flex-direction: column; gap: 6px;
+            pointer-events: none;
         }
 
-        .log-entry { margin-bottom: 3px; }
-        .log-bust { color: var(--accent-red); }
-        .log-steal { color: var(--accent-gold); }
-        .log-run { color: var(--accent-green); }
-        .log-wipe { color: #f43f5e; font-weight: bold; }
+        .toast {
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid var(--accent-gold);
+            color: white; padding: 8px 16px; border-radius: 20px;
+            font-size: 0.85rem; box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            animation: toastFade 2.5s forwards; white-space: nowrap;
+        }
+
+        @keyframes toastFade {
+            0% { opacity: 0; transform: translateY(-10px); }
+            15% { opacity: 1; transform: translateY(0); }
+            80% { opacity: 1; }
+            100% { opacity: 0; transform: translateY(-10px); }
+        }
+
+        /* Slide-Out Drawer Log */
+        .drawer {
+            position: fixed; top: 0; right: -360px; width: 340px; height: 100vh;
+            background: var(--card-bg); border-left: 2px solid var(--accent-gold);
+            box-shadow: -5px 0 25px rgba(0,0,0,0.8); z-index: 100;
+            transition: right 0.3s ease; display: flex; flex-direction: column; padding: 15px;
+        }
+        .drawer.open { right: 0; }
+
+        .drawer-header {
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid #334155; padding-bottom: 8px; margin-bottom: 10px;
+        }
+
+        .log-list { flex: 1; overflow-y: auto; font-family: monospace; font-size: 0.8rem; display: flex; flex-direction: column; gap: 6px; }
+        .log-entry { padding: 5px 8px; border-radius: 4px; background: #0f172a; border-left: 3px solid #334155; }
+        .log-bust { border-color: var(--accent-red); color: #fca5a5; }
+        .log-steal { border-color: var(--accent-gold); color: #fde047; }
+        .log-run { border-color: var(--accent-green); color: #86efac; }
 
         /* Modals */
         .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.85);
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            padding: 15px;
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.85); justify-content: center; align-items: center;
+            z-index: 110; padding: 15px;
         }
 
         .modal-content {
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 12px;
-            text-align: center;
-            max-width: 480px;
-            width: 100%;
-            max-height: 85vh;
-            overflow-y: auto;
+            background: var(--card-bg); padding: 20px; border-radius: 12px;
+            text-align: center; max-width: 440px; width: 100%; max-height: 85vh; overflow-y: auto;
         }
 
-        .modal-content h2 { color: var(--accent-gold); margin-bottom: 12px; }
-        .modal-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
-
-        .rules-text {
-            text-align: left;
-            font-size: 0.85rem;
-            line-height: 1.5;
-            color: #cbd5e1;
+        .deck-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 15px 0;
         }
-        .rules-text h3 { color: var(--accent-gold); margin: 12px 0 4px 0; font-size: 0.95rem; }
-        .rules-text ul { padding-left: 18px; }
+        .deck-cell {
+            background: #0f172a; padding: 6px; border-radius: 4px; font-size: 0.8rem; border: 1px solid #334155;
+        }
 
-        @media (max-width: 600px) {
-            h1 { font-size: 1.6rem; }
-            .card { width: 60px; height: 88px; padding: 4px; }
-            .card-rank { font-size: 0.95rem; }
-            .card-suit { font-size: 1.1rem; }
-            .card-val { font-size: 0.6rem; }
-            button { padding: 10px 16px; font-size: 0.9rem; }
-            .controls { gap: 8px; }
+        .rules-text { text-align: left; font-size: 0.8rem; line-height: 1.4; color: #cbd5e1; }
+        .rules-text h3 { color: var(--accent-gold); margin: 8px 0 3px 0; font-size: 0.9rem; }
+        .rules-text ul { padding-left: 15px; }
+
+        @media (max-width: 768px) {
+            #game-screen { grid-template-columns: 1fr; }
+            .sidebar { max-height: 180px; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="header-btns">
-            <button class="hdr-btn" onclick="toggleRules(true)">📜 Rules</button>
-        </div>
         <h1>PUSH YER LUCK</h1>
         <div class="header-btns">
+            <button class="hdr-btn" onclick="toggleModal('rules-modal', true)">📜 Rules</button>
+            <button class="hdr-btn" onclick="toggleDrawer()">💬 Log <span class="badge" id="unread-badge" style="display:none;">0</span></button>
             <button class="hdr-btn" id="mute-btn" onclick="toggleMute()">🔊 Sound On</button>
         </div>
     </header>
 
     <!-- SETUP SCREEN -->
     <div id="setup-screen">
-        <h2 style="margin-bottom:15px;">Game Setup</h2>
+        <h2 style="margin-bottom:12px; color:var(--accent-gold);">Game Setup</h2>
         <div class="form-group">
             <label for="total-players">Total Players (2–6):</label>
             <select id="total-players" onchange="buildPlayerInputs()">
@@ -495,225 +448,176 @@
         <button class="btn-primary" onclick="initGame()">Start Game</button>
     </div>
 
-    <!-- MAIN GAME SCREEN -->
+    <!-- MAIN GAME SCREEN (SINGLE VIEWPORT) -->
     <div id="game-screen">
-        <div class="scoreboard" id="scoreboard"></div>
+        <aside class="sidebar">
+            <div class="scoreboard-title">Scoreboard (First to 150)</div>
+            <div class="scoreboard-grid" id="scoreboard-grid"></div>
+        </aside>
 
-        <div class="table-area">
-            <div class="table-header">
-                <div>Turn: <span id="current-player-display" style="font-weight:bold; color:var(--accent-gold);"></span></div>
-                <div>Deck: <span id="deck-count" style="font-weight:bold;">138</span> cards</div>
+        <section class="table-area">
+            <div class="toast-container" id="toast-container"></div>
+
+            <div class="table-top">
+                <div>Turn: <strong id="current-player-display" style="color:var(--accent-gold);">--</strong></div>
+                
+                <!-- Tap Deck to Inspect Remaining Counts -->
+                <div class="deck-widget" onclick="openDeckInspector()" title="Click to view remaining deck composition">
+                    <div class="deck-stack" id="deck-count-display">138</div>
+                    <div style="font-size:0.65rem; color:var(--accent-gold); margin-top:2px;">INSPECT DECK</div>
+                </div>
             </div>
 
-            <div class="stage-area">
-                <div class="stage-label" id="stage-label" style="display:none;">JUST DRAWN</div>
-                <div id="drawn-card-stage"></div>
-            </div>
+            <!-- Table Card Fan -->
+            <div class="card-fan-container" id="play-area"></div>
 
-            <div class="cards-container" id="play-area"></div>
+            <div class="controls-bar">
+                <div class="prob-info">
+                    <div>Points: <strong id="turn-points-val" style="color:var(--accent-gold);">0 pts</strong></div>
+                    <div>Bust Chance: <span class="prob-val prob-low" id="prob-val">0%</span></div>
+                </div>
 
-            <div class="prob-meter" id="prob-meter">
-                <div>Turn Points: <span id="turn-points-val" style="font-weight:bold; color:var(--accent-gold);">0 pts</span></div>
-                <div>|</div>
-                <div>Bust Chance: <span class="prob-val prob-low" id="prob-val">0%</span></div>
+                <div class="controls-btns">
+                    <button class="btn-hit" id="btn-hit" onclick="humanHit()">HIT / DRAW</button>
+                    <button class="btn-stay" id="btn-stay" onclick="humanStay()">STOP & BANK</button>
+                    <button class="btn-continue" id="btn-continue" style="display:none;" onclick="confirmBust()">BUST! CONTINUE</button>
+                </div>
             </div>
+        </section>
+    </div>
 
-            <div class="controls" id="controls-box">
-                <button class="btn-hit" id="btn-hit" onclick="humanHit()">HIT / DRAW</button>
-                <button class="btn-stay" id="btn-stay" onclick="humanStay()">STOP & BANK</button>
-                <button class="btn-continue" id="btn-continue" style="display:none;" onclick="confirmBust()">BUST! CONTINUE</button>
-            </div>
+    <!-- LOG DRAWER -->
+    <div class="drawer" id="log-drawer">
+        <div class="drawer-header">
+            <h3 style="color:var(--accent-gold);">Game History</h3>
+            <button class="hdr-btn" onclick="toggleDrawer()">✕ Close</button>
         </div>
+        <div class="log-list" id="log-list"></div>
+    </div>
 
-        <div id="log-box"></div>
+    <!-- DECK INSPECTOR MODAL -->
+    <div class="modal" id="deck-modal">
+        <div class="modal-content">
+            <h3 style="color:var(--accent-gold); margin-bottom:6px;">🃏 Deck Composition</h3>
+            <p style="font-size:0.75rem; color:#cbd5e1;">Exact count of cards currently remaining in draw pile:</p>
+            <div class="deck-grid" id="deck-grid"></div>
+            <button class="btn-primary" onclick="toggleModal('deck-modal', false)">Close</button>
+        </div>
     </div>
 
     <!-- RULES MODAL -->
     <div class="modal" id="rules-modal">
         <div class="modal-content">
-            <h2>📜 How to Play</h2>
+            <h2 style="color:var(--accent-gold); margin-bottom:10px;">📜 Rules of Play</h2>
             <div class="rules-text">
                 <h3>Objective</h3>
-                <p>First player to reach <strong>150 points</strong> in their safe Score Tally wins!</p>
+                <p>First player to reach <strong>150 points</strong> in safe Score Tally wins!</p>
 
                 <h3>138-Card Deck Breakdown</h3>
                 <ul>
-                    <li><strong>2 through 5:</strong> 12 copies each (48 cards) • Face value (2–5 pts)</li>
-                    <li><strong>6 through 9:</strong> 10 copies each (40 cards) • Face value (6–9 pts)</li>
-                    <li><strong>10, J, Q, K:</strong> 8 copies each (32 cards) • <strong>10 pts each</strong></li>
-                    <li><strong>Aces (A):</strong> 12 copies (12 cards) • <strong>15 pts each!</strong></li>
-                    <li><strong>Jokers (JKR):</strong> 6 copies • <strong>0 pts (Wild for Runs)</strong></li>
+                    <li><strong>2 through 5:</strong> 12 copies each (48 cards) • 2–5 pts</li>
+                    <li><strong>6 through 9:</strong> 10 copies each (40 cards) • 6–9 pts</li>
+                    <li><strong>10, J, Q, K:</strong> 8 copies each (32 cards) • 10 pts each</li>
+                    <li><strong>Aces (A):</strong> 12 copies (12 cards) • 15 pts each</li>
+                    <li><strong>Jokers (JKR):</strong> 6 copies • Wilds for Runs (0 pts)</li>
                 </ul>
 
                 <h3>On Your Turn</h3>
                 <ul>
-                    <li>Draw cards one by one to build your hand.</li>
-                    <li><strong>Standard Bust:</strong> Drawing a duplicate rank ends your turn instantly and forfeits drawn cards.</li>
-                    <li><strong>Double Bust (2 Jokers):</strong> Drawing a 2nd Joker instantly wipes your <strong>safe Score Tally to 0!</strong> Double Busts <em>cannot</em> be saved with 2 Gems, but automatically grant 1 Gem regardless of card count.</li>
+                    <li>Draw cards sequentially. Drawing a matching rank causes a standard <strong>Bust</strong>.</li>
+                    <li><strong>Double Bust (2 Jokers):</strong> Instantly resets safe Score Tally to 0! Jokers can never be banked or stolen.</li>
                 </ul>
 
                 <h3>Pending Piles & Stealing</h3>
                 <ul>
-                    <li>When you bank your turn, non-Joker cards move to your <strong>Pending Pile</strong>. Jokers are discarded and can <strong>never</strong> be banked or stolen!</li>
-                    <li>Pending cards convert to your safe Score Tally at the start of your <strong>next turn</strong>.</li>
-                    <li>If an opponent draws a card matching a rank in your Pending Pile, they <strong>steal</strong> those cards into their pile upon banking!</li>
+                    <li>Banked non-Joker cards go to your <strong>Pending Pile</strong>, converting to safe Tally at the start of your next turn.</li>
+                    <li>Drawing cards matching an opponent's Pending cards lets you <strong>steal</strong> them when you bank!</li>
                 </ul>
 
-                <h3>Straights / Runs</h3>
+                <h3>Gems & Runs</h3>
                 <ul>
-                    <li>A sequence of 5+ consecutive ranks forms a <strong>Run</strong>.</li>
-                    <li>When banking a Run, choose:
-                        <br>1. <strong>Score Immediately:</strong> Double run points straight to safe Tally.
-                        <br>2. <strong>Move to Pending:</strong> Move non-Joker cards to Pending (unscored) to help steal or defend.</li>
-                </ul>
-
-                <h3>Gems & Safeguards</h3>
-                <ul>
-                    <li>Busting on 3 or fewer cards grants a <strong>Pity Gem</strong>.</li>
-                    <li>If you have <strong>2 Gems</strong> when drawing a standard bust card, spend 2 Gems to cancel and discard the drawn card!</li>
-                    <li>Accumulating 3 Gems automatically converts into <strong>+50 Bonus Points</strong> (if earned during a Double Bust, your Tally resets to 0 first, then adds the +50 bonus).</li>
+                    <li>Busting early (3 or fewer cards) gives 1 Pity Gem. Spend 2 Gems to cancel a drawn bust card!</li>
+                    <li>5+ card runs can be doubled directly to safe score Tally or sent unscored to Pending.</li>
                 </ul>
             </div>
-            <div class="modal-actions">
-                <button class="btn-primary" onclick="toggleRules(false)">Close Rules</button>
-            </div>
+            <button class="btn-primary" style="margin-top:15px;" onclick="toggleModal('rules-modal', false)">Close Rules</button>
         </div>
     </div>
 
-    <!-- 2-GEM SAFEGUARD MODAL -->
+    <!-- GEM MODAL -->
     <div class="modal" id="gem-modal">
         <div class="modal-content">
-            <h2>💎 SAFEGUARD AVAILABLE!</h2>
-            <p>You drew a bust card, but you have <strong>2 Gems</strong>!</p>
-            <p style="margin-top:10px; color:#cbd5e1;">Spend <strong>2 Gems</strong> to cancel this draw and discard the card?</p>
-            <div class="modal-actions">
-                <button class="btn-primary" style="background:var(--accent-green)" onclick="resolveGemSafeguard(true)">Use 2 Gems</button>
+            <h3 style="color:var(--accent-gold);">💎 SAFEGUARD AVAILABLE!</h3>
+            <p style="font-size:0.85rem; margin:10px 0;">Spend <strong>2 Gems</strong> to cancel drawing this bust card?</p>
+            <div style="display:flex; gap:8px; margin-top:15px;">
+                <button class="btn-primary" style="background:var(--accent-green)" onclick="resolveGemSafeguard(true)">Use Gems</button>
                 <button class="btn-primary" style="background:var(--accent-red)" onclick="resolveGemSafeguard(false)">Accept Bust</button>
             </div>
         </div>
     </div>
 
-    <!-- RUN CHOICE MODAL -->
+    <!-- RUN MODAL -->
     <div class="modal" id="run-modal">
         <div class="modal-content">
-            <h2>🎯 RUN COMPLETED!</h2>
-            <p>You built a <strong><span id="run-length-display">5</span>-Card Run</strong> worth <strong id="run-points-display">0</strong> base points!</p>
-            <p style="margin-top:10px; color:#cbd5e1; font-size:0.9rem;">How would you like to handle this run?</p>
-            <div class="modal-actions">
-                <button class="btn-primary" style="background:var(--accent-green)" onclick="resolveRunChoice('score')">
-                    Double & Score to Tally (<span id="run-double-display">0</span> pts)
-                </button>
-                <button class="btn-primary" style="background:var(--accent-gold)" onclick="resolveRunChoice('pending')">
-                    Move All Cards to Pending Pile (Unscored)
-                </button>
+            <h3 style="color:var(--accent-gold);">🎯 RUN COMPLETED!</h3>
+            <p style="font-size:0.85rem; margin-top:8px;">You built a <strong><span id="run-len">5</span>-Card Run</strong> worth <strong id="run-pts">0</strong> base points!</p>
+            <div style="display:flex; flex-direction:column; gap:8px; margin-top:15px;">
+                <button class="btn-primary" style="background:var(--accent-green)" onclick="resolveRunChoice('score')">Double & Bank to Safe Tally (<span id="run-dbl">0</span> pts)</button>
+                <button class="btn-primary" style="background:var(--accent-gold)" onclick="resolveRunChoice('pending')">Move to Pending Pile (Unscored)</button>
             </div>
         </div>
     </div>
 
-    <!-- WINNER MODAL -->
+    <!-- WIN MODAL -->
     <div class="modal" id="win-modal">
         <div class="modal-content">
-            <h2 id="winner-title" style="font-size:2rem; color:var(--accent-gold); margin-bottom:10px;">🏆 PLAYER WINS! 🏆</h2>
-            <p id="winner-details" style="margin-bottom: 20px; font-size:1.1rem;"></p>
+            <h2 id="winner-title" style="color:var(--accent-gold);">🏆 GAME OVER 🏆</h2>
+            <p id="winner-details" style="margin:15px 0;"></p>
             <button class="btn-primary" onclick="location.reload()">Play Again</button>
         </div>
     </div>
 
     <script>
-        // --- MULTI-SYNTH SOUND ENGINE ---
+        // Synth Audio Engine
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         let isMuted = false;
-
-        const AI_NAMES = ["R34P3R-Bot", "Risk-0-Matic", "RNG-Tron 3000", "Bluffer-9000", "PushBot-v2", "Double-Or-Nothing"];
+        const AI_NAMES = ["R34P3R-Bot", "Risk-0-Matic", "RNG-Tron 3000", "Bluffer-9000", "PushBot-v2"];
 
         function toggleMute() {
             isMuted = !isMuted;
-            const btn = document.getElementById('mute-btn');
-            btn.innerText = isMuted ? '🔇 Muted' : '🔊 Sound On';
-            btn.style.background = isMuted ? '#94a3b8' : '#334155';
+            document.getElementById('mute-btn').innerText = isMuted ? '🔇 Muted' : '🔊 Sound On';
         }
 
         function playSound(type) {
             if (isMuted) return;
             if (audioCtx.state === 'suspended') audioCtx.resume();
-            
             const now = audioCtx.currentTime;
 
             if (type === 'card') {
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(450, now);
+                osc.type = 'triangle'; osc.frequency.setValueAtTime(450, now);
                 osc.frequency.exponentialRampToValueAtTime(80, now + 0.05);
-                gain.gain.setValueAtTime(0.3, now);
-                gain.gain.linearRampToValueAtTime(0.01, now + 0.05);
+                gain.gain.setValueAtTime(0.3, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.05);
                 osc.connect(gain); gain.connect(audioCtx.destination);
                 osc.start(now); osc.stop(now + 0.05);
-            } 
-            else if (type === 'bust') {
+            } else if (type === 'bust') {
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(220, now);
+                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(220, now);
                 osc.frequency.linearRampToValueAtTime(50, now + 0.35);
-                gain.gain.setValueAtTime(0.4, now);
-                gain.gain.linearRampToValueAtTime(0.01, now + 0.35);
+                gain.gain.setValueAtTime(0.4, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.35);
                 osc.connect(gain); gain.connect(audioCtx.destination);
                 osc.start(now); osc.stop(now + 0.35);
-            } 
-            else if (type === 'doublebust') {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(350, now);
-                osc.frequency.exponentialRampToValueAtTime(30, now + 0.6);
-                gain.gain.setValueAtTime(0.6, now);
-                gain.gain.linearRampToValueAtTime(0.01, now + 0.6);
-                osc.connect(gain); gain.connect(audioCtx.destination);
-                osc.start(now); osc.stop(now + 0.6);
-            }
-            else if (type === 'steal') {
+            } else if (type === 'steal') {
                 [523, 659].forEach((freq, idx) => {
                     const osc = audioCtx.createOscillator();
                     const gain = audioCtx.createGain();
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(freq, now + idx * 0.08);
                     gain.gain.setValueAtTime(0.25, now + idx * 0.08);
                     gain.gain.linearRampToValueAtTime(0.01, now + idx * 0.08 + 0.12);
                     osc.connect(gain); gain.connect(audioCtx.destination);
                     osc.start(now + idx * 0.08); osc.stop(now + idx * 0.08 + 0.12);
-                });
-            } 
-            else if (type === 'run' || type === 'gem') {
-                [261.6, 329.6, 392.0, 523.2, 659.3].forEach((f, i) => {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(f, now + i * 0.06);
-                    gain.gain.setValueAtTime(0.2, now + i * 0.06);
-                    gain.gain.linearRampToValueAtTime(0.01, now + i * 0.06 + 0.2);
-                    osc.connect(gain); gain.connect(audioCtx.destination);
-                    osc.start(now + i * 0.06); osc.stop(now + i * 0.06 + 0.2);
-                });
-            }
-            else if (type === 'fanfare') {
-                const notes = [
-                    { f: 261.63, d: 0.15, t: 0 },
-                    { f: 329.63, d: 0.15, t: 0.15 },
-                    { f: 392.00, d: 0.15, t: 0.30 },
-                    { f: 523.25, d: 0.40, t: 0.45 },
-                    { f: 392.00, d: 0.15, t: 0.80 },
-                    { f: 523.25, d: 0.60, t: 0.95 }
-                ];
-                notes.forEach(n => {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(n.f, now + n.t);
-                    gain.gain.setValueAtTime(0.35, now + n.t);
-                    gain.gain.linearRampToValueAtTime(0.01, now + n.t + n.d);
-                    osc.connect(gain); gain.connect(audioCtx.destination);
-                    osc.start(now + n.t); osc.stop(now + n.t + n.d);
                 });
             }
         }
@@ -723,16 +627,27 @@
         const SUITS = ['♠', '♥', '♦', '♣'];
 
         let deck = [];
+        let discardPile = [];
         let players = [];
         let turnIndex = 0;
         let playArea = [];
-        let drawnCardStage = null;
         let awaitingBustConfirm = false;
         let pendingBustState = null;
         let pendingRunState = null;
+        let unreadLogs = 0;
+        let isDrawerOpen = false;
 
-        function toggleRules(show) {
-            document.getElementById('rules-modal').style.display = show ? 'flex' : 'none';
+        function toggleModal(id, show) {
+            document.getElementById(id).style.display = show ? 'flex' : 'none';
+        }
+
+        function toggleDrawer() {
+            isDrawerOpen = !isDrawerOpen;
+            document.getElementById('log-drawer').classList.toggle('open', isDrawerOpen);
+            if (isDrawerOpen) {
+                unreadLogs = 0;
+                document.getElementById('unread-badge').style.display = 'none';
+            }
         }
 
         function buildPlayerInputs() {
@@ -757,28 +672,14 @@
             for (let i = 0; i < total; i++) {
                 const row = document.createElement('div');
                 row.className = 'player-input-row';
-                
                 const isHuman = i < numHumans;
-                const label = document.createElement('span');
-                label.innerText = `Player ${i + 1}:`;
-
-                const input = document.createElement('input');
-                input.type = 'text';
-                input.id = `player-name-input-${i}`;
-                
-                if (isHuman) {
-                    input.value = `Player ${i + 1}`;
-                } else {
-                    input.value = AI_NAMES[aiCount % AI_NAMES.length];
-                    aiCount++;
-                }
-
-                row.appendChild(label);
-                row.appendChild(input);
+                row.innerHTML = `
+                    <span>Player ${i + 1}:</span>
+                    <input type="text" id="player-name-input-${i}" value="${isHuman ? `Player ${i + 1}` : AI_NAMES[aiCount++ % AI_NAMES.length]}">
+                `;
                 container.appendChild(row);
             }
         }
-
         window.onload = buildPlayerInputs;
 
         function createDeck() {
@@ -798,10 +699,20 @@
                 });
             });
 
-            for (let j = 0; j < 6; j++) {
-                deck.push({ rank: 'JKR', suit: '★', val: 0 });
-            }
+            for (let j = 0; j < 6; j++) deck.push({ rank: 'JKR', suit: '★', val: 0 });
 
+            for (let i = deck.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [deck[i], deck[j]] = [deck[j], deck[i]];
+            }
+        }
+
+        function recycleDiscards() {
+            if (discardPile.length === 0) return;
+            log(`🔄 Deck empty! Reshuffling ${discardPile.length} discarded cards back into deck...`);
+            showToast(`Reshuffled ${discardPile.length} discarded cards!`);
+            deck = [...discardPile];
+            discardPile = [];
             for (let i = deck.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [deck[i], deck[j]] = [deck[j], deck[i]];
@@ -815,10 +726,9 @@
             players = [];
             for (let i = 0; i < total; i++) {
                 const nameInput = document.getElementById(`player-name-input-${i}`);
-                const playerName = nameInput ? nameInput.value.trim() || `Player ${i + 1}` : `Player ${i + 1}`;
                 players.push({
                     id: i,
-                    name: playerName,
+                    name: nameInput ? nameInput.value.trim() || `Player ${i + 1}` : `Player ${i + 1}`,
                     isHuman: i < humans,
                     tally: 0,
                     pending: [],
@@ -827,27 +737,25 @@
             }
 
             createDeck();
+            discardPile = [];
             document.getElementById('setup-screen').style.display = 'none';
-            document.getElementById('game-screen').style.display = 'flex';
-            
-            log(`Game started! First to 150 points wins!`);
+            document.getElementById('game-screen').style.display = 'grid';
+            log(`Game started! First to 150 points wins.`);
             startTurn();
         }
 
         function startTurn() {
-            if (deck.length < 15) createDeck();
+            if (deck.length === 0) recycleDiscards();
             playArea = [];
-            drawnCardStage = null;
             awaitingBustConfirm = false;
             pendingBustState = null;
             pendingRunState = null;
-            
+
             const p = players[turnIndex];
-            
             if (p.pending.length > 0) {
                 const points = p.pending.reduce((a, b) => a + b.val, 0);
                 p.tally += points;
-                log(`${p.name} secured ${points} pts from Pending to Tally!`, 'log-run');
+                log(`✨ ${p.name} secured ${points} pts from Pending to safe Tally!`, 'log-run');
                 p.pending = [];
             }
 
@@ -861,60 +769,51 @@
             log(`--- ${p.name}'s Turn ---`);
             drawCard();
 
-            if (!p.isHuman) {
-                setTimeout(aiLogic, 1200);
-            }
+            if (!p.isHuman) setTimeout(aiLogic, 1000);
         }
 
         function drawCard() {
-            if (deck.length === 0) createDeck();
-            
-            if (drawnCardStage) {
-                playArea.push(drawnCardStage);
-                drawnCardStage = null;
+            if (deck.length === 0) recycleDiscards();
+            if (deck.length === 0) {
+                showToast("No cards left to draw!");
+                return true;
             }
 
             const card = deck.pop();
-            drawnCardStage = card;
+            playArea.push(card);
             playSound('card');
 
-            const allCurrent = [...playArea, card];
-            const jokers = allCurrent.filter(c => c.rank === 'JKR');
+            const p = players[turnIndex];
+            const jokers = playArea.filter(c => c.rank === 'JKR');
             let isBust = false;
             let bustType = '';
 
             if (jokers.length >= 2) {
-                isBust = true;
-                bustType = 'joker';
-            } else if (allCurrent.length > 1) {
-                const ranks = allCurrent.map(c => c.rank);
-                const hasDuplicate = ranks.some((r, idx) => r !== 'JKR' && ranks.indexOf(r) !== idx);
-                if (hasDuplicate) {
-                    isBust = true;
-                    bustType = 'match';
+                isBust = true; bustType = 'joker';
+            } else if (playArea.length > 1) {
+                const ranks = playArea.map(c => c.rank);
+                if (ranks.some((r, idx) => r !== 'JKR' && ranks.indexOf(r) !== idx)) {
+                    isBust = true; bustType = 'match';
                 }
             }
 
             if (isBust) {
                 card.isBustingCard = true;
-                const p = players[turnIndex];
+                log(`🃏 ${p.name} drew ${card.rank}${card.suit} — BUST!`, 'log-bust');
+                showToast(`${p.name} drew ${card.rank}${card.suit} (BUST!)`);
 
                 if (bustType === 'joker') {
-                    playSound('doublebust');
                     executeBust(bustType);
                     return true;
                 }
-
-                playSound('bust');
 
                 if (p.gems >= 2) {
                     pendingBustState = { card, bustType };
                     if (p.isHuman) {
                         render();
-                        document.getElementById('gem-modal').style.display = 'flex';
+                        toggleModal('gem-modal', true);
                     } else {
-                        const useGems = allCurrent.length > 3;
-                        resolveGemSafeguard(useGems);
+                        resolveGemSafeguard(playArea.length > 3);
                     }
                     return true;
                 }
@@ -923,24 +822,24 @@
                 return true;
             }
 
+            log(`🃏 ${p.name} drew ${card.rank}${card.suit}`);
+            showToast(`${p.name} drew ${card.rank}${card.suit}`);
             render();
             return false;
         }
 
-        function resolveGemSafeguard(useSafeguard) {
-            document.getElementById('gem-modal').style.display = 'none';
+        function resolveGemSafeguard(useGems) {
+            toggleModal('gem-modal', false);
             const p = players[turnIndex];
 
-            if (useSafeguard && p.gems >= 2) {
+            if (useGems && p.gems >= 2) {
                 p.gems -= 2;
-                const badCard = drawnCardStage;
-                drawnCardStage = null;
-                log(`${p.name} SPENT 2 GEMS to cancel drawing the ${badCard.rank}!`, 'log-steal');
+                const savedCard = playArea.pop();
+                discardPile.push(savedCard);
+                log(`💎 ${p.name} SPENT 2 GEMS to cancel drawing ${savedCard.rank}!`, 'log-steal');
+                showToast(`${p.name} spent 2 Gems to cancel bust!`);
                 render();
-
-                if (!p.isHuman) {
-                    setTimeout(aiLogic, 1000);
-                }
+                if (!p.isHuman) setTimeout(aiLogic, 1000);
             } else {
                 executeBust(pendingBustState.bustType);
             }
@@ -952,33 +851,23 @@
             awaitingBustConfirm = true;
 
             if (bustType === 'joker') {
-                log(`💣 ${p.name} DREW A SECOND JOKER! DOUBLE BUST! Tally Wiped to 0!`, 'log-wipe');
-                p.tally = 0; 
-                log(`${p.name} gets 1 Pity Gem for a Double Bust.`, 'log-steal');
+                log(`💣 DOUBLE JOKER BUST! ${p.name}'s Tally Wiped to 0!`, 'log-bust');
+                p.tally = 0;
                 addGem(p);
             } else {
-                log(`💥 ${p.name} BUSTED with ${drawnCardStage ? drawnCardStage.rank : 'a match'}!`, 'log-bust');
-                const totalCards = playArea.length + (drawnCardStage ? 1 : 0);
-                if (totalCards <= 3) {
-                    log(`${p.name} receives 1 Pity Gem for early bust.`, 'log-steal');
-                    addGem(p);
-                }
+                if (playArea.length <= 3) addGem(p);
             }
 
-            // Keep cards on table temporarily so player/bots can see the busting card
+            // Cards from busted turn go to discard pile
+            discardPile.push(...playArea);
             render();
 
-            if (!p.isHuman) {
-                // Pause for bots so human can see what caused the bust
-                setTimeout(confirmBust, 2500);
-            }
+            if (!p.isHuman) setTimeout(confirmBust, 2200);
         }
 
         function confirmBust() {
             awaitingBustConfirm = false;
-            // Now clear cards off the board
             playArea = [];
-            drawnCardStage = null;
             endTurn();
         }
 
@@ -987,8 +876,7 @@
             if (player.gems >= 3) {
                 player.gems = 0;
                 player.tally += 50;
-                playSound('gem');
-                log(`${player.name} converted 3 Gems into +50 Points!`, 'log-run');
+                log(`💎 ${player.name} converted 3 Gems into +50 Points!`, 'log-run');
             }
         }
 
@@ -999,219 +887,182 @@
 
         function humanStay() {
             if (awaitingBustConfirm || !players[turnIndex].isHuman) return;
-            
-            const allCards = [...playArea];
-            if (drawnCardStage) allCards.push(drawnCardStage);
-
-            const runInfo = checkRun(allCards);
+            const runInfo = checkRun(playArea);
             if (runInfo.hasRun) {
                 pendingRunState = runInfo;
                 const basePts = runInfo.runCards.reduce((a, b) => a + b.val, 0);
-                document.getElementById('run-length-display').innerText = runInfo.runCards.length;
-                document.getElementById('run-points-display').innerText = basePts;
-                document.getElementById('run-double-display').innerText = basePts * 2;
-                document.getElementById('run-modal').style.display = 'flex';
+                document.getElementById('run-len').innerText = runInfo.runCards.length;
+                document.getElementById('run-pts').innerText = basePts;
+                document.getElementById('run-dbl').innerText = basePts * 2;
+                toggleModal('run-modal', true);
             } else {
                 bankTurn(false);
             }
         }
 
         function resolveRunChoice(choice) {
-            document.getElementById('run-modal').style.display = 'none';
+            toggleModal('run-modal', false);
             bankTurn(choice === 'score');
         }
 
         function bankTurn(scoreRun) {
             const p = players[turnIndex];
-            let handCards = [...playArea];
-            if (drawnCardStage) handCards.push(drawnCardStage);
+            const run = pendingRunState || checkRun(playArea);
+            let leftovers = [...playArea];
 
-            const run = pendingRunState || checkRun(handCards);
-            let leftoverCards = [...handCards];
-            
             if (run.hasRun && scoreRun) {
-                playSound('run');
+                playSound('steal');
                 const runVal = run.runCards.reduce((a, b) => a + b.val, 0) * 2;
                 p.tally += runVal;
-                log(`${p.name} banked a ${run.runCards.length}-Card RUN directly to Tally for ${runVal} PTS!`, 'log-run');
-                
+                log(`🎯 ${p.name} banked a ${run.runCards.length}-Card RUN directly to Tally for ${runVal} PTS!`, 'log-run');
                 run.runCards.forEach(rc => {
-                    const idx = leftoverCards.indexOf(rc);
-                    if (idx > -1) leftoverCards.splice(idx, 1);
+                    const idx = leftovers.indexOf(rc);
+                    if (idx > -1) leftovers.splice(idx, 1);
                 });
-            } else if (run.hasRun && !scoreRun) {
-                log(`${p.name} elected NOT to score the Run, sending all cards to Pending!`);
             }
 
+            // Execute Steals from opponent pending piles
             let stolenCards = [];
             players.forEach(op => {
                 if (op.id !== p.id && op.pending.length > 0) {
-                    const myRanks = leftoverCards.map(c => c.rank);
-                    // Standard cards only, Jokers cannot be stolen
+                    const myRanks = leftovers.map(c => c.rank);
                     const toSteal = op.pending.filter(c => c.rank !== 'JKR' && myRanks.includes(c.rank));
                     if (toSteal.length > 0) {
                         playSound('steal');
-                        log(`${p.name} STOLE ${toSteal.length} card(s) from ${op.name}!`, 'log-steal');
+                        log(`⚡ ${p.name} STOLE ${toSteal.length} card(s) from ${op.name}!`, 'log-steal');
+                        showToast(`${p.name} STOLE ${toSteal.length} cards from ${op.name}!`);
                         stolenCards.push(...toSteal);
                         op.pending = op.pending.filter(c => !toSteal.includes(c));
                     }
                 }
             });
 
-            // STRICT JOKER RULE: Filter out ALL Jokers so they are NEVER added to Pending!
-            const nonJokerLeftovers = leftoverCards.filter(c => c.rank !== 'JKR');
-            const nonJokerStolen = stolenCards.filter(c => c.rank !== 'JKR');
+            // Filter out Jokers (Jokers strictly go to discard, never saved)
+            const nonJokerLeftovers = leftovers.filter(c => c.rank !== 'JKR');
+            const jokersToDiscard = leftovers.filter(c => c.rank === 'JKR');
 
-            p.pending.push(...nonJokerLeftovers, ...nonJokerStolen);
+            p.pending.push(...nonJokerLeftovers, ...stolenCards);
+            discardPile.push(...jokersToDiscard);
+
             pendingRunState = null;
-            
-            // Clear board
             playArea = [];
-            drawnCardStage = null;
             endTurn();
         }
 
         function checkRun(cards) {
             const jokers = cards.filter(c => c.rank === 'JKR').length;
             const nonJokers = cards.filter(c => c.rank !== 'JKR');
-            
             const valMap = { 'A': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13 };
             const uniqueVals = [...new Set(nonJokers.map(c => valMap[c.rank]))].sort((a,b) => a-b);
-
-            if (uniqueVals.includes(1)) uniqueVals.push(14); 
+            if (uniqueVals.includes(1)) uniqueVals.push(14);
 
             let bestRun = [];
             for (let start = 1; start <= 10; start++) {
                 let currentRun = [];
                 let jokersLeft = jokers;
-                
                 for (let v = start; v < start + 14; v++) {
                     const match = nonJokers.find(c => valMap[c.rank] === v || (v === 14 && c.rank === 'A'));
-                    if (match) {
-                        currentRun.push(match);
-                    } else if (jokersLeft > 0) {
+                    if (match) currentRun.push(match);
+                    else if (jokersLeft > 0) {
                         currentRun.push(cards.find(c => c.rank === 'JKR'));
                         jokersLeft--;
-                    } else {
-                        break;
-                    }
+                    } else break;
                 }
-                if (currentRun.length > bestRun.length) {
-                    bestRun = currentRun;
-                }
+                if (currentRun.length > bestRun.length) bestRun = currentRun;
             }
-
             return { hasRun: bestRun.length >= 5, runCards: bestRun };
         }
 
         function aiLogic() {
             if (players[turnIndex].isHuman || awaitingBustConfirm) return;
-
             const p = players[turnIndex];
-            const allCards = [...playArea];
-            if (drawnCardStage) allCards.push(drawnCardStage);
+            const runInfo = checkRun(playArea);
+            const count = playArea.length;
+            let stopProb = count <= 2 ? 0 : count === 3 ? 0.2 : count === 4 ? 0.45 : 0.8;
 
-            const runInfo = checkRun(allCards);
-            const cardCount = allCards.length;
-            let stopProbability = 0;
+            if (runInfo.hasRun) stopProb = 0.95;
 
-            if (cardCount <= 2) stopProbability = 0;
-            else if (cardCount === 3) stopProbability = 0.1;
-            else if (cardCount === 4) stopProbability = 0.35;
-            else if (cardCount === 5) stopProbability = 0.65;
-            else stopProbability = 0.88;
-
-            if (runInfo.hasRun) stopProbability = 0.95;
-
-            if (Math.random() < stopProbability && cardCount > 1) {
-                log(`${p.name} decides to STOP and BANK.`);
-                
-                if (runInfo.hasRun) {
-                    let totalStealable = 0;
-                    players.forEach(op => {
-                        if (op.id !== p.id) {
-                            totalStealable += op.pending.filter(c => allCards.map(pa => pa.rank).includes(c.rank)).length;
-                        }
-                    });
-                    const scoreRun = totalStealable < 2;
-                    bankTurn(scoreRun);
-                } else {
-                    bankTurn(false);
-                }
+            if (Math.random() < stopProb && count > 1) {
+                log(`${p.name} chooses to STOP and BANK.`);
+                bankTurn(runInfo.hasRun);
             } else {
-                log(`${p.name} decides to PUSH...`);
+                log(`${p.name} PUSHES...`);
                 const busted = drawCard();
-                if (!busted && !awaitingBustConfirm) {
-                    setTimeout(aiLogic, 1000);
-                }
+                if (!busted && !awaitingBustConfirm) setTimeout(aiLogic, 1000);
             }
         }
 
         function endTurn() {
             render();
             turnIndex = (turnIndex + 1) % players.length;
-            setTimeout(startTurn, 1000);
+            setTimeout(startTurn, 800);
         }
 
         function endGame(winner) {
-            playSound('fanfare');
             document.getElementById('winner-title').innerText = `🏆 ${winner.name.toUpperCase()} WINS! 🏆`;
             document.getElementById('winner-details').innerText = `Final Score: ${winner.tally} Points`;
-            document.getElementById('win-modal').style.display = 'flex';
+            toggleModal('win-modal', true);
         }
 
         function log(msg, className = '') {
-            const box = document.getElementById('log-box');
+            const list = document.getElementById('log-list');
             const div = document.createElement('div');
             div.className = `log-entry ${className}`;
             div.innerText = msg;
-            box.appendChild(div);
-            box.scrollTop = box.scrollHeight;
+            list.appendChild(div);
+            list.scrollTop = list.scrollHeight;
+
+            if (!isDrawerOpen) {
+                unreadLogs++;
+                const badge = document.getElementById('unread-badge');
+                badge.innerText = unreadLogs;
+                badge.style.display = 'inline-block';
+            }
         }
 
-        function formatPendingCards(cards, activeRanks) {
-            if (!cards || cards.length === 0) return '<em>None</em>';
-            const counts = {};
-            cards.forEach(c => {
-                counts[c.rank] = (counts[c.rank] || 0) + 1;
+        function showToast(msg) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerText = msg;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 2500);
+        }
+
+        function openDeckInspector() {
+            const grid = document.getElementById('deck-grid');
+            grid.innerHTML = '';
+            const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A', 'JKR'];
+
+            ranks.forEach(r => {
+                const count = deck.filter(c => c.rank === r).length;
+                const cell = document.createElement('div');
+                cell.className = 'deck-cell';
+                cell.innerHTML = `<strong>${r}:</strong> ${count} left`;
+                grid.appendChild(cell);
             });
-
-            return Object.entries(counts)
-                .map(([rank, count]) => {
-                    const text = `${rank}${count > 1 ? `(x${count})` : ''}`;
-                    // Highlight red if matching active cards on the table
-                    if (activeRanks.includes(rank)) {
-                        return `<span class="threat-rank" title="Threatened by current turn!">🔥 ${text}</span>`;
-                    }
-                    return text;
-                })
-                .join(', ');
+            toggleModal('deck-modal', true);
         }
 
-        function calculateBustProbability(hand) {
-            if (hand.length === 0 || deck.length === 0) return 0;
-            const currentRanks = hand.map(c => c.rank);
-            const jokersInHand = hand.filter(c => c.rank === 'JKR').length;
+        function calculateBustProbability() {
+            if (playArea.length === 0 || deck.length === 0) return 0;
+            const currentRanks = playArea.map(c => c.rank);
+            const jokersInHand = playArea.filter(c => c.rank === 'JKR').length;
 
-            let bustOutcomes = 0;
+            let busts = 0;
             deck.forEach(c => {
-                if (c.rank === 'JKR' && jokersInHand >= 1) {
-                    bustOutcomes++;
-                } else if (c.rank !== 'JKR' && currentRanks.includes(c.rank)) {
-                    bustOutcomes++;
-                }
+                if (c.rank === 'JKR' && jokersInHand >= 1) busts++;
+                else if (c.rank !== 'JKR' && currentRanks.includes(c.rank)) busts++;
             });
 
-            return Math.round((bustOutcomes / deck.length) * 100);
+            return Math.round((busts / deck.length) * 100);
         }
 
         function render() {
-            document.getElementById('deck-count').innerText = deck.length;
+            document.getElementById('deck-count-display').innerText = `${deck.length}`;
             document.getElementById('current-player-display').innerText = players[turnIndex].name;
 
             const isHuman = players[turnIndex].isHuman;
-            const handTotal = playArea.length + (drawnCardStage ? 1 : 0);
-            
             if (awaitingBustConfirm) {
                 document.getElementById('btn-hit').style.display = 'none';
                 document.getElementById('btn-stay').style.display = 'none';
@@ -1220,113 +1071,69 @@
                 document.getElementById('btn-hit').style.display = 'inline-block';
                 document.getElementById('btn-stay').style.display = 'inline-block';
                 document.getElementById('btn-continue').style.display = 'none';
-
                 document.getElementById('btn-hit').disabled = !isHuman;
-                document.getElementById('btn-stay').disabled = !isHuman || handTotal <= 1;
+                document.getElementById('btn-stay').disabled = !isHuman || playArea.length <= 1;
             }
 
-            // Get active turn ranks to highlight threatened pending cards
-            const activeTableCards = [...playArea];
-            if (drawnCardStage) activeTableCards.push(drawnCardStage);
-            const activeRanks = activeTableCards.map(c => c.rank);
-
-            const sb = document.getElementById('scoreboard');
+            const activeRanks = playArea.map(c => c.rank);
+            const sb = document.getElementById('scoreboard-grid');
             sb.innerHTML = '';
+
             players.forEach((p, idx) => {
                 const pendPts = p.pending.reduce((a,b) => a + b.val, 0);
                 const isCurrent = idx === turnIndex;
                 const card = document.createElement('div');
                 card.className = `player-card ${isCurrent ? 'active' : ''}`;
+
+                const pills = p.pending.map(c => {
+                    const isThreatened = !isCurrent && activeRanks.includes(c.rank);
+                    return `<span class="pill ${isThreatened ? 'threatened' : ''}">${c.rank}</span>`;
+                }).join('');
+
                 card.innerHTML = `
-                    <div class="player-name">
-                        ${p.name}
-                        <span class="player-type">${p.isHuman ? 'Human' : 'AI'}</span>
+                    <div class="p-header">
+                        ${p.name} <span class="p-type">${p.isHuman ? 'Human' : 'AI'}</span>
                     </div>
-                    <div class="stat-row"><span>Tally (Safe):</span><span class="stat-val tally-val">${p.tally}</span></div>
-                    <div class="stat-row"><span>Pending:</span><span class="stat-val pending-val">${pendPts} pts (${p.pending.length} cards)</span></div>
-                    <div class="stat-row"><span>Gems:</span><span class="stat-val gem-val">${'💎'.repeat(p.gems)} (${p.gems}/3)</span></div>
-                    <div class="pending-cards-list"><strong>Pending:</strong> ${formatPendingCards(p.pending, !isCurrent ? activeRanks : [])}</div>
+                    <div class="p-stat"><span>Safe Tally:</span><span class="p-val" style="color:var(--accent-green);">${p.tally}</span></div>
+                    <div class="p-stat"><span>Pending:</span><span class="p-val" style="color:var(--accent-gold);">${pendPts}pts</span></div>
+                    <div class="p-stat"><span>Gems:</span><span class="p-val">${'💎'.repeat(p.gems)}</span></div>
+                    <div class="pending-pills">${p.pending.length ? pills : '<span style="font-size:0.65rem; color:#64748b;">No pending</span>'}</div>
                 `;
                 sb.appendChild(card);
             });
 
-            const opponentPendingRanks = [];
-            players.forEach(p => {
-                if (p.id !== players[turnIndex].id) {
-                    p.pending.forEach(c => opponentPendingRanks.push(c.rank));
-                }
-            });
-
-            const stageContainer = document.getElementById('drawn-card-stage');
-            const stageLabel = document.getElementById('stage-label');
-            stageContainer.innerHTML = '';
-
-            if (drawnCardStage) {
-                stageLabel.style.display = 'block';
-                stageContainer.appendChild(createCardElement(drawnCardStage, opponentPendingRanks, activeTableCards));
-            } else {
-                stageLabel.style.display = 'none';
-            }
-
-            const sortedHand = [...playArea];
-            const runInfo = checkRun(activeTableCards);
-            const hasAceLowRun = runInfo.hasRun && runInfo.runCards.some(c => c.rank === 'A') && runInfo.runCards.some(c => c.rank === '2');
-
-            sortedHand.sort((a, b) => {
-                const rankOrder = hasAceLowRun 
-                    ? ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'JKR']
-                    : ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A', 'JKR'];
-                return rankOrder.indexOf(a.rank) - rankOrder.indexOf(b.rank);
-            });
-
+            // Table Fan Cards
             const pa = document.getElementById('play-area');
             pa.innerHTML = '';
-            sortedHand.forEach(c => {
-                pa.appendChild(createCardElement(c, opponentPendingRanks, activeTableCards));
+            const opponentPendingRanks = [];
+            players.forEach(p => {
+                if (p.id !== players[turnIndex].id) p.pending.forEach(c => opponentPendingRanks.push(c.rank));
             });
 
-            // Turn points and Bust Meter update
-            const totalTurnPoints = activeTableCards.reduce((a, b) => a + b.val, 0);
-            document.getElementById('turn-points-val').innerText = `${totalTurnPoints} pts`;
+            playArea.forEach(c => {
+                const el = document.createElement('div');
+                const isRed = c.suit === '♥' || c.suit === '♦';
+                const isJoker = c.rank === 'JKR';
+                const isBusting = c.isBustingCard;
+                const runInfo = checkRun(playArea);
+                const isRunCard = runInfo.hasRun && runInfo.runCards.includes(c);
+                const isStealCard = opponentPendingRanks.includes(c.rank) && !isJoker;
 
-            const prob = calculateBustProbability(activeTableCards);
+                let extra = ''; let badge = '';
+                if (isBusting) { extra = 'busting-card'; badge = '<span class="card-badge badge-bust">BUST</span>'; }
+                else if (isRunCard) { badge = '<span class="card-badge badge-run">RUN</span>'; }
+                else if (isStealCard) { badge = '<span class="card-badge badge-steal">STEAL</span>'; }
+
+                el.className = `card ${isRed ? 'red' : ''} ${isJoker ? 'joker' : ''} ${extra}`;
+                el.innerHTML = `${badge}<div class="card-rank">${c.rank}</div><div class="card-suit">${c.suit}</div><div class="card-val">${c.val}pt</div>`;
+                pa.appendChild(el);
+            });
+
+            document.getElementById('turn-points-val').innerText = `${playArea.reduce((a,b) => a + b.val, 0)} pts`;
+            const prob = calculateBustProbability();
             const probVal = document.getElementById('prob-val');
             probVal.innerText = `${prob}%`;
             probVal.className = `prob-val ${prob > 40 ? 'prob-high' : prob > 20 ? 'prob-med' : 'prob-low'}`;
-        }
-
-        function createCardElement(c, opponentPendingRanks, allHandCards) {
-            const el = document.createElement('div');
-            const isRed = c.suit === '♥' || c.suit === '♦';
-            const isJoker = c.rank === 'JKR';
-            const isBusting = c.isBustingCard;
-            
-            const runInfo = checkRun(allHandCards);
-            const isRunCard = runInfo.hasRun && runInfo.runCards.includes(c);
-            const isStealCard = opponentPendingRanks.includes(c.rank) && !isJoker;
-
-            let extraClasses = '';
-            let badge = '';
-
-            if (isBusting) {
-                extraClasses += ' busting-card';
-                badge = '<span class="card-badge badge-bust">BUST!</span>';
-            } else if (isRunCard) {
-                extraClasses += ' run-highlight';
-                badge = '<span class="card-badge badge-run">RUN</span>';
-            } else if (isStealCard) {
-                extraClasses += ' steal-highlight';
-                badge = '<span class="card-badge badge-steal">STEAL</span>';
-            }
-
-            el.className = `card ${isRed ? 'red' : ''} ${isJoker ? 'joker' : ''} ${extraClasses}`;
-            el.innerHTML = `
-                ${badge}
-                <div class="card-rank">${c.rank}</div>
-                <div class="card-suit">${c.suit}</div>
-                <div class="card-val">${c.val}pts</div>
-            `;
-            return el;
         }
     </script>
 </body>
