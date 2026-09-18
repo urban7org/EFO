@@ -102,7 +102,7 @@
             margin-top: 8px;
         }
 
-        /* 2-Column Responsive Sidebar */
+        /* Sidebar */
         .sidebar {
             background: var(--card-bg);
             border-radius: 12px;
@@ -210,7 +210,11 @@
             color: #cbd5e1;
         }
 
-        /* Playing Card Back Deck Graphic */
+        .decks-container {
+            display: flex;
+            gap: 15px;
+        }
+
         .deck-widget {
             display: flex;
             flex-direction: column;
@@ -220,13 +224,22 @@
         }
         .deck-widget:hover { transform: scale(1.04); }
 
+        .deck-label {
+            font-size: 0.65rem;
+            color: #94a3b8;
+            margin-top: 4px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        /* Deck Graphic */
         .deck-stack {
-            width: 68px;
-            height: 96px;
+            width: 60px;
+            height: 84px;
             background: 
                 radial-gradient(circle at center, transparent 30%, #7f1d1d 30%),
                 repeating-linear-gradient(45deg, #b91c1c 0, #b91c1c 4px, #991b1b 4px, #991b1b 8px);
-            border: 3px solid #fef08a;
+            border: 2px solid #fef08a;
             border-radius: 6px;
             box-shadow: -2px -2px 0 #1e293b, -4px -4px 0 #991b1b, 0 8px 15px rgba(0,0,0,0.6);
             display: flex;
@@ -234,11 +247,34 @@
             align-items: center;
             font-weight: bold;
             color: #fef08a;
-            font-size: 1.1rem;
+            font-size: 1rem;
             text-shadow: 0 0 5px rgba(0,0,0,0.8);
             position: relative;
             outline: 2px solid #7f1d1d;
-            outline-offset: -5px;
+            outline-offset: -4px;
+        }
+
+        /* Discard Pile Graphic */
+        .discard-stack {
+            width: 60px;
+            height: 84px;
+            background: #1e293b;
+            border: 2px dashed #475569;
+            border-radius: 6px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: #94a3b8;
+            font-size: 1rem;
+            position: relative;
+        }
+
+        .discard-stack.has-cards {
+            background: #334155;
+            border: 2px solid #64748b;
+            color: #f8fafc;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
         }
 
         /* Overlapping Table Card Fan */
@@ -264,7 +300,7 @@
             font-weight: bold;
             box-shadow: 0 4px 10px rgba(0,0,0,0.4);
             position: relative;
-            margin-left: -26px; /* Horizontal overlapping */
+            margin-left: -26px;
             border: 1px solid #cbd5e1;
         }
 
@@ -282,7 +318,6 @@
             z-index: 10;
         }
 
-        /* Left-aligned Badge tag so visible when overlapped */
         .card-badge {
             position: absolute;
             top: -6px; 
@@ -407,6 +442,17 @@
         .rules-text h3 { color: var(--accent-gold); margin: 8px 0 3px 0; font-size: 0.9rem; }
         .rules-text ul { padding-left: 15px; }
 
+        .run-option {
+            background: #0f172a; border: 1px solid #334155; padding: 8px; border-radius: 6px;
+            margin-bottom: 6px; cursor: pointer; text-align: left; transition: all 0.2s;
+        }
+        .run-option:hover { border-color: var(--accent-gold); background: #1e293b; }
+        .run-option.selected { border-color: var(--accent-green); background: #064e3b; }
+
+        .endgame-btn-group {
+            display: flex; flex-direction: column; gap: 8px; margin-top: 15px;
+        }
+
         @media (max-width: 768px) {
             #game-screen { grid-template-columns: 1fr; }
             .sidebar { max-height: 180px; }
@@ -463,8 +509,15 @@
             <div class="table-top">
                 <div>Turn: <strong id="current-player-display" style="color:var(--accent-gold);">--</strong></div>
                 
-                <div class="deck-widget" onclick="openDeckInspector()" title="View Deck Breakdown">
-                    <div class="deck-stack" id="deck-count-display">138</div>
+                <div class="decks-container">
+                    <div class="deck-widget" onclick="openInspector('deck')" title="View Deck Breakdown">
+                        <div class="deck-stack" id="deck-count-display">138</div>
+                        <div class="deck-label">Deck</div>
+                    </div>
+                    <div class="deck-widget" onclick="openInspector('discard')" title="View Discarded Cards">
+                        <div class="discard-stack" id="discard-count-display">0</div>
+                        <div class="deck-label">Discard</div>
+                    </div>
                 </div>
             </div>
 
@@ -495,13 +548,13 @@
         <div class="log-list" id="log-list"></div>
     </div>
 
-    <!-- DECK INSPECTOR MODAL -->
-    <div class="modal" id="deck-modal">
+    <!-- DECK / DISCARD INSPECTOR MODAL -->
+    <div class="modal" id="inspector-modal">
         <div class="modal-content">
-            <h3 style="color:var(--accent-gold); margin-bottom:6px;">🃏 Deck Composition</h3>
-            <p style="font-size:0.75rem; color:#cbd5e1;">Exact count of cards currently remaining in draw pile:</p>
-            <div class="deck-grid" id="deck-grid"></div>
-            <button class="btn-primary" onclick="toggleModal('deck-modal', false)">Close</button>
+            <h3 id="inspector-title" style="color:var(--accent-gold); margin-bottom:6px;">🃏 Card Inspector</h3>
+            <p id="inspector-desc" style="font-size:0.75rem; color:#cbd5e1;"></p>
+            <div class="deck-grid" id="inspector-grid"></div>
+            <button class="btn-primary" onclick="toggleModal('inspector-modal', false)">Close</button>
         </div>
     </div>
 
@@ -511,7 +564,7 @@
             <h2 style="color:var(--accent-gold); margin-bottom:10px;">📜 Rules of Play</h2>
             <div class="rules-text">
                 <h3>Objective</h3>
-                <p>First player to reach <strong>150 points</strong> in safe Score Tally wins!</p>
+                <p>First player to reach <strong>150 points</strong> in Score wins!</p>
 
                 <h3>138-Card Deck Breakdown</h3>
                 <ul>
@@ -525,19 +578,20 @@
                 <h3>On Your Turn</h3>
                 <ul>
                     <li>Draw cards sequentially. Drawing a matching rank causes a standard <strong>Bust</strong>.</li>
-                    <li><strong>Double Bust (2 Jokers):</strong> Instantly resets safe Score Tally to 0! Jokers can never be banked or stolen.</li>
+                    <li><strong>Double Bust (2 Jokers):</strong> Instantly resets Score to 0!</li>
                 </ul>
 
                 <h3>Pending Piles & Stealing</h3>
                 <ul>
-                    <li>Banked non-Joker cards go to your <strong>Pending Pile</strong>, converting to safe Tally at the start of your next turn.</li>
+                    <li>Banked cards go to your <strong>Pending Pile</strong>, converting to Score at the start of your next turn.</li>
                     <li>Drawing cards matching an opponent's Pending cards lets you <strong>steal</strong> them when you bank!</li>
                 </ul>
 
                 <h3>Gems & Runs</h3>
                 <ul>
                     <li>Busting early (3 or fewer cards) gives 1 Pity Gem. Spend 2 Gems to cancel a drawn bust card!</li>
-                    <li>5+ card runs can be doubled directly to safe score Tally or sent unscored to Pending.</li>
+                    <li>Collect <strong>3 Gems</strong> to automatically convert them into <strong>+50 Bonus Score Points</strong>!</li>
+                    <li>5+ card runs can be doubled directly to Score or sent unscored to Pending. If scored directly, remaining non-run cards go to Pending.</li>
                 </ul>
             </div>
             <button class="btn-primary" style="margin-top:15px;" onclick="toggleModal('rules-modal', false)">Close Rules</button>
@@ -556,14 +610,16 @@
         </div>
     </div>
 
-    <!-- RUN MODAL -->
+    <!-- RUN SELECTION MODAL -->
     <div class="modal" id="run-modal">
         <div class="modal-content">
             <h3 style="color:var(--accent-gold);">🎯 RUN COMPLETED!</h3>
-            <p style="font-size:0.85rem; margin-top:8px;">You built a <strong><span id="run-len">5</span>-Card Run</strong> worth <strong id="run-pts">0</strong> base points!</p>
-            <div style="display:flex; flex-direction:column; gap:8px; margin-top:15px;">
-                <button class="btn-primary" style="background:var(--accent-green)" onclick="resolveRunChoice('score')">Double & Bank to Safe Tally (<span id="run-dbl">0</span> pts)</button>
-                <button class="btn-primary" style="background:var(--accent-gold)" onclick="resolveRunChoice('pending')">Move to Pending Pile (Unscored)</button>
+            <p style="font-size:0.8rem; margin:6px 0; color:#cbd5e1;">Select the run sequence you wish to score:</p>
+            <div id="run-options-container"></div>
+
+            <div style="display:flex; flex-direction:column; gap:8px; margin-top:12px;">
+                <button class="btn-primary" style="background:var(--accent-green)" onclick="resolveRunChoice('score')">Double Selected Run & Score Instantly</button>
+                <button class="btn-primary" style="background:var(--accent-gold)" onclick="resolveRunChoice('pending')">Move Entire Hand to Pending (Unscored)</button>
             </div>
         </div>
     </div>
@@ -573,7 +629,12 @@
         <div class="modal-content">
             <h2 id="winner-title" style="color:var(--accent-gold);">🏆 GAME OVER 🏆</h2>
             <p id="winner-details" style="margin:15px 0;"></p>
-            <button class="btn-primary" onclick="location.reload()">Play Again</button>
+            
+            <div class="endgame-btn-group">
+                <button class="btn-primary" style="background:var(--accent-green)" onclick="rematchGame()">🔄 Rematch</button>
+                <button class="btn-primary" style="background:var(--accent-blue)" onclick="resetToSetup()">🎮 New Game</button>
+                <button class="btn-primary" style="background:#475569" onclick="endSession()">✕ End</button>
+            </div>
         </div>
     </div>
 
@@ -635,7 +696,9 @@
         let awaitingBustConfirm = false;
         let pendingBustState = null;
         let pendingRunState = null;
+        let selectedRunIndex = 0;
         let isDrawerOpen = false;
+        let lastWinnerId = null;
 
         function toggleModal(id, show) {
             document.getElementById(id).style.display = show ? 'flex' : 'none';
@@ -734,6 +797,7 @@
 
             createDeck();
             discardPile = [];
+            lastWinnerId = null;
             document.getElementById('setup-screen').style.display = 'none';
             document.getElementById('game-screen').style.display = 'grid';
             log(`Game started! First to 150 points wins.`);
@@ -751,7 +815,7 @@
             if (p.pending.length > 0) {
                 const points = p.pending.reduce((a, b) => a + b.val, 0);
                 p.tally += points;
-                log(`✨ ${p.name} secured ${points} pts from Pending to safe Tally!`, 'log-run');
+                log(`✨ ${p.name} secured ${points} pts from Pending to Score!`, 'log-run');
                 p.pending = [];
             }
 
@@ -762,7 +826,6 @@
                 return;
             }
 
-            log(`--- ${p.name}'s Turn ---`);
             drawCard();
 
             if (!p.isHuman) setTimeout(aiLogic, 1000);
@@ -784,20 +847,34 @@
             const jokers = playArea.filter(c => c.rank === 'JKR');
             let isBust = false;
             let bustType = '';
+            let originalMatchIndex = -1;
 
             if (jokers.length >= 2) {
                 isBust = true; bustType = 'joker';
             } else if (playArea.length > 1) {
                 const ranks = playArea.map(c => c.rank);
-                if (ranks.some((r, idx) => r !== 'JKR' && ranks.indexOf(r) !== idx)) {
-                    isBust = true; bustType = 'match';
+                const currentRank = card.rank;
+                if (currentRank !== 'JKR') {
+                    const firstMatch = ranks.indexOf(currentRank);
+                    if (firstMatch !== -1 && firstMatch < playArea.length - 1) {
+                        isBust = true; 
+                        bustType = 'match';
+                        originalMatchIndex = firstMatch;
+                    }
                 }
             }
 
             if (isBust) {
                 card.isBustingCard = true;
-                log(`🃏 ${p.name} drew ${card.rank}${card.suit} — BUST!`, 'log-bust');
-                showToast(`${p.name} drew ${card.rank}${card.suit} (BUST!)`);
+                if (bustType === 'match' && originalMatchIndex !== -1) {
+                    playArea[originalMatchIndex].isBustingCard = true;
+                } else if (bustType === 'joker') {
+                    playArea.filter(c => c.rank === 'JKR').forEach(c => c.isBustingCard = true);
+                }
+
+                const handStr = playArea.map(c => `${c.rank}${c.suit}`).join(', ');
+                log(`💥 ${p.name} drew ${handStr} -- BUST!`, 'log-bust');
+                showToast(`${p.name} BUSTED!`);
 
                 if (bustType === 'joker') {
                     executeBust(bustType);
@@ -805,7 +882,7 @@
                 }
 
                 if (p.gems >= 2) {
-                    pendingBustState = { card, bustType };
+                    pendingBustState = { card, bustType, originalMatchIndex };
                     if (p.isHuman) {
                         render(true);
                         toggleModal('gem-modal', true);
@@ -819,8 +896,6 @@
                 return true;
             }
 
-            log(`🃏 ${p.name} drew ${card.rank}${card.suit}`);
-            showToast(`${p.name} drew ${card.rank}${card.suit}`);
             render(true);
             return false;
         }
@@ -833,6 +908,7 @@
                 p.gems -= 2;
                 const savedCard = playArea.pop();
                 discardPile.push(savedCard);
+                playArea.forEach(c => c.isBustingCard = false);
                 log(`💎 ${p.name} SPENT 2 GEMS to cancel drawing ${savedCard.rank}!`, 'log-steal');
                 showToast(`${p.name} spent 2 Gems to cancel bust!`);
                 render(false);
@@ -848,12 +924,11 @@
             awaitingBustConfirm = true;
 
             if (bustType === 'joker') {
-                log(`💣 DOUBLE JOKER BUST! ${p.name}'s Tally Wiped to 0!`, 'log-bust');
+                log(`💣 DOUBLE JOKER BUST! ${p.name}'s Score Wiped to 0!`, 'log-bust');
                 p.tally = 0;
-                addGem(p);
-            } else {
-                if (playArea.length <= 3) addGem(p);
             }
+
+            if (playArea.length <= 3) addGem(p);
 
             discardPile.push(...playArea);
             render(false);
@@ -872,7 +947,8 @@
             if (player.gems >= 3) {
                 player.gems = 0;
                 player.tally += 50;
-                log(`💎 ${player.name} converted 3 Gems into +50 Points!`, 'log-run');
+                log(`💎 ${player.name} converted 3 Gems into +50 Bonus Score!`, 'log-run');
+                showToast(`${player.name} converted 3 Gems into +50 Score!`);
             }
         }
 
@@ -883,17 +959,37 @@
 
         function humanStay() {
             if (awaitingBustConfirm || !players[turnIndex].isHuman) return;
-            const runInfo = checkRun(playArea);
-            if (runInfo.hasRun) {
-                pendingRunState = runInfo;
-                const basePts = runInfo.runCards.reduce((a, b) => a + b.val, 0);
-                document.getElementById('run-len').innerText = runInfo.runCards.length;
-                document.getElementById('run-pts').innerText = basePts;
-                document.getElementById('run-dbl').innerText = basePts * 2;
+            const runs = findAllRuns(playArea);
+            if (runs.length > 0) {
+                pendingRunState = runs;
+                buildRunModal(runs);
                 toggleModal('run-modal', true);
             } else {
                 bankTurn(false);
             }
+        }
+
+        function buildRunModal(runs) {
+            const container = document.getElementById('run-options-container');
+            container.innerHTML = '';
+            selectedRunIndex = 0;
+
+            runs.forEach((r, idx) => {
+                const basePts = r.reduce((a, b) => a + b.val, 0);
+                const str = r.map(c => `${c.rank}${c.suit}`).join(' - ');
+                const div = document.createElement('div');
+                div.className = `run-option ${idx === 0 ? 'selected' : ''}`;
+                div.onclick = () => {
+                    document.querySelectorAll('.run-option').forEach(el => el.classList.remove('selected'));
+                    div.classList.add('selected');
+                    selectedRunIndex = idx;
+                };
+                div.innerHTML = `
+                    <div style="font-weight:bold; color:var(--accent-gold);">${r.length}-Card Run (${basePts * 2} scored)</div>
+                    <div style="font-size:0.75rem; color:#cbd5e1; margin-top:2px;">${str}</div>
+                `;
+                container.appendChild(div);
+            });
         }
 
         function resolveRunChoice(choice) {
@@ -903,17 +999,24 @@
 
         function bankTurn(scoreRun) {
             const p = players[turnIndex];
-            const run = pendingRunState || checkRun(playArea);
+            const handStr = playArea.map(c => `${c.rank}${c.suit}`).join(', ');
+            log(`📥 ${p.name} drew ${handStr} -- Holds`);
+
             let leftovers = [...playArea];
 
-            if (run.hasRun && scoreRun) {
+            if (scoreRun && pendingRunState) {
+                const runCards = pendingRunState[selectedRunIndex] || pendingRunState[0];
                 playSound('steal');
-                const runVal = run.runCards.reduce((a, b) => a + b.val, 0) * 2;
+                const runVal = runCards.reduce((a, b) => a + b.val, 0) * 2;
                 p.tally += runVal;
-                log(`🎯 ${p.name} banked a ${run.runCards.length}-Card RUN directly to Tally for ${runVal} PTS!`, 'log-run');
-                run.runCards.forEach(rc => {
+                log(`🎯 ${p.name} scored a ${runCards.length}-Card RUN directly to Score for ${runVal} PTS!`, 'log-run');
+                
+                runCards.forEach(rc => {
                     const idx = leftovers.indexOf(rc);
-                    if (idx > -1) leftovers.splice(idx, 1);
+                    if (idx > -1) {
+                        const removed = leftovers.splice(idx, 1)[0];
+                        discardPile.push(removed);
+                    }
                 });
             }
 
@@ -936,8 +1039,6 @@
             const jokersToDiscard = leftovers.filter(c => c.rank === 'JKR');
 
             p.pending.push(...nonJokerLeftovers, ...stolenCards);
-            
-            // Sort Pending Pile strictly 2 through A
             p.pending.sort((a, b) => RANK_ORDER[a.rank] - RANK_ORDER[b.rank]);
 
             discardPile.push(...jokersToDiscard);
@@ -947,44 +1048,105 @@
             endTurn();
         }
 
-        function checkRun(cards) {
-            const jokers = cards.filter(c => c.rank === 'JKR').length;
-            const nonJokers = cards.filter(c => c.rank !== 'JKR');
+        function findAllRuns(cards) {
             const valMap = { 'A': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13 };
-            const uniqueVals = [...new Set(nonJokers.map(c => valMap[c.rank]))].sort((a,b) => a-b);
-            if (uniqueVals.includes(1)) uniqueVals.push(14);
+            const jokers = cards.filter(c => c.rank === 'JKR');
+            const nonJokers = cards.filter(c => c.rank !== 'JKR');
 
-            let bestRun = [];
+            let allValidRuns = [];
+
             for (let start = 1; start <= 10; start++) {
                 let currentRun = [];
-                let jokersLeft = jokers;
+                let jokersLeft = jokers.length;
+                let jCount = 0;
+
                 for (let v = start; v < start + 14; v++) {
                     const match = nonJokers.find(c => valMap[c.rank] === v || (v === 14 && c.rank === 'A'));
-                    if (match) currentRun.push(match);
-                    else if (jokersLeft > 0) {
-                        currentRun.push(cards.find(c => c.rank === 'JKR'));
+                    if (match) {
+                        currentRun.push(match);
+                    } else if (jokersLeft > 0) {
+                        currentRun.push(jokers[jCount++]);
                         jokersLeft--;
-                    } else break;
+                    } else {
+                        break;
+                    }
                 }
-                if (currentRun.length > bestRun.length) bestRun = currentRun;
+
+                if (currentRun.length >= 5) {
+                    for (let len = currentRun.length; len >= 5; len--) {
+                        for (let offset = 0; offset <= currentRun.length - len; offset++) {
+                            const sub = currentRun.slice(offset, offset + len);
+                            allValidRuns.push(sub);
+                        }
+                    }
+                }
             }
-            return { hasRun: bestRun.length >= 5, runCards: bestRun };
+
+            const unique = [];
+            const keys = new Set();
+            allValidRuns.forEach(r => {
+                const key = r.map(c => `${c.rank}${c.suit}`).sort().join('|');
+                if (!keys.has(key)) {
+                    keys.add(key);
+                    unique.push(r);
+                }
+            });
+
+            return unique;
         }
 
         function aiLogic() {
             if (players[turnIndex].isHuman || awaitingBustConfirm) return;
             const p = players[turnIndex];
-            const runInfo = checkRun(playArea);
+            const runs = findAllRuns(playArea);
             const count = playArea.length;
-            let stopProb = count <= 2 ? 0 : count === 3 ? 0.2 : count === 4 ? 0.45 : 0.8;
 
-            if (runInfo.hasRun) stopProb = 0.95;
+            // Ramped Endgame Desperation AI logic
+            let leader = null;
+            let highestTotal = -1;
+            players.forEach(op => {
+                if (op.id !== p.id) {
+                    const oppScore = op.tally + op.pending.reduce((a, b) => a + b.val, 0);
+                    if (oppScore >= 150 && oppScore > highestTotal) {
+                        highestTotal = oppScore;
+                        leader = op;
+                    }
+                }
+            });
 
-            if (Math.random() < stopProb && count > 1) {
-                log(`${p.name} chooses to STOP and BANK.`);
-                bankTurn(runInfo.hasRun);
+            let stopProb;
+
+            if (leader) {
+                // Calculate how many players are remaining between the current AI and the leader
+                const totalP = players.length;
+                let playersBetween = 0;
+                let curr = (turnIndex + 1) % totalP;
+                while (curr !== leader.id) {
+                    playersBetween++;
+                    curr = (curr + 1) % totalP;
+                }
+
+                const myTotal = p.tally + p.pending.reduce((a, b) => a + b.val, 0) + playArea.reduce((a, b) => a + b.val, 0);
+
+                if (playersBetween >= 2) {
+                    // Moderate aggression: hit enough to knock some points/steal, but okay to stop early and rely on others
+                    stopProb = myTotal >= 150 ? 0.95 : count <= 2 ? 0.1 : 0.5;
+                } else if (playersBetween === 1) {
+                    // High aggression: only one player left to help, risk more
+                    stopProb = myTotal >= 150 ? 0.95 : count <= 3 ? 0.05 : 0.25;
+                } else {
+                    // Zero players between: Last line of defense! Win or bust!
+                    stopProb = myTotal >= 150 ? 0.95 : 0.0;
+                }
             } else {
-                log(`${p.name} PUSHES...`);
+                // Standard turn logic
+                stopProb = count <= 1 ? 0 : count === 2 ? 0.1 : count === 3 ? 0.25 : count === 4 ? 0.5 : 0.8;
+                if (runs.length > 0) stopProb = 0.95;
+            }
+
+            if (Math.random() < stopProb && count >= 1) {
+                bankTurn(runs.length > 0);
+            } else {
                 const busted = drawCard();
                 if (!busted && !awaitingBustConfirm) setTimeout(aiLogic, 1000);
             }
@@ -997,9 +1159,36 @@
         }
 
         function endGame(winner) {
+            lastWinnerId = winner.id;
             document.getElementById('winner-title').innerText = `🏆 ${winner.name.toUpperCase()} WINS! 🏆`;
             document.getElementById('winner-details').innerText = `Final Score: ${winner.tally} Points`;
             toggleModal('win-modal', true);
+        }
+
+        function rematchGame() {
+            toggleModal('win-modal', false);
+            players.forEach(p => {
+                p.tally = 0;
+                p.pending = [];
+                p.gems = 0;
+            });
+            createDeck();
+            discardPile = [];
+            playArea = [];
+            turnIndex = 0;
+            log(`🔄 REMATCH STARTED!`);
+            startTurn();
+        }
+
+        function resetToSetup() {
+            toggleModal('win-modal', false);
+            document.getElementById('game-screen').style.display = 'none';
+            document.getElementById('setup-screen').style.display = 'block';
+        }
+
+        function endSession() {
+            toggleModal('win-modal', false);
+            showToast("Thanks for playing Push Yer Luck!");
         }
 
         function log(msg, className = '') {
@@ -1020,19 +1209,28 @@
             setTimeout(() => toast.remove(), 2500);
         }
 
-        function openDeckInspector() {
-            const grid = document.getElementById('deck-grid');
+        function openInspector(type) {
+            const grid = document.getElementById('inspector-grid');
             grid.innerHTML = '';
+            const title = document.getElementById('inspector-title');
+            const desc = document.getElementById('inspector-desc');
+
+            const source = type === 'deck' ? deck : discardPile;
+            title.innerText = type === 'deck' ? '🃏 Deck Composition' : '🗑️ Discard Pile';
+            desc.innerText = type === 'deck' 
+                ? 'Exact count of cards remaining in draw pile:' 
+                : 'Exact count of cards currently in discard pile:';
+
             const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A', 'JKR'];
 
             ranks.forEach(r => {
-                const count = deck.filter(c => c.rank === r).length;
+                const count = source.filter(c => c.rank === r).length;
                 const cell = document.createElement('div');
                 cell.className = 'deck-cell';
-                cell.innerHTML = `<strong>${r}:</strong> ${count} left`;
+                cell.innerHTML = `<strong>${r}:</strong> ${count}`;
                 grid.appendChild(cell);
             });
-            toggleModal('deck-modal', true);
+            toggleModal('inspector-modal', true);
         }
 
         function calculateBustProbability() {
@@ -1051,6 +1249,10 @@
 
         function render(hasNewDraw = false) {
             document.getElementById('deck-count-display').innerText = `${deck.length}`;
+            const discElem = document.getElementById('discard-count-display');
+            discElem.innerText = `${discardPile.length}`;
+            discElem.className = `discard-stack ${discardPile.length > 0 ? 'has-cards' : ''}`;
+
             document.getElementById('current-player-display').innerText = players[turnIndex].name;
 
             const isHuman = players[turnIndex].isHuman;
@@ -1063,7 +1265,8 @@
                 document.getElementById('btn-stay').style.display = 'inline-block';
                 document.getElementById('btn-continue').style.display = 'none';
                 document.getElementById('btn-hit').disabled = !isHuman;
-                document.getElementById('btn-stay').disabled = !isHuman || playArea.length <= 1;
+                // Allow stopping and banking on card 1 or more
+                document.getElementById('btn-stay').disabled = !isHuman || playArea.length < 1;
             }
 
             const activeRanks = playArea.map(c => c.rank);
@@ -1076,7 +1279,6 @@
                 const card = document.createElement('div');
                 card.className = `player-card ${isCurrent ? 'active' : ''}`;
 
-                // Group duplicate pending ranks e.g., [ 4 ] x3
                 const rankCounts = {};
                 p.pending.forEach(c => { rankCounts[c.rank] = (rankCounts[c.rank] || 0) + 1; });
 
@@ -1086,19 +1288,21 @@
                     return `<span class="pill ${isThreatened ? 'threatened' : ''}">${r}${count > 1 ? ` x${count}` : ''}</span>`;
                 }).join('');
 
+                const isWinnerStar = p.id === lastWinnerId ? ' ⭐' : '';
+
                 card.innerHTML = `
                     <div class="p-header">
-                        ${p.name} <span class="p-type">${p.isHuman ? 'Human' : 'AI'}</span>
+                        ${p.name}${isWinnerStar} <span class="p-type">${p.isHuman ? 'Human' : 'AI'}</span>
                     </div>
-                    <div class="p-stat"><span>Safe Tally:</span><span class="p-val" style="color:var(--accent-green);">${p.tally}</span></div>
-                    <div class="p-stat"><span>Pending:</span><span class="p-val" style="color:var(--accent-gold);">${pendPts}pts</span></div>
-                    <div class="p-stat"><span>Gems:</span><span class="p-val">${'💎'.repeat(p.gems)}</span></div>
+                    <div class="p-stat"><span>Score:</span><span class="p-val" style="color:var(--accent-green);">${p.tally}</span></div>
+                    <div class="p-stat"><span>Gems:</span><span class="p-val">${'💎'.repeat(p.gems) || '0'}</span></div>
+                    <div class="p-stat"><span>Pending:</span><span class="p-val" style="color:var(--accent-gold);">${pendPts}</span></div>
                     <div class="pending-pills">${p.pending.length ? pills : '<span style="font-size:0.65rem; color:#64748b;">No pending</span>'}</div>
                 `;
                 sb.appendChild(card);
             });
 
-            // Play Table Cards (In Draw Order Left to Right)
+            // Play Table Cards
             const pa = document.getElementById('play-area');
             pa.innerHTML = '';
             const opponentPendingRanks = [];
@@ -1106,13 +1310,15 @@
                 if (p.id !== players[turnIndex].id) p.pending.forEach(c => opponentPendingRanks.push(c.rank));
             });
 
+            const runs = findAllRuns(playArea);
+            const primaryRun = runs.length > 0 ? runs[0] : [];
+
             playArea.forEach((c, index) => {
                 const el = document.createElement('div');
                 const isRed = c.suit === '♥' || c.suit === '♦';
                 const isJoker = c.rank === 'JKR';
                 const isBusting = c.isBustingCard;
-                const runInfo = checkRun(playArea);
-                const isRunCard = runInfo.hasRun && runInfo.runCards.includes(c);
+                const isRunCard = primaryRun.includes(c);
                 const isStealCard = opponentPendingRanks.includes(c.rank) && !isJoker;
 
                 let extra = ''; let badge = '';
