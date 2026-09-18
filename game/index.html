@@ -58,26 +58,13 @@
             background: #334155;
             color: white;
             border: 1px solid #475569;
-            padding: 6px 12px;
+            padding: 6px 14px;
             border-radius: 20px;
             font-size: 0.8rem;
             cursor: pointer;
             transition: all 0.2s;
-            position: relative;
         }
         .hdr-btn:hover { background: #475569; }
-
-        .badge {
-            position: absolute;
-            top: -4px;
-            right: -4px;
-            background: var(--accent-red);
-            color: white;
-            border-radius: 10px;
-            font-size: 0.65rem;
-            padding: 1px 5px;
-            font-weight: bold;
-        }
 
         /* Setup Screen */
         #setup-screen {
@@ -105,7 +92,7 @@
         .player-input-row { display: flex; align-items: center; gap: 8px; }
         .player-input-row span { font-size: 0.8rem; width: 65px; color: #94a3b8; }
 
-        /* App Main Grid (Single Screen Layout) */
+        /* App Main Grid */
         #game-screen {
             display: none;
             flex: 1;
@@ -115,7 +102,7 @@
             margin-top: 8px;
         }
 
-        /* 2-Column Responsive Scoreboard Sidebar */
+        /* 2-Column Responsive Sidebar */
         .sidebar {
             background: var(--card-bg);
             border-radius: 12px;
@@ -223,7 +210,7 @@
             color: #cbd5e1;
         }
 
-        /* Visual Interactive Deck */
+        /* Playing Card Back Deck Graphic */
         .deck-widget {
             display: flex;
             flex-direction: column;
@@ -231,21 +218,27 @@
             cursor: pointer;
             transition: transform 0.2s;
         }
-        .deck-widget:hover { transform: scale(1.05); }
+        .deck-widget:hover { transform: scale(1.04); }
 
         .deck-stack {
-            width: 70px;
-            height: 98px;
-            background: linear-gradient(135deg, #1e293b, #0f172a);
-            border: 2px solid var(--accent-gold);
+            width: 68px;
+            height: 96px;
+            background: 
+                radial-gradient(circle at center, transparent 30%, #7f1d1d 30%),
+                repeating-linear-gradient(45deg, #b91c1c 0, #b91c1c 4px, #991b1b 4px, #991b1b 8px);
+            border: 3px solid #fef08a;
             border-radius: 6px;
-            box-shadow: -2px -2px 0 #334155, -4px -4px 0 #1e293b, 0 8px 15px rgba(0,0,0,0.5);
+            box-shadow: -2px -2px 0 #1e293b, -4px -4px 0 #991b1b, 0 8px 15px rgba(0,0,0,0.6);
             display: flex;
             justify-content: center;
             align-items: center;
             font-weight: bold;
-            color: var(--accent-gold);
-            font-size: 0.9rem;
+            color: #fef08a;
+            font-size: 1.1rem;
+            text-shadow: 0 0 5px rgba(0,0,0,0.8);
+            position: relative;
+            outline: 2px solid #7f1d1d;
+            outline-offset: -5px;
         }
 
         /* Overlapping Table Card Fan */
@@ -271,10 +264,12 @@
             font-weight: bold;
             box-shadow: 0 4px 10px rgba(0,0,0,0.4);
             position: relative;
-            margin-left: -28px; /* Horizontal overlapping */
-            transition: all 0.2s;
-            animation: dealCard 0.25s ease-out;
+            margin-left: -26px; /* Horizontal overlapping */
             border: 1px solid #cbd5e1;
+        }
+
+        .card.new-card {
+            animation: slideCard 0.25s ease-out forwards;
         }
 
         .card:first-child { margin-left: 0; }
@@ -287,13 +282,20 @@
             z-index: 10;
         }
 
+        /* Left-aligned Badge tag so visible when overlapped */
         .card-badge {
             position: absolute;
-            top: -6px; right: -6px;
-            font-size: 0.55rem; padding: 2px 4px;
-            border-radius: 8px; color: white; font-weight: bold;
+            top: -6px; 
+            left: -6px;
+            font-size: 0.55rem; 
+            padding: 2px 4px;
+            border-radius: 6px; 
+            color: white; 
+            font-weight: bold;
+            z-index: 5;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
-        .badge-steal { background: var(--accent-gold); }
+        .badge-steal { background: var(--accent-gold); color: #0f172a; }
         .badge-run { background: var(--accent-green); }
         .badge-bust { background: var(--accent-red); }
 
@@ -301,12 +303,12 @@
         .card-suit { font-size: 1.2rem; text-align: center; }
         .card-val { font-size: 0.6rem; text-align: right; opacity: 0.8; }
 
-        @keyframes dealCard {
-            from { transform: translateY(-30px) scale(0.8); opacity: 0; }
-            to { transform: translateY(0) scale(1); opacity: 1; }
+        @keyframes slideCard {
+            from { transform: translateX(40px) translateY(-10px); opacity: 0; }
+            to { transform: translateX(0) translateY(0); opacity: 1; }
         }
 
-        /* Controls Section */
+        /* Controls Bar */
         .controls-bar {
             background: rgba(15, 23, 42, 0.8);
             border-radius: 8px;
@@ -417,7 +419,7 @@
         <h1>PUSH YER LUCK</h1>
         <div class="header-btns">
             <button class="hdr-btn" onclick="toggleModal('rules-modal', true)">📜 Rules</button>
-            <button class="hdr-btn" onclick="toggleDrawer()">💬 Log <span class="badge" id="unread-badge" style="display:none;">0</span></button>
+            <button class="hdr-btn" onclick="toggleDrawer()">💬 Log</button>
             <button class="hdr-btn" id="mute-btn" onclick="toggleMute()">🔊 Sound On</button>
         </div>
     </header>
@@ -448,7 +450,7 @@
         <button class="btn-primary" onclick="initGame()">Start Game</button>
     </div>
 
-    <!-- MAIN GAME SCREEN (SINGLE VIEWPORT) -->
+    <!-- MAIN GAME SCREEN -->
     <div id="game-screen">
         <aside class="sidebar">
             <div class="scoreboard-title">Scoreboard (First to 150)</div>
@@ -461,14 +463,12 @@
             <div class="table-top">
                 <div>Turn: <strong id="current-player-display" style="color:var(--accent-gold);">--</strong></div>
                 
-                <!-- Tap Deck to Inspect Remaining Counts -->
-                <div class="deck-widget" onclick="openDeckInspector()" title="Click to view remaining deck composition">
+                <div class="deck-widget" onclick="openDeckInspector()" title="View Deck Breakdown">
                     <div class="deck-stack" id="deck-count-display">138</div>
-                    <div style="font-size:0.65rem; color:var(--accent-gold); margin-top:2px;">INSPECT DECK</div>
                 </div>
             </div>
 
-            <!-- Table Card Fan -->
+            <!-- Table Card Fan (Play Area) -->
             <div class="card-fan-container" id="play-area"></div>
 
             <div class="controls-bar">
@@ -578,10 +578,11 @@
     </div>
 
     <script>
-        // Synth Audio Engine
+        // Audio Engine
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         let isMuted = false;
         const AI_NAMES = ["R34P3R-Bot", "Risk-0-Matic", "RNG-Tron 3000", "Bluffer-9000", "PushBot-v2"];
+        const RANK_ORDER = { '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14, 'JKR': 99 };
 
         function toggleMute() {
             isMuted = !isMuted;
@@ -634,7 +635,6 @@
         let awaitingBustConfirm = false;
         let pendingBustState = null;
         let pendingRunState = null;
-        let unreadLogs = 0;
         let isDrawerOpen = false;
 
         function toggleModal(id, show) {
@@ -644,10 +644,6 @@
         function toggleDrawer() {
             isDrawerOpen = !isDrawerOpen;
             document.getElementById('log-drawer').classList.toggle('open', isDrawerOpen);
-            if (isDrawerOpen) {
-                unreadLogs = 0;
-                document.getElementById('unread-badge').style.display = 'none';
-            }
         }
 
         function buildPlayerInputs() {
@@ -759,7 +755,7 @@
                 p.pending = [];
             }
 
-            render();
+            render(false);
 
             if (p.tally >= 150) {
                 endGame(p);
@@ -780,6 +776,7 @@
             }
 
             const card = deck.pop();
+            card.isNew = true;
             playArea.push(card);
             playSound('card');
 
@@ -810,7 +807,7 @@
                 if (p.gems >= 2) {
                     pendingBustState = { card, bustType };
                     if (p.isHuman) {
-                        render();
+                        render(true);
                         toggleModal('gem-modal', true);
                     } else {
                         resolveGemSafeguard(playArea.length > 3);
@@ -824,7 +821,7 @@
 
             log(`🃏 ${p.name} drew ${card.rank}${card.suit}`);
             showToast(`${p.name} drew ${card.rank}${card.suit}`);
-            render();
+            render(true);
             return false;
         }
 
@@ -838,7 +835,7 @@
                 discardPile.push(savedCard);
                 log(`💎 ${p.name} SPENT 2 GEMS to cancel drawing ${savedCard.rank}!`, 'log-steal');
                 showToast(`${p.name} spent 2 Gems to cancel bust!`);
-                render();
+                render(false);
                 if (!p.isHuman) setTimeout(aiLogic, 1000);
             } else {
                 executeBust(pendingBustState.bustType);
@@ -858,9 +855,8 @@
                 if (playArea.length <= 3) addGem(p);
             }
 
-            // Cards from busted turn go to discard pile
             discardPile.push(...playArea);
-            render();
+            render(false);
 
             if (!p.isHuman) setTimeout(confirmBust, 2200);
         }
@@ -921,7 +917,6 @@
                 });
             }
 
-            // Execute Steals from opponent pending piles
             let stolenCards = [];
             players.forEach(op => {
                 if (op.id !== p.id && op.pending.length > 0) {
@@ -937,11 +932,14 @@
                 }
             });
 
-            // Filter out Jokers (Jokers strictly go to discard, never saved)
             const nonJokerLeftovers = leftovers.filter(c => c.rank !== 'JKR');
             const jokersToDiscard = leftovers.filter(c => c.rank === 'JKR');
 
             p.pending.push(...nonJokerLeftovers, ...stolenCards);
+            
+            // Sort Pending Pile strictly 2 through A
+            p.pending.sort((a, b) => RANK_ORDER[a.rank] - RANK_ORDER[b.rank]);
+
             discardPile.push(...jokersToDiscard);
 
             pendingRunState = null;
@@ -993,7 +991,7 @@
         }
 
         function endTurn() {
-            render();
+            render(false);
             turnIndex = (turnIndex + 1) % players.length;
             setTimeout(startTurn, 800);
         }
@@ -1011,13 +1009,6 @@
             div.innerText = msg;
             list.appendChild(div);
             list.scrollTop = list.scrollHeight;
-
-            if (!isDrawerOpen) {
-                unreadLogs++;
-                const badge = document.getElementById('unread-badge');
-                badge.innerText = unreadLogs;
-                badge.style.display = 'inline-block';
-            }
         }
 
         function showToast(msg) {
@@ -1058,7 +1049,7 @@
             return Math.round((busts / deck.length) * 100);
         }
 
-        function render() {
+        function render(hasNewDraw = false) {
             document.getElementById('deck-count-display').innerText = `${deck.length}`;
             document.getElementById('current-player-display').innerText = players[turnIndex].name;
 
@@ -1085,9 +1076,14 @@
                 const card = document.createElement('div');
                 card.className = `player-card ${isCurrent ? 'active' : ''}`;
 
-                const pills = p.pending.map(c => {
-                    const isThreatened = !isCurrent && activeRanks.includes(c.rank);
-                    return `<span class="pill ${isThreatened ? 'threatened' : ''}">${c.rank}</span>`;
+                // Group duplicate pending ranks e.g., [ 4 ] x3
+                const rankCounts = {};
+                p.pending.forEach(c => { rankCounts[c.rank] = (rankCounts[c.rank] || 0) + 1; });
+
+                const pills = Object.keys(rankCounts).map(r => {
+                    const count = rankCounts[r];
+                    const isThreatened = !isCurrent && activeRanks.includes(r);
+                    return `<span class="pill ${isThreatened ? 'threatened' : ''}">${r}${count > 1 ? ` x${count}` : ''}</span>`;
                 }).join('');
 
                 card.innerHTML = `
@@ -1102,7 +1098,7 @@
                 sb.appendChild(card);
             });
 
-            // Table Fan Cards
+            // Play Table Cards (In Draw Order Left to Right)
             const pa = document.getElementById('play-area');
             pa.innerHTML = '';
             const opponentPendingRanks = [];
@@ -1110,7 +1106,7 @@
                 if (p.id !== players[turnIndex].id) p.pending.forEach(c => opponentPendingRanks.push(c.rank));
             });
 
-            playArea.forEach(c => {
+            playArea.forEach((c, index) => {
                 const el = document.createElement('div');
                 const isRed = c.suit === '♥' || c.suit === '♦';
                 const isJoker = c.rank === 'JKR';
@@ -1124,7 +1120,9 @@
                 else if (isRunCard) { badge = '<span class="card-badge badge-run">RUN</span>'; }
                 else if (isStealCard) { badge = '<span class="card-badge badge-steal">STEAL</span>'; }
 
-                el.className = `card ${isRed ? 'red' : ''} ${isJoker ? 'joker' : ''} ${extra}`;
+                const isNewCard = hasNewDraw && index === playArea.length - 1;
+
+                el.className = `card ${isRed ? 'red' : ''} ${isJoker ? 'joker' : ''} ${extra} ${isNewCard ? 'new-card' : ''}`;
                 el.innerHTML = `${badge}<div class="card-rank">${c.rank}</div><div class="card-suit">${c.suit}</div><div class="card-val">${c.val}pt</div>`;
                 pa.appendChild(el);
             });
