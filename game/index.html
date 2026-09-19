@@ -73,7 +73,7 @@
             padding: 20px;
             border-radius: 12px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            max-width: 480px;
+            max-width: 520px;
             width: 100%;
             margin: auto;
             text-align: center;
@@ -87,11 +87,12 @@
         }
 
         .player-inputs {
-            display: flex; flex-direction: column; gap: 6px;
-            max-height: 180px; overflow-y: auto; margin-bottom: 12px;
+            display: flex; flex-direction: column; gap: 8px;
+            max-height: 220px; overflow-y: auto; margin-bottom: 12px;
+            padding-right: 4px;
         }
         .player-input-row { display: flex; align-items: center; gap: 8px; }
-        .player-input-row span { font-size: 0.8rem; width: 65px; color: #94a3b8; }
+        .player-input-row span { font-size: 0.8rem; width: 65px; color: #94a3b8; flex-shrink: 0; }
 
         /* App Main Grid */
         #game-screen {
@@ -499,7 +500,7 @@
         </div>
 
         <div class="form-group">
-            <label>Player Names:</label>
+            <label>Players & Personalities:</label>
             <div class="player-inputs" id="player-inputs-container"></div>
         </div>
 
@@ -658,12 +659,19 @@
             PITY_GEM_HAND_LIMIT: 3
         };
 
-        const AI_NAMES = ["R34P3R-Bot", "Risk-0-Matic", "RNG-Tron 3000", "Bluffer-9000", "PushBot-v2"];
+        // AI Personalities
+        const AI_PERSONALITIES = [
+            { id: 'reaper', name: 'R34P3R-Bot', style: 'Risky / Aggressive', bustTol: 45, minCards: 4, minPts: 18, stealBonus: 1.0 },
+            { id: 'riskomatic', name: 'Risk-O-Matic', style: 'Balanced / Analytical', bustTol: 30, minCards: 3, minPts: 12, stealBonus: 1.2 },
+            { id: 'bluffer', name: 'Bluffer-9000', style: 'Adversarial Thief', bustTol: 35, minCards: 3, minPts: 10, stealBonus: 2.5 },
+            { id: 'pushbot', name: 'PushBot-v2', style: 'Conservative / Safe', bustTol: 20, minCards: 3, minPts: 15, stealBonus: 1.0 }
+        ];
+
         const RANK_ORDER = { '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14, 'JKR': 99 };
         const VALUES = { '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 10, 'Q': 10, 'K': 10, 'A': 15, 'JKR': 0 };
         const SUITS = ['♠', '♥', '♦', '♣'];
 
-        // Audio Engine (Lazily Initialized)
+        // Audio Engine
         let audioCtx = null;
         let isMuted = false;
 
@@ -771,10 +779,23 @@
                 const row = document.createElement('div');
                 row.className = 'player-input-row';
                 const isHuman = i < numHumans;
-                row.innerHTML = `
-                    <span>Player ${i + 1}:</span>
-                    <input type="text" id="player-name-input-${i}" value="${isHuman ? `Player ${i + 1}` : AI_NAMES[aiCount++ % AI_NAMES.length]}">
-                `;
+
+                if (isHuman) {
+                    row.innerHTML = `
+                        <span>Player ${i + 1}:</span>
+                        <input type="text" id="player-name-input-${i}" value="Player ${i + 1}">
+                    `;
+                } else {
+                    const aiOptions = AI_PERSONALITIES.map((p, idx) => 
+                        `<option value="${idx}" ${idx === aiCount % AI_PERSONALITIES.length ? 'selected' : ''}>${p.name} (${p.style})</option>`
+                    ).join('');
+                    
+                    row.innerHTML = `
+                        <span>Player ${i + 1}:</span>
+                        <select id="player-ai-select-${i}">${aiOptions}</select>
+                    `;
+                    aiCount++;
+                }
                 container.appendChild(row);
             }
         }
@@ -826,15 +847,32 @@
 
             players = [];
             for (let i = 0; i < total; i++) {
-                const nameInput = document.getElementById(`player-name-input-${i}`);
-                players.push({
-                    id: i,
-                    name: nameInput ? nameInput.value.trim() || `Player ${i + 1}` : `Player ${i + 1}`,
-                    isHuman: i < humans,
-                    tally: 0,
-                    pending: [],
-                    gems: 0
-                });
+                const isHuman = i < humans;
+                if (isHuman) {
+                    const nameInput = document.getElementById(`player-name-input-${i}`);
+                    players.push({
+                        id: i,
+                        name: nameInput ? nameInput.value.trim() || `Player ${i + 1}` : `Player ${i + 1}`,
+                        isHuman: true,
+                        personality: null,
+                        tally: 0,
+                        pending: [],
+                        gems: 0
+                    });
+                } else {
+                    const selectEl = document.getElementById(`player-ai-select-${i}`);
+                    const personalityIdx = selectEl ? parseInt(selectEl.value) : 0;
+                    const personality = AI_PERSONALITIES[personalityIdx];
+                    players.push({
+                        id: i,
+                        name: personality.name,
+                        isHuman: false,
+                        personality: personality,
+                        tally: 0,
+                        pending: [],
+                        gems: 0
+                    });
+                }
             }
 
             createDeck();
@@ -1142,48 +1180,60 @@
             clearAiTimer();
             if (players[turnIndex].isHuman || awaitingBustConfirm) return;
             const p = players[turnIndex];
+            const persona = p.personality || AI_PERSONALITIES[1];
             const runs = findAllRuns(playArea);
             const count = playArea.length;
+            const points = playArea.reduce((a, b) => a + b.val, 0);
+            const bustProb = calculateBustProbability();
 
-            let leader = null;
-            let highestTotal = -1;
+            // Calculate potential steals available right now
+            let availableSteals = 0;
+            const currentRanks = playArea.map(c => c.rank);
             players.forEach(op => {
-                if (op.id !== p.id) {
-                    const oppScore = op.tally + op.pending.reduce((a, b) => a + b.val, 0);
-                    if (oppScore >= CONFIG.TARGET_SCORE && oppScore > highestTotal) {
-                        highestTotal = oppScore;
-                        leader = op;
-                    }
+                if (op.id !== p.id && op.pending.length > 0) {
+                    op.pending.forEach(c => {
+                        if (c.rank !== 'JKR' && currentRanks.includes(c.rank)) availableSteals++;
+                    });
                 }
             });
 
-            let stopProb;
-
-            if (leader) {
-                const totalP = players.length;
-                let playersBetween = 0;
-                let curr = (turnIndex + 1) % totalP;
-                while (curr !== leader.id) {
-                    playersBetween++;
-                    curr = (curr + 1) % totalP;
-                }
-
-                const myTotal = p.tally + p.pending.reduce((a, b) => a + b.val, 0) + playArea.reduce((a, b) => a + b.val, 0);
-
-                if (playersBetween >= 2) {
-                    stopProb = myTotal >= CONFIG.TARGET_SCORE ? 0.95 : count <= 2 ? 0.1 : 0.5;
-                } else if (playersBetween === 1) {
-                    stopProb = myTotal >= CONFIG.TARGET_SCORE ? 0.95 : count <= 3 ? 0.05 : 0.25;
-                } else {
-                    stopProb = myTotal >= CONFIG.TARGET_SCORE ? 0.95 : 0.0;
-                }
-            } else {
-                stopProb = count <= 1 ? 0 : count === 2 ? 0.1 : count === 3 ? 0.25 : count === 4 ? 0.5 : 0.8;
-                if (runs.length > 0) stopProb = 0.95;
+            // Winning push check
+            const currentTotal = p.tally + p.pending.reduce((a, b) => a + b.val, 0) + points;
+            if (currentTotal >= CONFIG.TARGET_SCORE) {
+                bankTurn(runs.length > 0);
+                return;
             }
 
-            if (Math.random() < stopProb && count >= 1) {
-                bankTurn(runs.length > 0);
+            // Runs scored immediately!
+            if (runs.length > 0) {
+                bankTurn(true);
+                return;
+            }
+
+            // CRITICAL FIX: Very strong bias against stopping before 3 cards because of Pity Gem payout!
+            if (count < 3 && count < persona.minCards) {
+                // Only stop under 3 cards if bust chance is insanely high (e.g., > 60%)
+                if (bustProb < 60) {
+                    const busted = drawCard();
+                    if (!busted && !awaitingBustConfirm) aiTimer = setTimeout(aiLogic, 1000);
+                    return;
+                }
+            }
+
+            // Decide to Hold based on Personality Factors
+            let shouldHold = false;
+
+            // 1. Exceeded Risk Tolerance threshold
+            if (bustProb >= persona.bustTol) shouldHold = true;
+
+            // 2. Met Point and Card minimums
+            if (count >= persona.minCards && points >= persona.minPts && bustProb >= 20) shouldHold = true;
+
+            // 3. Thief Personality Check (Bluffer-9000 loves holding if steal available)
+            if (availableSteals > 0 && Math.random() < (0.4 * persona.stealBonus)) shouldHold = true;
+
+            if (shouldHold) {
+                bankTurn(false);
             } else {
                 const busted = drawCard();
                 if (!busted && !awaitingBustConfirm) aiTimer = setTimeout(aiLogic, 1000);
@@ -1335,7 +1385,7 @@
 
                 card.innerHTML = `
                     <div class="p-header">
-                        ${p.name}${isWinnerStar} <span class="p-type">${p.isHuman ? 'Human' : 'AI'}</span>
+                        ${p.name}${isWinnerStar} <span class="p-type">${p.isHuman ? 'Human' : p.personality ? p.personality.style : 'AI'}</span>
                     </div>
                     <div class="p-stat"><span>Score:</span><span class="p-val" style="color:var(--accent-green);">${p.tally}</span></div>
                     <div class="p-stat"><span>Gems:</span><span class="p-val">${gemDisplay}</span></div>
