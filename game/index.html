@@ -889,7 +889,7 @@ function buzz(pattern) { try { if (navigator.vibrate) navigator.vibrate(pattern)
 let deck = [], discardPile = [], players = [], turnIndex = 0, playArea = [];
 let awaitingBustConfirm = false, pendingBustState = null, pendingRunState = null, selectedRunIndex = 0;
 let isDrawerOpen = false, lastWinnerId = null, aiTimer = null, cardIdCounter = 0;
-let finalRound = false, finalTriggerId = null, gameOver = false, lastRenderedTurn = -1;
+let finalRound = false, finalTriggerId = null, gameOver = false, lastRenderedTurn = -1, turnLocked = false;
 
 function clearAiTimer() { if (aiTimer) { clearTimeout(aiTimer); aiTimer = null; } }
 function toggleModal(id, show) { document.getElementById(id).style.display = show ? 'flex' : 'none'; }
@@ -1015,6 +1015,7 @@ function startTurn() {
     if (gameOver) return;
     if (deck.length === 0) recycleDiscards();
     playArea = []; awaitingBustConfirm = false; pendingBustState = null; pendingRunState = null;
+    turnLocked = false;
     const p = players[turnIndex];
 
     if (p.pending.length > 0) {
@@ -1174,14 +1175,14 @@ function addGem(player) {
 
 function humanHit() {
     initAudio();
-    if (gameOver || awaitingBustConfirm || !players[turnIndex].isHuman) return;
+    if (gameOver || turnLocked || awaitingBustConfirm || !players[turnIndex].isHuman) return;
     if (modalOpen('gem-modal') || modalOpen('run-modal')) return;
     drawCard();
 }
 
 function humanStay() {
     initAudio();
-    if (gameOver || awaitingBustConfirm || !players[turnIndex].isHuman || playArea.length < 1) return;
+    if (gameOver || turnLocked || awaitingBustConfirm || !players[turnIndex].isHuman || playArea.length < 1) return;
     if (modalOpen('gem-modal') || modalOpen('run-modal')) return;
     const runs = findAllRuns(playArea);
     if (runs.length > 0) { pendingRunState = runs; buildRunModal(runs); toggleModal('run-modal', true); }
@@ -1318,7 +1319,9 @@ function endTurn() {
     if (gameOver) return;
     render(false);
     turnIndex = (turnIndex + 1) % players.length;
+    turnLocked = true;
     if (finalRound && turnIndex === finalTriggerId) { endGame(); return; }
+    render(false);
     aiTimer = setTimeout(startTurn, Math.min(800, SETTINGS.aiDelay));
 }
 
@@ -1516,8 +1519,8 @@ function render(hasNewDraw = false) {
         btnCont.style.display = me.isHuman ? 'flex' : 'none';
     } else {
         btnHit.style.display = 'flex'; btnBank.style.display = 'flex'; btnCont.style.display = 'none';
-        btnHit.disabled = !me.isHuman || gameOver;
-        btnBank.disabled = !me.isHuman || gameOver || playArea.length < 1;
+        btnHit.disabled = !me.isHuman || gameOver || turnLocked;
+        btnBank.disabled = !me.isHuman || gameOver || turnLocked || playArea.length < 1;
         document.getElementById('bank-amt').innerHTML = `BANK ${handPts}${stealPts ? `<span class="plus">+${stealPts}</span>` : ''}`;
         document.getElementById('bank-sub').innerText = stealPts ? `keep ${handPts}, steal ${stealPts}` : 'stop and keep';
     }
@@ -1591,6 +1594,7 @@ document.addEventListener('keydown', (e) => {
     if (document.getElementById('game-screen').style.display !== 'grid') return;
     const tag = (e.target && e.target.tagName) || '';
     if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
+    if (e.repeat) return;
     const k = e.key.toLowerCase();
     if (modalOpen('gem-modal')) {
         if (k === 'y') { e.preventDefault(); resolveGemSafeguard(true); }
