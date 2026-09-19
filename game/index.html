@@ -503,6 +503,9 @@ button:active:not(:disabled) { transform: translateY(2px); border-bottom-width: 
     border: 2px solid var(--brass-dark);
     box-shadow: 0 0 0 5px var(--wood-deep), 0 0 0 6px var(--brass-dark), 0 30px 60px rgba(0,0,0,0.7);
 }
+.modal.sheet { align-items: flex-end; background: rgba(10, 4, 5, 0.35); padding: 0; }
+.modal.sheet .modal-content { max-width: 100%; border-radius: 16px 16px 0 0; padding-bottom: calc(18px + env(safe-area-inset-bottom)); box-shadow: 0 -10px 40px rgba(0,0,0,0.7); border-bottom: none; }
+@media (min-width: 900px) { .modal.sheet { align-items: center; padding: 14px; } .modal.sheet .modal-content { max-width: 440px; border-radius: 8px; } }
 .modal-content h2, .modal-content h3 { font-family: var(--font-display); font-weight: 400; color: var(--wood-light); }
 .modal-content h2 { font-size: 1.6rem; margin-bottom: 8px; }
 .modal-content h3 { font-size: 1.25rem; margin-bottom: 6px; }
@@ -605,10 +608,17 @@ button:active:not(:disabled) { transform: translateY(2px); border-bottom-width: 
             <div class="sub-row" id="last-call-row"><label class="check-row"><input type="checkbox" id="last-call" checked> Last call: gems cost 1 in the final round</label></div>
         </div>
         <div class="form-group">
+            <label for="show-odds">Bust odds</label>
+            <select id="show-odds">
+                <option value="0" selected>Hidden</option>
+                <option value="1">Show bust percentage</option>
+            </select>
+        </div>
+        <div class="form-group">
             <label for="show-counts">Card counting</label>
             <select id="show-counts">
-                <option value="0" selected>Blind: no counts or odds</option>
-                <option value="1">Show deck counts and odds</option>
+                <option value="0" selected>Blind: face-up cards only</option>
+                <option value="1">Show deck counts</option>
             </select>
         </div>
     </div>
@@ -738,7 +748,7 @@ button:active:not(:disabled) { transform: translateY(2px); border-bottom-width: 
 </div>
 
 <!-- GEM -->
-<div class="modal" id="gem-modal">
+<div class="modal sheet" id="gem-modal">
     <div class="modal-content">
         <h3 id="gem-title">Spend two gems?</h3>
         <p id="gem-text">That bust card can be waved off and your turn continues. It costs 2 gems.</p>
@@ -777,6 +787,7 @@ button:active:not(:disabled) { transform: translateY(2px); border-bottom-width: 
             <h4>Next game</h4>
             <div class="menu-grid">
                 <div><label for="menu-target">Play to</label><select id="menu-target" onchange="menuToSetup()"><option value="100">100 points</option><option value="150">150 points</option><option value="200">200 points</option></select></div>
+                <div><label for="menu-odds">Bust odds</label><select id="menu-odds" onchange="menuToSetup()"><option value="0">Hidden</option><option value="1">Shown</option></select></div>
                 <div><label for="menu-counts">Card counting</label><select id="menu-counts" onchange="menuToSetup()"><option value="0">Blind</option><option value="1">Show counts</option></select></div>
                 <div><label for="menu-end">How the game ends</label><select id="menu-end" onchange="menuToSetup()"><option value="final">Final round</option><option value="immediate">Instant win</option></select></div>
                 <div><label>&nbsp;</label><label class="check-row" style="margin:6px 0 0;"><input type="checkbox" id="menu-lastcall" onchange="menuToSetup()"> Last call gems</label></div>
@@ -818,10 +829,10 @@ button:active:not(:disabled) { transform: translateY(2px); border-bottom-width: 
 
 <script>
 const CONFIG = { SAFEGUARD_GEM_COST: 2, GEM_BONUS_THRESHOLD: 3, GEM_BONUS_PTS: 50, PITY_GEM_HAND_LIMIT: 3 };
-let SETTINGS = { target: 150, aiDelay: 450, showCounts: false, endRule: 'final', randomStart: true, lastCall: true };
+let SETTINGS = { target: 150, aiDelay: 450, showCounts: false, showOdds: false, endRule: 'final', randomStart: true, lastCall: true };
 
 /* Global daily leaderboard: paste the Apps Script web-app URL between the quotes to switch it on. */
-const LEADERBOARD_URL = 'https://script.google.com/macros/s/AKfycbyIQwuRYChUVlYzj572DaycYetbMEpPoGL2huSpeLymfvA3aV6vkCQbmP2ERgTRxAMTCw/exec';
+const LEADERBOARD_URL = 'https://script.google.com/macros/s/AKfycbxVjBE71S70vcNFUJ9pTB7mHxqm1tDEhvPwZnOrnvICr8p2tpb8PWpXVIw4kJVA4TkIcA/exec';
 
 const AI_PERSONALITIES = [
     { id: 'reaper', name: 'R34P3R-Bot', style: 'Risky / Aggressive', bustTol: 45, minCards: 4, minPts: 18, stealBonus: 1.0 },
@@ -1059,6 +1070,7 @@ function initGame() {
         target: parseInt(document.getElementById('target-score').value) || 150,
         aiDelay: parseInt(document.getElementById('ai-speed').value) || 1000,
         showCounts: document.getElementById('show-counts').value === '1',
+        showOdds: document.getElementById('show-odds').value === '1',
         endRule: document.getElementById('end-rule').value,
         randomStart: document.getElementById('random-start').checked,
         lastCall: document.getElementById('last-call').checked
@@ -1087,7 +1099,7 @@ function initGame() {
     document.getElementById('log-list').innerHTML = '';
     document.getElementById('setup-screen').style.display = 'none';
     document.getElementById('game-screen').style.display = 'grid';
-    log(`New game. First to ${SETTINGS.target} (${SETTINGS.endRule === 'final' ? 'final round after target' : 'instant win'})${SETTINGS.showCounts ? '' : ', playing blind'}.`);
+    log(`New game. First to ${SETTINGS.target} (${SETTINGS.endRule === 'final' ? 'final round after target' : 'instant win'}). Odds ${SETTINGS.showOdds ? 'shown' : 'hidden'}, deck counts ${SETTINGS.showCounts ? 'shown' : 'hidden'}.`);
     if (SETTINGS.randomStart) { log(`Seats shuffled. Order: ${players.map(p => p.name).join(', ')}.`); showToast(`${players[0].name} deals first`); }
     playSound('shuffle');
     startTurn();
@@ -1187,7 +1199,7 @@ function drawCard() {
                     : 'That bust card can be waved off and your turn continues. It costs 2 gems.';
                 toggleModal('gem-modal', true);
             }
-            else resolveGemSafeguard(playArea.length > CONFIG.PITY_GEM_HAND_LIMIT);
+            else resolveGemSafeguard(finalRound || playArea.length > CONFIG.PITY_GEM_HAND_LIMIT);
             return true;
         }
         executeBust(bustType);
@@ -1387,6 +1399,21 @@ function aiLogic() {
     const availableSteals = stealTargets(playArea, p).reduce((a, s) => a + s.cards.length, 0);
 
     const currentTotal = p.tally + p.pending.reduce((a, b) => a + b.val, 0) + points;
+
+    // Final round: this is the last turn, so play to beat the best other total, not to a threshold.
+    if (finalRound) {
+        const leader = Math.max(...players.filter(o => o !== p).map(o => o.tally + o.pending.reduce((a, b) => a + b.val, 0)));
+        const runBonus = runs.length ? runs[bestRunIndex(runs)].reduce((a, b) => a + b.val, 0) : 0; // scoring a run doubles it: +runBonus over holding
+        if (currentTotal >= leader || (runs.length && currentTotal + runBonus >= leader)) {
+            if (runs.length) { pendingRunState = runs; selectedRunIndex = bestRunIndex(runs); }
+            bankTurn(runs.length > 0);
+            return;
+        }
+        const busted = drawCard();
+        if (!busted && !awaitingBustConfirm) aiTimer = setTimeout(aiLogic, SETTINGS.aiDelay);
+        return;
+    }
+
     if (currentTotal >= SETTINGS.target || runs.length > 0) {
         if (runs.length > 0) { pendingRunState = runs; selectedRunIndex = bestRunIndex(runs); }
         bankTurn(runs.length > 0);
@@ -1599,7 +1626,7 @@ function render(hasNewDraw = false) {
     let who = me.isHuman ? (humanCount === 1 ? 'Your turn' : `<span class="who">${escapeHtml(me.name)}</span>, your turn`) : `<span class="who">${escapeHtml(me.name)}</span> is drawing<span class="dots"></span>`;
     if (awaitingBustConfirm) who = `<span class="who">${escapeHtml(me.name)}</span> busted`;
     let odds = '';
-    if (SETTINGS.showCounts && !awaitingBustConfirm && playArea.length) {
+    if (SETTINGS.showOdds && !awaitingBustConfirm && playArea.length) {
         const prob = calculateBustProbability();
         odds = `<span class="odds">Bust chance <b class="${prob > 40 ? 'odds-high' : prob > 20 ? 'odds-med' : 'odds-low'}">${prob}%</b></span>`;
     }
@@ -1694,6 +1721,7 @@ function syncMenu() {
     document.getElementById('menu-sound').innerText = isMuted ? 'Sound off' : 'Sound on';
     document.getElementById('menu-target').value = document.getElementById('target-score').value;
     document.getElementById('menu-counts').value = document.getElementById('show-counts').value;
+    document.getElementById('menu-odds').value = document.getElementById('show-odds').value;
     document.getElementById('menu-end').value = document.getElementById('end-rule').value;
     document.getElementById('menu-lastcall').checked = document.getElementById('last-call').checked;
     document.getElementById('menu-lastcall').disabled = document.getElementById('end-rule').value !== 'final';
@@ -1706,6 +1734,7 @@ function menuSpeed() {
 function menuToSetup() {
     document.getElementById('target-score').value = document.getElementById('menu-target').value;
     document.getElementById('show-counts').value = document.getElementById('menu-counts').value;
+    document.getElementById('show-odds').value = document.getElementById('menu-odds').value;
     document.getElementById('end-rule').value = document.getElementById('menu-end').value;
     document.getElementById('last-call').checked = document.getElementById('menu-lastcall').checked;
     syncLastCallRow(); syncMenu();
