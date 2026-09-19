@@ -25,115 +25,131 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        body {
+        html, body {
             background-color: var(--bg-dark);
             color: var(--text-light);
-            height: 100vh;
+            height: 100%;
+            min-height: 100dvh;
+            overflow: hidden;
+        }
+
+        body {
             display: flex;
             flex-direction: column;
-            overflow: hidden;
-            padding: 4px 8px;
+            padding: 8px 10px;
         }
 
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-bottom: 4px;
+            padding-bottom: 6px;
             border-bottom: 1px solid #334155;
-            height: 36px;
+            height: 42px;
+            flex-shrink: 0;
         }
 
         h1 {
-            font-size: 1.1rem;
+            font-size: 1.3rem;
             color: var(--accent-gold);
-            text-shadow: 0 0 8px rgba(245, 158, 11, 0.3);
+            text-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
         }
 
-        .header-btns { display: flex; gap: 4px; }
+        .header-btns {
+            display: flex;
+            gap: 6px;
+        }
 
         .hdr-btn {
             background: #334155;
             color: white;
             border: 1px solid #475569;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 0.7rem;
+            padding: 5px 10px;
+            border-radius: 16px;
+            font-size: 0.75rem;
             cursor: pointer;
+            transition: all 0.2s;
         }
+        .hdr-btn:hover { background: #475569; }
 
         /* Setup Screen */
         #setup-screen {
             background: var(--card-bg);
-            padding: 15px;
-            border-radius: 10px;
-            max-width: 420px;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            max-width: 520px;
             width: 100%;
             margin: auto;
             text-align: center;
         }
 
-        .form-group { margin-bottom: 8px; text-align: left; }
-        label { display: block; margin-bottom: 2px; color: #cbd5e1; font-weight: 600; font-size: 0.75rem; }
+        .form-group { margin-bottom: 12px; text-align: left; }
+        label { display: block; margin-bottom: 4px; color: #cbd5e1; font-weight: 600; font-size: 0.85rem; }
         select, input[type="text"] {
-            width: 100%; padding: 6px; border-radius: 6px;
-            border: 1px solid #334155; background: #0f172a; color: white; font-size: 0.8rem;
+            width: 100%; padding: 8px; border-radius: 6px;
+            border: 1px solid #334155; background: #0f172a; color: white; font-size: 0.9rem;
         }
 
         .player-inputs {
-            display: flex; flex-direction: column; gap: 6px;
-            max-height: 180px; overflow-y: auto; margin-bottom: 10px;
+            display: flex; flex-direction: column; gap: 8px;
+            max-height: 220px; overflow-y: auto; margin-bottom: 12px;
+            padding-right: 4px;
         }
-        .player-input-row { display: flex; align-items: center; gap: 6px; }
-        .player-input-row span { font-size: 0.75rem; width: 60px; color: #94a3b8; flex-shrink: 0; }
+        .player-input-row { display: flex; align-items: center; gap: 8px; }
+        .player-input-row span { font-size: 0.8rem; width: 65px; color: #94a3b8; flex-shrink: 0; }
 
         /* App Main Grid */
         #game-screen {
             display: none;
             flex: 1;
-            grid-template-columns: 240px 1fr;
-            gap: 8px;
-            height: calc(100vh - 44px);
-            margin-top: 4px;
+            grid-template-columns: 300px 1fr;
+            gap: 10px;
+            margin-top: 6px;
+            min-height: 0;
+            overflow: hidden;
         }
 
-        /* Sidebar & Scoreboard */
+        /* Sidebar */
         .sidebar {
             background: var(--card-bg);
-            border-radius: 8px;
-            padding: 6px;
+            border-radius: 12px;
+            padding: 8px;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 6px;
             overflow-y: auto;
             border: 1px solid #334155;
         }
 
         .scoreboard-title {
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             font-weight: bold;
             color: var(--accent-gold);
             text-transform: uppercase;
+            letter-spacing: 1px;
             border-bottom: 1px solid #334155;
-            padding-bottom: 2px;
+            padding-bottom: 4px;
         }
 
         .scoreboard-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
         }
 
         .player-card {
             background: #0f172a;
-            border-radius: 6px;
-            padding: 5px;
-            border: 1.5px solid transparent;
+            border-radius: 8px;
+            padding: 6px 8px;
+            border: 2px solid transparent;
             transition: all 0.2s;
+            position: relative;
         }
 
         .player-card.active {
             border-color: var(--accent-gold);
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
             background: #1e293b;
         }
 
@@ -142,26 +158,30 @@
             justify-content: space-between;
             align-items: center;
             font-weight: bold;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
+            margin-bottom: 2px;
         }
 
-        .p-type { font-size: 0.6rem; color: #94a3b8; }
-        .p-stats-row { display: flex; justify-content: space-between; font-size: 0.7rem; color: #94a3b8; margin-top: 2px; }
+        .p-type { font-size: 0.65rem; background: #334155; padding: 1px 4px; border-radius: 3px; }
+        .p-stat { font-size: 0.72rem; color: #94a3b8; display: flex; justify-content: space-between; margin-top: 1px; }
         .p-val { font-weight: bold; color: white; }
 
         .pending-pills {
             display: flex;
             flex-wrap: wrap;
-            gap: 2px;
-            margin-top: 3px;
+            gap: 3px;
+            margin-top: 4px;
+            padding-top: 3px;
+            border-top: 1px dashed #334155;
+            min-height: 20px;
         }
 
         .pill {
             background: #334155;
             color: #f8fafc;
-            border-radius: 3px;
-            padding: 0 4px;
-            font-size: 0.65rem;
+            border-radius: 4px;
+            padding: 1px 4px;
+            font-size: 0.68rem;
             font-weight: bold;
         }
 
@@ -169,189 +189,306 @@
             background: rgba(239, 68, 68, 0.35);
             color: var(--accent-red-bright);
             border: 1px solid var(--accent-red);
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 2px var(--accent-red); }
+            100% { box-shadow: 0 0 6px var(--accent-red); }
         }
 
         /* Play Table Area */
         .table-area {
             background: radial-gradient(circle at center, #064e3b 0%, #042f2e 100%);
-            border: 2px solid #0f172a;
-            border-radius: 8px;
-            padding: 8px;
+            border: 3px solid #0f172a;
+            border-radius: 12px;
+            padding: 10px 12px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             position: relative;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
+            min-height: 0;
+            overflow: hidden;
         }
 
         .table-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: #cbd5e1;
+            flex-shrink: 0;
         }
 
-        .decks-container { display: flex; gap: 8px; }
+        .decks-container {
+            display: flex;
+            gap: 12px;
+        }
 
         .deck-widget {
             display: flex;
             flex-direction: column;
             align-items: center;
             cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .deck-widget:hover { transform: scale(1.04); }
+
+        .deck-label {
+            font-size: 0.6rem;
+            color: #94a3b8;
+            margin-top: 2px;
+            font-weight: bold;
+            text-transform: uppercase;
         }
 
-        .deck-label { font-size: 0.55rem; color: #94a3b8; font-weight: bold; text-transform: uppercase; }
-
         .deck-stack {
-            width: 44px; height: 60px;
-            background: repeating-linear-gradient(45deg, #b91c1c 0, #b91c1c 3px, #991b1b 3px, #991b1b 6px);
-            border: 1.5px solid #fef08a; border-radius: 4px;
-            display: flex; justify-content: center; align-items: center;
-            font-weight: bold; color: #fef08a; font-size: 0.85rem;
+            width: 52px;
+            height: 72px;
+            background: 
+                radial-gradient(circle at center, transparent 30%, #7f1d1d 30%),
+                repeating-linear-gradient(45deg, #b91c1c 0, #b91c1c 4px, #991b1b 4px, #991b1b 8px);
+            border: 2px solid #fef08a;
+            border-radius: 6px;
+            box-shadow: -2px -2px 0 #1e293b, -4px -4px 0 #991b1b, 0 6px 12px rgba(0,0,0,0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: #fef08a;
+            font-size: 0.95rem;
+            text-shadow: 0 0 5px rgba(0,0,0,0.8);
+            position: relative;
+            outline: 2px solid #7f1d1d;
+            outline-offset: -3px;
         }
 
         .discard-stack {
-            width: 44px; height: 60px;
-            background: #1e293b; border: 1.5px dashed #475569; border-radius: 4px;
-            display: flex; justify-content: center; align-items: center;
-            font-weight: bold; color: #94a3b8; font-size: 0.85rem;
+            width: 52px;
+            height: 72px;
+            background: #1e293b;
+            border: 2px dashed #475569;
+            border-radius: 6px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: #94a3b8;
+            font-size: 0.95rem;
+            position: relative;
         }
-        .discard-stack.has-cards { background: #334155; border: 1.5px solid #64748b; color: white; }
 
-        /* Card Fan Area */
+        .discard-stack.has-cards {
+            background: #334155;
+            border: 2px solid #64748b;
+            color: #f8fafc;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }
+
+        /* Zoomed Card Fan Display */
         .card-fan-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 90px;
+            flex: 1;
             width: 100%;
-            margin: 4px 0;
+            margin: 6px 0;
+            min-height: 140px;
+            overflow-x: auto;
         }
 
         .card {
-            width: 52px; height: 76px;
-            background: white; border-radius: 5px; color: #0f172a;
-            display: flex; flex-direction: column; justify-content: space-between;
-            padding: 3px; font-weight: bold;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-            margin-left: -20px; border: 1px solid #cbd5e1;
+            width: 88px;
+            height: 128px;
+            background: white;
+            border-radius: 8px;
+            color: #0f172a;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 6px 8px;
+            font-weight: bold;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.45);
+            position: relative;
+            margin-left: -32px;
+            border: 1px solid #cbd5e1;
+            transition: transform 0.2s, z-index 0.2s;
+            flex-shrink: 0;
         }
+
+        .card.new-card {
+            animation: slideCard 0.25s ease-out forwards;
+        }
+
         .card:first-child { margin-left: 0; }
         .card.red { color: var(--accent-red); }
         .card.joker { background: linear-gradient(135deg, #a855f7, #6366f1); color: white; }
-        .card.busting-card { border: 2px solid var(--accent-red) !important; box-shadow: 0 0 10px var(--accent-red) !important; }
+
+        .card.busting-card {
+            border: 3px solid var(--accent-red) !important;
+            box-shadow: 0 0 15px var(--accent-red) !important;
+            z-index: 30 !important;
+        }
 
         .card-badge {
-            position: absolute; top: -5px; left: -5px; font-size: 0.5rem;
-            padding: 1px 3px; border-radius: 4px; color: white; font-weight: bold; z-index: 5;
+            position: absolute;
+            top: -7px; 
+            left: -7px;
+            font-size: 0.6rem; 
+            padding: 2px 5px;
+            border-radius: 6px; 
+            color: white; 
+            font-weight: bold;
+            z-index: 5;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
         .badge-steal { background: var(--accent-gold); color: #0f172a; }
         .badge-run { background: var(--accent-green); }
         .badge-bust { background: var(--accent-red); }
 
-        .card-rank { font-size: 0.8rem; }
-        .card-suit { font-size: 0.95rem; text-align: center; }
-        .card-val { font-size: 0.55rem; text-align: right; opacity: 0.8; }
+        .card-rank { font-size: 1.25rem; }
+        .card-suit { font-size: 1.6rem; text-align: center; }
+        .card-val { font-size: 0.7rem; text-align: right; opacity: 0.85; }
+
+        @keyframes slideCard {
+            from { transform: translateX(40px) translateY(-10px); opacity: 0; }
+            to { transform: translateX(0) translateY(0); opacity: 1; }
+        }
 
         /* Controls Bar */
         .controls-bar {
-            background: rgba(15, 23, 42, 0.85);
-            border-radius: 6px;
-            padding: 6px;
+            background: rgba(15, 23, 42, 0.92);
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 8px 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-shrink: 0;
         }
 
-        .prob-info { font-size: 0.75rem; }
+        .prob-info { font-size: 0.8rem; }
         .prob-val { font-weight: bold; }
         .prob-low { color: var(--accent-green); }
         .prob-med { color: var(--accent-gold); }
         .prob-high { color: var(--accent-red); }
 
-        .controls-btns { display: flex; gap: 6px; }
+        .controls-btns { display: flex; gap: 8px; }
 
         button {
-            padding: 6px 12px; font-size: 0.8rem; font-weight: bold;
-            border: none; border-radius: 5px; cursor: pointer; transition: all 0.2s;
+            padding: 9px 18px; font-size: 0.88rem; font-weight: bold;
+            border: none; border-radius: 6px; cursor: pointer; transition: all 0.2s;
         }
         button:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .btn-hit { background: var(--accent-green); color: white; }
+        .btn-hit:hover:not(:disabled) { background: #059669; }
+
         .btn-stay { background: var(--accent-gold); color: white; }
+        .btn-stay:hover:not(:disabled) { background: #d97706; }
+
         .btn-continue { background: var(--accent-red); color: white; }
         .btn-primary { background: var(--accent-purple); color: white; width: 100%; }
 
         /* Toasts Overlay */
         .toast-container {
-            position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
-            z-index: 80; display: flex; flex-direction: column; gap: 4px; pointer-events: none;
-        }
-        .toast {
-            background: rgba(15, 23, 42, 0.95); border: 1px solid var(--accent-gold);
-            color: white; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem;
-            animation: toastFade 2.2s forwards; white-space: nowrap;
-        }
-        @keyframes toastFade {
-            0% { opacity: 0; transform: translateY(-8px); }
-            15% { opacity: 1; transform: translateY(0); }
-            80% { opacity: 1; }
-            100% { opacity: 0; transform: translateY(-8px); }
+            position: absolute;
+            top: 12px; left: 50%; transform: translateX(-50%);
+            z-index: 80; display: flex; flex-direction: column; gap: 6px;
+            pointer-events: none;
         }
 
-        /* Modals & Drawer */
+        .toast {
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid var(--accent-gold);
+            color: white; padding: 6px 14px; border-radius: 20px;
+            font-size: 0.8rem; box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            animation: toastFade 2.5s forwards; white-space: nowrap;
+        }
+
+        @keyframes toastFade {
+            0% { opacity: 0; transform: translateY(-10px); }
+            15% { opacity: 1; transform: translateY(0); }
+            80% { opacity: 1; }
+            100% { opacity: 0; transform: translateY(-10px); }
+        }
+
+        /* Slide-Out Drawer Log */
         .drawer {
-            position: fixed; top: 0; right: -300px; width: 280px; height: 100vh;
+            position: fixed; top: 0; right: -360px; width: 340px; height: 100vh;
             background: var(--card-bg); border-left: 2px solid var(--accent-gold);
-            z-index: 100; transition: right 0.3s ease; display: flex; flex-direction: column; padding: 10px;
+            box-shadow: -5px 0 25px rgba(0,0,0,0.8); z-index: 100;
+            transition: right 0.3s ease; display: flex; flex-direction: column; padding: 15px;
         }
         .drawer.open { right: 0; }
-        .log-list { flex: 1; overflow-y: auto; font-family: monospace; font-size: 0.75rem; display: flex; flex-direction: column; gap: 4px; }
-        .log-entry { padding: 4px; border-radius: 3px; background: #0f172a; border-left: 2px solid #334155; }
+
+        .drawer-header {
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid #334155; padding-bottom: 8px; margin-bottom: 10px;
+        }
+
+        .log-list { flex: 1; overflow-y: auto; font-family: monospace; font-size: 0.8rem; display: flex; flex-direction: column; gap: 6px; }
+        .log-entry { padding: 5px 8px; border-radius: 4px; background: #0f172a; border-left: 3px solid #334155; }
         .log-bust { border-color: var(--accent-red); color: #fca5a5; }
         .log-steal { border-color: var(--accent-gold); color: #fde047; }
         .log-run { border-color: var(--accent-green); color: #86efac; }
 
+        /* Modals */
         .modal {
             display: none; position: fixed; inset: 0;
             background: rgba(0,0,0,0.85); justify-content: center; align-items: center;
-            z-index: 110; padding: 10px;
+            z-index: 110; padding: 15px;
         }
+
         .modal-content {
-            background: var(--card-bg); padding: 15px; border-radius: 8px;
-            text-align: center; max-width: 380px; width: 100%; max-height: 90vh; overflow-y: auto;
+            background: var(--card-bg); padding: 20px; border-radius: 12px;
+            text-align: center; max-width: 440px; width: 100%; max-height: 85vh; overflow-y: auto;
         }
 
-        .deck-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin: 10px 0; }
-        .deck-cell { background: #0f172a; padding: 4px; border-radius: 4px; font-size: 0.75rem; border: 1px solid #334155; }
+        .deck-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 15px 0;
+        }
+        .deck-cell {
+            background: #0f172a; padding: 6px; border-radius: 4px; font-size: 0.8rem; border: 1px solid #334155;
+        }
 
-        .rules-text { text-align: left; font-size: 0.75rem; line-height: 1.3; color: #cbd5e1; }
-        .rules-text h3 { color: var(--accent-gold); margin: 6px 0 2px 0; font-size: 0.8rem; }
-        .rules-text ul { padding-left: 12px; }
+        .rules-text { text-align: left; font-size: 0.8rem; line-height: 1.4; color: #cbd5e1; }
+        .rules-text h3 { color: var(--accent-gold); margin: 8px 0 3px 0; font-size: 0.9rem; }
+        .rules-text ul { padding-left: 15px; }
 
         .run-option {
-            background: #0f172a; border: 1px solid #334155; padding: 6px; border-radius: 4px;
-            margin-bottom: 4px; cursor: pointer; text-align: left;
+            background: #0f172a; border: 1px solid #334155; padding: 8px; border-radius: 6px;
+            margin-bottom: 6px; cursor: pointer; text-align: left; transition: all 0.2s;
         }
+        .run-option:hover { border-color: var(--accent-gold); background: #1e293b; }
         .run-option.selected { border-color: var(--accent-green); background: #064e3b; }
 
-        /* Mobile Optimization: Condense Scoreboard Row */
+        .endgame-btn-group {
+            display: flex; flex-direction: column; gap: 8px; margin-top: 15px;
+        }
+
+        /* Mobile Responsive Adjustments */
         @media (max-width: 768px) {
-            #game-screen { grid-template-columns: 1fr; grid-template-rows: auto 1fr; gap: 4px; }
-            .sidebar { max-height: 80px; }
+            #game-screen {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr;
+            }
+            .sidebar { max-height: 110px; }
             .scoreboard-grid {
-                flex-direction: row;
+                display: flex;
                 overflow-x: auto;
-                gap: 6px;
+                padding-bottom: 4px;
+                gap: 8px;
             }
             .player-card {
-                min-width: 110px;
+                min-width: 130px;
                 flex-shrink: 0;
-                padding: 3px 5px;
             }
-            .player-card.compact {
-                min-width: 85px;
-                opacity: 0.75;
+            .card {
+                width: 80px;
+                height: 116px;
+                margin-left: -28px;
             }
         }
     </style>
@@ -363,13 +500,13 @@
         <div class="header-btns">
             <button class="hdr-btn" onclick="toggleModal('rules-modal', true)">📜 Rules</button>
             <button class="hdr-btn" onclick="toggleDrawer()">💬 Log</button>
-            <button class="hdr-btn" id="mute-btn" onclick="toggleMute()">🔊 Sound</button>
+            <button class="hdr-btn" id="mute-btn" onclick="toggleMute()">🔊 Sound On</button>
         </div>
     </header>
 
     <!-- SETUP SCREEN -->
     <div id="setup-screen">
-        <h2 style="margin-bottom:8px; color:var(--accent-gold); font-size:1.1rem;">Game Setup</h2>
+        <h2 style="margin-bottom:12px; color:var(--accent-gold);">Game Setup</h2>
         <div class="form-group">
             <label for="total-players">Total Players (2–6):</label>
             <select id="total-players" onchange="buildPlayerInputs()">
@@ -386,7 +523,7 @@
         </div>
 
         <div class="form-group">
-            <label>Players:</label>
+            <label>Players & Personalities:</label>
             <div class="player-inputs" id="player-inputs-container"></div>
         </div>
 
@@ -396,7 +533,7 @@
     <!-- MAIN GAME SCREEN -->
     <div id="game-screen">
         <aside class="sidebar">
-            <div class="scoreboard-title">Scores (First to 150)</div>
+            <div class="scoreboard-title">Scoreboard (First to 150)</div>
             <div class="scoreboard-grid" id="scoreboard-grid"></div>
         </aside>
 
@@ -405,31 +542,32 @@
 
             <div class="table-top">
                 <div>Turn: <strong id="current-player-display" style="color:var(--accent-gold);">--</strong></div>
+                
                 <div class="decks-container">
-                    <div class="deck-widget" onclick="openInspector('deck')">
+                    <div class="deck-widget" onclick="openInspector('deck')" title="View Deck Breakdown">
                         <div class="deck-stack" id="deck-count-display">138</div>
                         <div class="deck-label">Deck</div>
                     </div>
-                    <div class="deck-widget" onclick="openInspector('discard')">
+                    <div class="deck-widget" onclick="openInspector('discard')" title="View Discarded Cards">
                         <div class="discard-stack" id="discard-count-display">0</div>
                         <div class="deck-label">Discard</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Card Fan -->
+            <!-- Table Card Fan (Play Area) -->
             <div class="card-fan-container" id="play-area"></div>
 
             <div class="controls-bar">
                 <div class="prob-info">
-                    <div>Pts: <strong id="turn-points-val" style="color:var(--accent-gold);">0</strong></div>
-                    <div>Bust: <span class="prob-val prob-low" id="prob-val">0%</span></div>
+                    <div>Points: <strong id="turn-points-val" style="color:var(--accent-gold);">0 pts</strong></div>
+                    <div>Bust Chance: <span class="prob-val prob-low" id="prob-val">0%</span></div>
                 </div>
 
                 <div class="controls-btns">
-                    <button class="btn-hit" id="btn-hit" onclick="humanHit()">HIT</button>
-                    <button class="btn-stay" id="btn-stay" onclick="humanStay()">BANK</button>
-                    <button class="btn-continue" id="btn-continue" style="display:none;" onclick="confirmBust()">CONTINUE</button>
+                    <button class="btn-hit" id="btn-hit" onclick="humanHit()">HIT / DRAW</button>
+                    <button class="btn-stay" id="btn-stay" onclick="humanStay()">STOP & BANK</button>
+                    <button class="btn-continue" id="btn-continue" style="display:none;" onclick="confirmBust()">BUST! CONTINUE</button>
                 </div>
             </div>
         </section>
@@ -437,18 +575,18 @@
 
     <!-- LOG DRAWER -->
     <div class="drawer" id="log-drawer">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-            <h3 style="color:var(--accent-gold); font-size:0.9rem;">Game Log</h3>
-            <button class="hdr-btn" onclick="toggleDrawer()">✕</button>
+        <div class="drawer-header">
+            <h3 style="color:var(--accent-gold);">Game History</h3>
+            <button class="hdr-btn" onclick="toggleDrawer()">✕ Close</button>
         </div>
         <div class="log-list" id="log-list"></div>
     </div>
 
-    <!-- INSPECTOR MODAL -->
+    <!-- DECK / DISCARD INSPECTOR MODAL -->
     <div class="modal" id="inspector-modal">
         <div class="modal-content">
-            <h3 id="inspector-title" style="color:var(--accent-gold); font-size:0.9rem;">🃏 Cards</h3>
-            <p id="inspector-desc" style="font-size:0.7rem; color:#cbd5e1;"></p>
+            <h3 id="inspector-title" style="color:var(--accent-gold); margin-bottom:6px;">🃏 Card Inspector</h3>
+            <p id="inspector-desc" style="font-size:0.75rem; color:#cbd5e1;"></p>
             <div class="deck-grid" id="inspector-grid"></div>
             <button class="btn-primary" onclick="toggleModal('inspector-modal', false)">Close</button>
         </div>
@@ -457,42 +595,65 @@
     <!-- RULES MODAL -->
     <div class="modal" id="rules-modal">
         <div class="modal-content">
-            <h3 style="color:var(--accent-gold); font-size:0.9rem;">📜 Rules</h3>
+            <h2 style="color:var(--accent-gold); margin-bottom:10px;">📜 Rules of Play</h2>
             <div class="rules-text">
                 <h3>Objective</h3>
-                <p>First to <strong>150 points</strong> wins!</p>
+                <p>First player to reach <strong>150 points</strong> wins!</p>
+
+                <h3>138-Card Deck Breakdown</h3>
+                <ul>
+                    <li><strong>2 through 5:</strong> 12 copies each (48 cards) • 2–5 pts</li>
+                    <li><strong>6 through 9:</strong> 10 copies each (40 cards) • 6–9 pts</li>
+                    <li><strong>10, J, Q, K:</strong> 8 copies each (32 cards) • 10 pts each</li>
+                    <li><strong>Aces (A):</strong> 12 copies (12 cards) • 15 pts each</li>
+                    <li><strong>Jokers (JKR):</strong> 6 copies • Wilds for Runs (0 pts)</li>
+                </ul>
+
                 <h3>On Your Turn</h3>
                 <ul>
-                    <li>Draw cards sequentially. Matching ranks standard <strong>Bust</strong>.</li>
-                    <li><strong>Double Joker Bust:</strong> Resets Score to 0!</li>
-                    <li>Busting on 3 or fewer cards grants 1 <strong>Pity Gem</strong>. Spend 2 Gems to cancel a bust!</li>
-                    <li>Collect 3 Gems for automatic +50 Bonus Points.</li>
+                    <li>Draw cards sequentially. Drawing a matching rank causes a standard <strong>Bust</strong>.</li>
+                    <li><strong>Double Joker Bust:</strong> Instantly resets Score to 0! (And grants a Pity Gem).</li>
+                </ul>
+
+                <h3>Pending Piles & Stealing</h3>
+                <ul>
+                    <li>Banked cards go to your <strong>Pending Pile</strong>, converting to Score at the start of your next turn.</li>
+                    <li>Drawing cards matching an opponent's Pending cards lets you <strong>steal</strong> them when you bank!</li>
+                </ul>
+
+                <h3>Gems & Runs</h3>
+                <ul>
+                    <li>Busting early (3 or fewer cards) gives 1 Pity Gem. Spend 2 Gems to cancel a drawn bust card!</li>
+                    <li>Collect <strong>3 Gems</strong> to automatically convert them into <strong>+50 Bonus Score Points</strong>!</li>
+                    <li>5+ card runs can be doubled directly to Score or sent unscored to Pending. Straight sequences support High (10-J-Q-K-A) or Low (A-2-3-4-5) without wrapping.</li>
                 </ul>
             </div>
-            <button class="btn-primary" style="margin-top:10px;" onclick="toggleModal('rules-modal', false)">Close</button>
+            <button class="btn-primary" style="margin-top:15px;" onclick="toggleModal('rules-modal', false)">Close Rules</button>
         </div>
     </div>
 
     <!-- GEM MODAL -->
     <div class="modal" id="gem-modal">
         <div class="modal-content">
-            <h3 style="color:var(--accent-gold); font-size:0.9rem;">💎 SAFEGUARD!</h3>
-            <p style="font-size:0.75rem; margin:8px 0;">Spend 2 Gems to cancel bust card?</p>
-            <div style="display:flex; gap:6px; margin-top:10px;">
+            <h3 style="color:var(--accent-gold);">💎 SAFEGUARD AVAILABLE!</h3>
+            <p style="font-size:0.85rem; margin:10px 0;">Spend <strong>2 Gems</strong> to cancel drawing this bust card?</p>
+            <div style="display:flex; gap:8px; margin-top:15px;">
                 <button class="btn-primary" style="background:var(--accent-green)" onclick="resolveGemSafeguard(true)">Use Gems</button>
                 <button class="btn-primary" style="background:var(--accent-red)" onclick="resolveGemSafeguard(false)">Accept Bust</button>
             </div>
         </div>
     </div>
 
-    <!-- RUN MODAL -->
+    <!-- RUN SELECTION MODAL -->
     <div class="modal" id="run-modal">
         <div class="modal-content">
-            <h3 style="color:var(--accent-gold); font-size:0.9rem;">🎯 RUN COMPLETED!</h3>
+            <h3 style="color:var(--accent-gold);">🎯 RUN COMPLETED!</h3>
+            <p style="font-size:0.8rem; margin:6px 0; color:#cbd5e1;">Select the run sequence you wish to score:</p>
             <div id="run-options-container"></div>
-            <div style="display:flex; flex-direction:column; gap:6px; margin-top:10px;">
-                <button class="btn-primary" style="background:var(--accent-green)" onclick="resolveRunChoice('score')">Score Run (2x Points)</button>
-                <button class="btn-primary" style="background:var(--accent-gold)" onclick="resolveRunChoice('pending')">Move Hand to Pending</button>
+
+            <div style="display:flex; flex-direction:column; gap:8px; margin-top:12px;">
+                <button class="btn-primary" style="background:var(--accent-green)" onclick="resolveRunChoice('score')">Double Selected Run & Score Instantly</button>
+                <button class="btn-primary" style="background:var(--accent-gold)" onclick="resolveRunChoice('pending')">Move Entire Hand to Pending (Unscored)</button>
             </div>
         </div>
     </div>
@@ -500,41 +661,56 @@
     <!-- WIN MODAL -->
     <div class="modal" id="win-modal">
         <div class="modal-content">
-            <h2 id="winner-title" style="color:var(--accent-gold); font-size:1.1rem;">🏆 GAME OVER 🏆</h2>
-            <p id="winner-details" style="margin:10px 0; font-size:0.85rem;"></p>
-            <div style="display:flex; flex-direction:column; gap:6px;">
+            <h2 id="winner-title" style="color:var(--accent-gold);">🏆 GAME OVER 🏆</h2>
+            <p id="winner-details" style="margin:15px 0;"></p>
+            
+            <div class="endgame-btn-group">
                 <button class="btn-primary" style="background:var(--accent-green)" onclick="rematchGame()">🔄 Rematch</button>
-                <button class="btn-primary" style="background:var(--accent-blue)" onclick="resetToSetup()">🎮 New Setup</button>
+                <button class="btn-primary" style="background:var(--accent-blue)" onclick="resetToSetup()">🎮 New Game</button>
+                <button class="btn-primary" style="background:#475569" onclick="endSession()">✕ End</button>
             </div>
         </div>
     </div>
 
     <script>
-        const CONFIG = { TARGET_SCORE: 150, SAFEGUARD_GEM_COST: 2, GEM_BONUS_THRESHOLD: 3, GEM_BONUS_PTS: 50, PITY_GEM_HAND_LIMIT: 3 };
+        // Centralized Config Constants
+        const CONFIG = {
+            TARGET_SCORE: 150,
+            SAFEGUARD_GEM_COST: 2,
+            GEM_BONUS_THRESHOLD: 3,
+            GEM_BONUS_PTS: 50,
+            PITY_GEM_HAND_LIMIT: 3
+        };
 
+        // AI Personalities
         const AI_PERSONALITIES = [
-            { id: 'reaper', name: 'R34P3R', bustTol: 45, minCards: 4, minPts: 18, stealBonus: 1.0 },
-            { id: 'riskomatic', name: 'RiskBot', bustTol: 30, minCards: 3, minPts: 12, stealBonus: 1.2 },
-            { id: 'bluffer', name: 'Bluffer', bustTol: 35, minCards: 3, minPts: 10, stealBonus: 2.5 },
-            { id: 'pushbot', name: 'PushBot', bustTol: 20, minCards: 3, minPts: 15, stealBonus: 1.0 }
+            { id: 'reaper', name: 'R34P3R-Bot', style: 'Risky / Aggressive', bustTol: 45, minCards: 4, minPts: 18, stealBonus: 1.0 },
+            { id: 'riskomatic', name: 'Risk-O-Matic', style: 'Balanced / Analytical', bustTol: 30, minCards: 3, minPts: 12, stealBonus: 1.2 },
+            { id: 'bluffer', name: 'Bluffer-9000', style: 'Adversarial Thief', bustTol: 35, minCards: 3, minPts: 10, stealBonus: 2.5 },
+            { id: 'pushbot', name: 'PushBot-v2', style: 'Conservative / Safe', bustTol: 20, minCards: 3, minPts: 15, stealBonus: 1.0 }
         ];
 
         const RANK_ORDER = { '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14, 'JKR': 99 };
         const VALUES = { '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 10, 'Q': 10, 'K': 10, 'A': 15, 'JKR': 0 };
         const SUITS = ['♠', '♥', '♦', '♣'];
 
+        // Web Audio Synth Engine
         let audioCtx = null;
         let isMuted = false;
 
         function initAudio() {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            if (audioCtx.state === 'suspended') audioCtx.resume();
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
         }
 
         function toggleMute() {
             initAudio();
             isMuted = !isMuted;
-            document.getElementById('mute-btn').innerText = isMuted ? '🔇 Muted' : '🔊 Sound';
+            document.getElementById('mute-btn').innerText = isMuted ? '🔇 Muted' : '🔊 Sound On';
         }
 
         function playSound(type) {
@@ -542,32 +718,66 @@
             initAudio();
             if (!audioCtx) return;
             const now = audioCtx.currentTime;
+
             if (type === 'card') {
-                const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
                 osc.type = 'triangle'; osc.frequency.setValueAtTime(450, now);
                 osc.frequency.exponentialRampToValueAtTime(80, now + 0.05);
                 gain.gain.setValueAtTime(0.3, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.05);
                 osc.connect(gain); gain.connect(audioCtx.destination);
                 osc.start(now); osc.stop(now + 0.05);
+            } else if (type === 'bust') {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(220, now);
+                osc.frequency.linearRampToValueAtTime(50, now + 0.35);
+                gain.gain.setValueAtTime(0.4, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.35);
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.start(now); osc.stop(now + 0.35);
             } else if (type === 'steal') {
                 [523, 659].forEach((freq, idx) => {
-                    const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
                     osc.type = 'sine'; osc.frequency.setValueAtTime(freq, now + idx * 0.08);
                     gain.gain.setValueAtTime(0.25, now + idx * 0.08);
-                    gain.gain.linearRampToValueAtTime(0.01, now + idx * 0.08 + 0.1);
+                    gain.gain.linearRampToValueAtTime(0.01, now + idx * 0.08 + 0.12);
                     osc.connect(gain); gain.connect(audioCtx.destination);
-                    osc.start(now + idx * 0.08); osc.stop(now + idx * 0.08 + 0.1);
+                    osc.start(now + idx * 0.08); osc.stop(now + idx * 0.08 + 0.12);
                 });
             }
         }
 
-        let deck = [], discardPile = [], players = [], turnIndex = 0, playArea = [];
-        let awaitingBustConfirm = false, pendingBustState = null, pendingRunState = null;
-        let selectedRunIndex = 0, isDrawerOpen = false, lastWinnerId = null, aiTimer = null, cardIdCounter = 0;
+        // Global State Variables
+        let deck = [];
+        let discardPile = [];
+        let players = [];
+        let turnIndex = 0;
+        let playArea = [];
+        let awaitingBustConfirm = false;
+        let pendingBustState = null;
+        let pendingRunState = null;
+        let selectedRunIndex = 0;
+        let isDrawerOpen = false;
+        let lastWinnerId = null;
+        let aiTimer = null;
+        let cardIdCounter = 0;
 
-        function clearAiTimer() { if (aiTimer) { clearTimeout(aiTimer); aiTimer = null; } }
-        function toggleModal(id, show) { document.getElementById(id).style.display = show ? 'flex' : 'none'; }
-        function toggleDrawer() { isDrawerOpen = !isDrawerOpen; document.getElementById('log-drawer').classList.toggle('open', isDrawerOpen); }
+        function clearAiTimer() {
+            if (aiTimer) {
+                clearTimeout(aiTimer);
+                aiTimer = null;
+            }
+        }
+
+        function toggleModal(id, show) {
+            document.getElementById(id).style.display = show ? 'flex' : 'none';
+        }
+
+        function toggleDrawer() {
+            isDrawerOpen = !isDrawerOpen;
+            document.getElementById('log-drawer').classList.toggle('open', isDrawerOpen);
+        }
 
         function buildPlayerInputs() {
             const total = parseInt(document.getElementById('total-players').value);
@@ -591,11 +801,22 @@
             for (let i = 0; i < total; i++) {
                 const row = document.createElement('div');
                 row.className = 'player-input-row';
-                if (i < numHumans) {
-                    row.innerHTML = `<span>Player ${i + 1}:</span><input type="text" id="player-name-input-${i}" value="Player ${i + 1}">`;
+                const isHuman = i < numHumans;
+
+                if (isHuman) {
+                    row.innerHTML = `
+                        <span>Player ${i + 1}:</span>
+                        <input type="text" id="player-name-input-${i}" value="Player ${i + 1}">
+                    `;
                 } else {
-                    const aiOptions = AI_PERSONALITIES.map((p, idx) => `<option value="${idx}" ${idx === aiCount % AI_PERSONALITIES.length ? 'selected' : ''}>${p.name}</option>`).join('');
-                    row.innerHTML = `<span>Player ${i + 1}:</span><select id="player-ai-select-${i}">${aiOptions}</select>`;
+                    const aiOptions = AI_PERSONALITIES.map((p, idx) => 
+                        `<option value="${idx}" ${idx === aiCount % AI_PERSONALITIES.length ? 'selected' : ''}>${p.name} (${p.style})</option>`
+                    ).join('');
+                    
+                    row.innerHTML = `
+                        <span>Player ${i + 1}:</span>
+                        <select id="player-ai-select-${i}">${aiOptions}</select>
+                    `;
                     aiCount++;
                 }
                 container.appendChild(row);
@@ -604,19 +825,25 @@
         window.onload = buildPlayerInputs;
 
         function createDeck() {
-            deck = []; cardIdCounter = 0;
+            deck = [];
+            cardIdCounter = 0;
             const distribution = [
                 { ranks: ['2', '3', '4', '5'], count: 12 },
                 { ranks: ['6', '7', '8', '9'], count: 10 },
                 { ranks: ['10', 'J', 'Q', 'K'], count: 8 },
                 { ranks: ['A'], count: 12 }
             ];
+
             distribution.forEach(group => {
                 group.ranks.forEach(r => {
-                    for (let i = 0; i < group.count; i++) deck.push({ id: ++cardIdCounter, rank: r, suit: SUITS[i % 4], val: VALUES[r] });
+                    for (let i = 0; i < group.count; i++) {
+                        deck.push({ id: ++cardIdCounter, rank: r, suit: SUITS[i % 4], val: VALUES[r] });
+                    }
                 });
             });
+
             for (let j = 0; j < 6; j++) deck.push({ id: ++cardIdCounter, rank: 'JKR', suit: '★', val: 0 });
+
             for (let i = deck.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [deck[i], deck[j]] = [deck[j], deck[i]];
@@ -625,8 +852,10 @@
 
         function recycleDiscards() {
             if (discardPile.length === 0) return;
-            log(`🔄 Reshuffled ${discardPile.length} discards!`);
-            deck = [...discardPile]; discardPile = [];
+            log(`🔄 Deck empty! Reshuffling ${discardPile.length} discarded cards back into deck...`);
+            showToast(`Reshuffled ${discardPile.length} discarded cards!`);
+            deck = [...discardPile];
+            discardPile = [];
             for (let i = deck.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [deck[i], deck[j]] = [deck[j], deck[i]];
@@ -634,87 +863,149 @@
         }
 
         function initGame() {
-            initAudio(); clearAiTimer();
+            initAudio();
+            clearAiTimer();
             const total = parseInt(document.getElementById('total-players').value);
             const humans = parseInt(document.getElementById('human-players').value);
+
             players = [];
             for (let i = 0; i < total; i++) {
-                if (i < humans) {
+                const isHuman = i < humans;
+                if (isHuman) {
                     const nameInput = document.getElementById(`player-name-input-${i}`);
-                    players.push({ id: i, name: nameInput ? nameInput.value.trim() || `Player ${i + 1}` : `Player ${i + 1}`, isHuman: true, personality: null, tally: 0, pending: [], gems: 0 });
+                    players.push({
+                        id: i,
+                        name: nameInput ? nameInput.value.trim() || `Player ${i + 1}` : `Player ${i + 1}`,
+                        isHuman: true,
+                        personality: null,
+                        tally: 0,
+                        pending: [],
+                        gems: 0
+                    });
                 } else {
                     const selectEl = document.getElementById(`player-ai-select-${i}`);
-                    const personality = AI_PERSONALITIES[selectEl ? parseInt(selectEl.value) : 0];
-                    players.push({ id: i, name: personality.name, isHuman: false, personality: personality, tally: 0, pending: [], gems: 0 });
+                    const personalityIdx = selectEl ? parseInt(selectEl.value) : 0;
+                    const personality = AI_PERSONALITIES[personalityIdx];
+                    players.push({
+                        id: i,
+                        name: personality.name,
+                        isHuman: false,
+                        personality: personality,
+                        tally: 0,
+                        pending: [],
+                        gems: 0
+                    });
                 }
             }
-            createDeck(); discardPile = []; lastWinnerId = null;
+
+            createDeck();
+            discardPile = [];
+            lastWinnerId = null;
             document.getElementById('setup-screen').style.display = 'none';
             document.getElementById('game-screen').style.display = 'grid';
-            log(`Game started! Target: ${CONFIG.TARGET_SCORE}`);
+            log(`Game started! First to ${CONFIG.TARGET_SCORE} points wins.`);
             startTurn();
         }
 
         function startTurn() {
             clearAiTimer();
             if (deck.length === 0) recycleDiscards();
-            playArea = []; awaitingBustConfirm = false; pendingBustState = null; pendingRunState = null;
+            playArea = [];
+            awaitingBustConfirm = false;
+            pendingBustState = null;
+            pendingRunState = null;
+
             const p = players[turnIndex];
+
+            // Convert Pending Cards to Permanent Score & Move Cards to Discard
             if (p.pending.length > 0) {
                 const points = p.pending.reduce((a, b) => a + b.val, 0);
                 p.tally += points;
-                log(`✨ ${p.name} secured ${points} pts!`, 'log-run');
+                log(`✨ ${p.name} secured ${points} pts from Pending to Score!`, 'log-run');
+                
+                // FIX: Send scored pending cards to the discard pile instead of clearing them
+                discardPile.push(...p.pending);
                 p.pending = [];
             }
+
             render(false);
-            if (p.tally >= CONFIG.TARGET_SCORE) { endGame(p); return; }
+
+            if (p.tally >= CONFIG.TARGET_SCORE) {
+                endGame(p);
+                return;
+            }
+
             drawCard();
+
             if (!p.isHuman) aiTimer = setTimeout(aiLogic, 1000);
         }
 
         function drawCard() {
             if (deck.length === 0) recycleDiscards();
-            if (deck.length === 0) return true;
+            if (deck.length === 0) {
+                showToast("No cards left to draw!");
+                return true;
+            }
 
             const card = deck.pop();
+            card.isNew = true;
             playArea.push(card);
             playSound('card');
 
             const p = players[turnIndex];
             const jokers = playArea.filter(c => c.rank === 'JKR');
-            let isBust = false, bustType = '', originalMatchIndex = -1;
+            let isBust = false;
+            let bustType = '';
+            let originalMatchIndex = -1;
 
             if (jokers.length >= 2) {
                 isBust = true; bustType = 'joker';
             } else if (playArea.length > 1) {
                 const ranks = playArea.map(c => c.rank);
-                if (card.rank !== 'JKR') {
-                    const firstMatch = ranks.indexOf(card.rank);
+                const currentRank = card.rank;
+                if (currentRank !== 'JKR') {
+                    const firstMatch = ranks.indexOf(currentRank);
                     if (firstMatch !== -1 && firstMatch < playArea.length - 1) {
-                        isBust = true; bustType = 'match'; originalMatchIndex = firstMatch;
+                        isBust = true; 
+                        bustType = 'match';
+                        originalMatchIndex = firstMatch;
                     }
                 }
             }
 
             if (isBust) {
+                playSound('bust');
                 card.isBustingCard = true;
-                if (bustType === 'match' && originalMatchIndex !== -1) playArea[originalMatchIndex].isBustingCard = true;
-                else if (bustType === 'joker') playArea.filter(c => c.rank === 'JKR').forEach(c => c.isBustingCard = true);
+                if (bustType === 'match' && originalMatchIndex !== -1) {
+                    playArea[originalMatchIndex].isBustingCard = true;
+                } else if (bustType === 'joker') {
+                    playArea.filter(c => c.rank === 'JKR').forEach(c => c.isBustingCard = true);
+                }
 
-                log(`💥 ${p.name} BUSTED!`, 'log-bust');
+                const handStr = playArea.map(c => `${c.rank}${c.suit}`).join(', ');
+                log(`💥 ${p.name} drew ${handStr} -- BUST!`, 'log-bust');
                 showToast(`${p.name} BUSTED!`);
 
-                if (bustType === 'joker') { executeBust(bustType); return true; }
+                if (bustType === 'joker') {
+                    executeBust(bustType);
+                    return true;
+                }
 
                 if (p.gems >= CONFIG.SAFEGUARD_GEM_COST) {
                     pendingBustState = { card, bustType, originalMatchIndex };
-                    if (p.isHuman) { render(true); toggleModal('gem-modal', true); }
-                    else resolveGemSafeguard(playArea.length > CONFIG.PITY_GEM_HAND_LIMIT);
+                    if (p.isHuman) {
+                        render(true);
+                        toggleModal('gem-modal', true);
+                    } else {
+                        resolveGemSafeguard(playArea.length > CONFIG.PITY_GEM_HAND_LIMIT);
+                    }
                     return true;
                 }
+
                 executeBust(bustType);
                 return true;
             }
+
             render(true);
             return false;
         }
@@ -722,12 +1013,14 @@
         function resolveGemSafeguard(useGems) {
             toggleModal('gem-modal', false);
             const p = players[turnIndex];
+
             if (useGems && p.gems >= CONFIG.SAFEGUARD_GEM_COST) {
                 p.gems -= CONFIG.SAFEGUARD_GEM_COST;
                 const savedCard = playArea.pop();
                 discardPile.push(savedCard);
                 playArea.forEach(c => c.isBustingCard = false);
-                log(`💎 ${p.name} spent Gems to cancel bust!`, 'log-steal');
+                log(`💎 ${p.name} SPENT ${CONFIG.SAFEGUARD_GEM_COST} GEMS to cancel drawing ${savedCard.rank}!`, 'log-steal');
+                showToast(`${p.name} spent ${CONFIG.SAFEGUARD_GEM_COST} Gems to cancel bust!`);
                 render(false);
                 if (!p.isHuman) aiTimer = setTimeout(aiLogic, 1000);
             } else {
@@ -739,59 +1032,103 @@
         function executeBust(bustType) {
             const p = players[turnIndex];
             awaitingBustConfirm = true;
-            if (bustType === 'joker') { log(`💣 DOUBLE JOKER BUST! Score Wiped!`, 'log-bust'); p.tally = 0; }
+
+            if (bustType === 'joker') {
+                log(`💣 DOUBLE JOKER BUST! ${p.name}'s Score Wiped to 0!`, 'log-bust');
+                p.tally = 0;
+            }
+
             if (playArea.length <= CONFIG.PITY_GEM_HAND_LIMIT) addGem(p);
+
             discardPile.push(...playArea);
             render(false);
-            if (!p.isHuman) aiTimer = setTimeout(confirmBust, 1800);
+
+            if (!p.isHuman) aiTimer = setTimeout(confirmBust, 2200);
         }
 
-        function confirmBust() { awaitingBustConfirm = false; playArea = []; endTurn(); }
+        function confirmBust() {
+            awaitingBustConfirm = false;
+            playArea = [];
+            endTurn();
+        }
 
         function addGem(player) {
             player.gems++;
             if (player.gems >= CONFIG.GEM_BONUS_THRESHOLD) {
-                player.gems = 0; player.tally += CONFIG.GEM_BONUS_PTS;
-                log(`💎 ${player.name} converted Gems into +${CONFIG.GEM_BONUS_PTS} pts!`, 'log-run');
+                player.gems = 0;
+                player.tally += CONFIG.GEM_BONUS_PTS;
+                log(`💎 ${player.name} converted ${CONFIG.GEM_BONUS_THRESHOLD} Gems into +${CONFIG.GEM_BONUS_PTS} Bonus Score!`, 'log-run');
+                showToast(`${player.name} converted ${CONFIG.GEM_BONUS_THRESHOLD} Gems into +${CONFIG.GEM_BONUS_PTS} Score!`);
             }
         }
 
-        function humanHit() { initAudio(); if (!awaitingBustConfirm && players[turnIndex].isHuman) drawCard(); }
+        function humanHit() {
+            initAudio();
+            if (awaitingBustConfirm || !players[turnIndex].isHuman) return;
+            drawCard();
+        }
+
         function humanStay() {
-            initAudio(); if (awaitingBustConfirm || !players[turnIndex].isHuman) return;
+            initAudio();
+            if (awaitingBustConfirm || !players[turnIndex].isHuman) return;
             const runs = findAllRuns(playArea);
             if (runs.length > 0) {
-                pendingRunState = runs; buildRunModal(runs); toggleModal('run-modal', true);
-            } else bankTurn(false);
+                pendingRunState = runs;
+                buildRunModal(runs);
+                toggleModal('run-modal', true);
+            } else {
+                bankTurn(false);
+            }
         }
 
         function buildRunModal(runs) {
             const container = document.getElementById('run-options-container');
-            container.innerHTML = ''; selectedRunIndex = 0;
+            container.innerHTML = '';
+            selectedRunIndex = 0;
+
             runs.forEach((r, idx) => {
                 const basePts = r.reduce((a, b) => a + b.val, 0);
+                const str = r.map(c => `${c.rank}${c.suit}`).join(' - ');
                 const div = document.createElement('div');
                 div.className = `run-option ${idx === 0 ? 'selected' : ''}`;
-                div.onclick = () => { document.querySelectorAll('.run-option').forEach(el => el.classList.remove('selected')); div.classList.add('selected'); selectedRunIndex = idx; };
-                div.innerHTML = `<div style="font-weight:bold; color:var(--accent-gold);">${r.length}-Card Run (${basePts * 2} pts)</div>`;
+                div.onclick = () => {
+                    document.querySelectorAll('.run-option').forEach(el => el.classList.remove('selected'));
+                    div.classList.add('selected');
+                    selectedRunIndex = idx;
+                };
+                div.innerHTML = `
+                    <div style="font-weight:bold; color:var(--accent-gold);">${r.length}-Card Run (${basePts * 2} scored)</div>
+                    <div style="font-size:0.75rem; color:#cbd5e1; margin-top:2px;">${str}</div>
+                `;
                 container.appendChild(div);
             });
         }
 
-        function resolveRunChoice(choice) { toggleModal('run-modal', false); bankTurn(choice === 'score'); }
+        function resolveRunChoice(choice) {
+            toggleModal('run-modal', false);
+            bankTurn(choice === 'score');
+        }
 
         function bankTurn(scoreRun) {
             const p = players[turnIndex];
+            const handStr = playArea.map(c => `${c.rank}${c.suit}`).join(', ');
+            log(`📥 ${p.name} drew ${handStr} -- Holds`);
+
             let leftovers = [...playArea];
+
             if (scoreRun && pendingRunState) {
                 const runCards = pendingRunState[selectedRunIndex] || pendingRunState[0];
                 playSound('steal');
                 const runVal = runCards.reduce((a, b) => a + b.val, 0) * 2;
                 p.tally += runVal;
-                log(`🎯 ${p.name} scored a RUN for ${runVal} PTS!`, 'log-run');
+                log(`🎯 ${p.name} scored a ${runCards.length}-Card RUN directly to Score for ${runVal} PTS!`, 'log-run');
+                
                 runCards.forEach(rc => {
                     const idx = leftovers.findIndex(c => c.id === rc.id);
-                    if (idx > -1) discardPile.push(leftovers.splice(idx, 1)[0]);
+                    if (idx > -1) {
+                        const removed = leftovers.splice(idx, 1)[0];
+                        discardPile.push(removed);
+                    }
                 });
             }
 
@@ -803,46 +1140,68 @@
                     if (toSteal.length > 0) {
                         playSound('steal');
                         log(`⚡ ${p.name} STOLE ${toSteal.length} card(s) from ${op.name}!`, 'log-steal');
+                        showToast(`${p.name} STOLE ${toSteal.length} cards from ${op.name}!`);
                         stolenCards.push(...toSteal);
                         op.pending = op.pending.filter(c => !toSteal.includes(c));
                     }
                 }
             });
 
-            p.pending.push(...leftovers.filter(c => c.rank !== 'JKR'), ...stolenCards);
-            p.pending.sort((a, b) => RANK_ORDER[a.rank] - RANK_ORDER[b.rank]);
-            discardPile.push(...leftovers.filter(c => c.rank === 'JKR'));
+            const nonJokerLeftovers = leftovers.filter(c => c.rank !== 'JKR');
+            const jokersToDiscard = leftovers.filter(c => c.rank === 'JKR');
 
-            pendingRunState = null; playArea = []; endTurn();
+            p.pending.push(...nonJokerLeftovers, ...stolenCards);
+            p.pending.sort((a, b) => RANK_ORDER[a.rank] - RANK_ORDER[b.rank]);
+
+            discardPile.push(...jokersToDiscard);
+
+            pendingRunState = null;
+            playArea = [];
+            endTurn();
         }
 
         function findAllRuns(cards) {
             const valMap = { 'A': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13 };
             const jokers = cards.filter(c => c.rank === 'JKR');
             const nonJokers = cards.filter(c => c.rank !== 'JKR');
+
             let allValidRuns = [];
 
             for (let start = 1; start <= 10; start++) {
-                let currentRun = []; let jokersLeft = [...jokers];
+                let currentRun = [];
+                let jokersLeft = [...jokers];
+
                 for (let v = start; v < start + 14; v++) {
                     const match = nonJokers.find(c => valMap[c.rank] === v || (v === 14 && c.rank === 'A'));
-                    if (match) currentRun.push(match);
-                    else if (jokersLeft.length > 0) currentRun.push(jokersLeft.shift());
-                    else break;
+                    if (match) {
+                        currentRun.push(match);
+                    } else if (jokersLeft.length > 0) {
+                        currentRun.push(jokersLeft.shift());
+                    } else {
+                        break;
+                    }
                 }
+
                 if (currentRun.length >= 5) {
                     for (let len = currentRun.length; len >= 5; len--) {
                         for (let offset = 0; offset <= currentRun.length - len; offset++) {
-                            allValidRuns.push(currentRun.slice(offset, offset + len));
+                            const sub = currentRun.slice(offset, offset + len);
+                            allValidRuns.push(sub);
                         }
                     }
                 }
             }
-            const unique = []; const keys = new Set();
+
+            const unique = [];
+            const keys = new Set();
             allValidRuns.forEach(r => {
                 const key = r.map(c => c.id).sort((a,b) => a - b).join('|');
-                if (!keys.has(key)) { keys.add(key); unique.push(r); }
+                if (!keys.has(key)) {
+                    keys.add(key);
+                    unique.push(r);
+                }
             });
+
             return unique;
         }
 
@@ -860,44 +1219,127 @@
             const currentRanks = playArea.map(c => c.rank);
             players.forEach(op => {
                 if (op.id !== p.id && op.pending.length > 0) {
-                    op.pending.forEach(c => { if (c.rank !== 'JKR' && currentRanks.includes(c.rank)) availableSteals++; });
+                    op.pending.forEach(c => {
+                        if (c.rank !== 'JKR' && currentRanks.includes(c.rank)) availableSteals++;
+                    });
                 }
             });
 
-            if ((p.tally + p.pending.reduce((a, b) => a + b.val, 0) + points) >= CONFIG.TARGET_SCORE || runs.length > 0) {
-                bankTurn(runs.length > 0); return;
-            }
-
-            if (count < 3 && count < persona.minCards && bustProb < 60) {
-                const busted = drawCard();
-                if (!busted && !awaitingBustConfirm) aiTimer = setTimeout(aiLogic, 1000);
+            const currentTotal = p.tally + p.pending.reduce((a, b) => a + b.val, 0) + points;
+            if (currentTotal >= CONFIG.TARGET_SCORE) {
+                bankTurn(runs.length > 0);
                 return;
             }
 
-            let shouldHold = bustProb >= persona.bustTol || (count >= persona.minCards && points >= persona.minPts && bustProb >= 20) || (availableSteals > 0 && Math.random() < (0.4 * persona.stealBonus));
+            if (runs.length > 0) {
+                bankTurn(true);
+                return;
+            }
 
-            if (shouldHold) bankTurn(false);
-            else {
+            // Pity Gem logic: Do not hold under 3 cards unless bust probability is extremely high (> 60%)
+            if (count < 3 && count < persona.minCards) {
+                if (bustProb < 60) {
+                    const busted = drawCard();
+                    if (!busted && !awaitingBustConfirm) aiTimer = setTimeout(aiLogic, 1000);
+                    return;
+                }
+            }
+
+            let shouldHold = false;
+            if (bustProb >= persona.bustTol) shouldHold = true;
+            if (count >= persona.minCards && points >= persona.minPts && bustProb >= 20) shouldHold = true;
+            if (availableSteals > 0 && Math.random() < (0.4 * persona.stealBonus)) shouldHold = true;
+
+            if (shouldHold) {
+                bankTurn(false);
+            } else {
                 const busted = drawCard();
                 if (!busted && !awaitingBustConfirm) aiTimer = setTimeout(aiLogic, 1000);
             }
         }
 
-        function endTurn() { clearAiTimer(); render(false); turnIndex = (turnIndex + 1) % players.length; aiTimer = setTimeout(startTurn, 800); }
-        function endGame(winner) { clearAiTimer(); lastWinnerId = winner.id; document.getElementById('winner-title').innerText = `🏆 ${winner.name.toUpperCase()} WINS! 🏆`; document.getElementById('winner-details').innerText = `Final Score: ${winner.tally} Points`; toggleModal('win-modal', true); }
-        function rematchGame() { clearAiTimer(); toggleModal('win-modal', false); players.forEach(p => { p.tally = 0; p.pending = []; p.gems = 0; }); createDeck(); discardPile = []; playArea = []; turnIndex = 0; log(`🔄 REMATCH STARTED!`); startTurn(); }
-        function resetToSetup() { clearAiTimer(); toggleModal('win-modal', false); document.getElementById('game-screen').style.display = 'none'; document.getElementById('setup-screen').style.display = 'block'; }
-        function log(msg, className = '') { const list = document.getElementById('log-list'); const div = document.createElement('div'); div.className = `log-entry ${className}`; div.innerText = msg; list.appendChild(div); list.scrollTop = list.scrollHeight; }
-        function showToast(msg) { const container = document.getElementById('toast-container'); const toast = document.createElement('div'); toast.className = 'toast'; toast.innerText = msg; container.appendChild(toast); setTimeout(() => toast.remove(), 2200); }
+        function endTurn() {
+            clearAiTimer();
+            render(false);
+            turnIndex = (turnIndex + 1) % players.length;
+            aiTimer = setTimeout(startTurn, 800);
+        }
+
+        function endGame(winner) {
+            clearAiTimer();
+            lastWinnerId = winner.id;
+            document.getElementById('winner-title').innerText = `🏆 ${winner.name.toUpperCase()} WINS! 🏆`;
+            document.getElementById('winner-details').innerText = `Final Score: ${winner.tally} Points`;
+            toggleModal('win-modal', true);
+        }
+
+        function rematchGame() {
+            clearAiTimer();
+            toggleModal('win-modal', false);
+            players.forEach(p => {
+                p.tally = 0;
+                p.pending = [];
+                p.gems = 0;
+            });
+            createDeck();
+            discardPile = [];
+            playArea = [];
+            turnIndex = 0;
+            log(`🔄 REMATCH STARTED!`);
+            startTurn();
+        }
+
+        function resetToSetup() {
+            clearAiTimer();
+            toggleModal('win-modal', false);
+            document.getElementById('game-screen').style.display = 'none';
+            document.getElementById('setup-screen').style.display = 'block';
+        }
+
+        function endSession() {
+            clearAiTimer();
+            toggleModal('win-modal', false);
+            showToast("Thanks for playing Push Yer Luck!");
+        }
+
+        function log(msg, className = '') {
+            const list = document.getElementById('log-list');
+            const div = document.createElement('div');
+            div.className = `log-entry ${className}`;
+            div.innerText = msg;
+            list.appendChild(div);
+            list.scrollTop = list.scrollHeight;
+        }
+
+        function showToast(msg) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerText = msg;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 2500);
+        }
 
         function openInspector(type) {
-            const grid = document.getElementById('inspector-grid'); grid.innerHTML = '';
-            const title = document.getElementById('inspector-title'); const desc = document.getElementById('inspector-desc');
+            const grid = document.getElementById('inspector-grid');
+            grid.innerHTML = '';
+            const title = document.getElementById('inspector-title');
+            const desc = document.getElementById('inspector-desc');
+
             const source = type === 'deck' ? deck : discardPile;
-            title.innerText = type === 'deck' ? '🃏 Deck' : '🗑️ Discard';
-            desc.innerText = type === 'deck' ? 'Remaining in deck:' : 'Currently in discard:';
-            ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A', 'JKR'].forEach(r => {
-                const cell = document.createElement('div'); cell.className = 'deck-cell'; cell.innerHTML = `<strong>${r}:</strong> ${source.filter(c => c.rank === r).length}`; grid.appendChild(cell);
+            title.innerText = type === 'deck' ? '🃏 Deck Composition' : '🗑️ Discard Pile';
+            desc.innerText = type === 'deck' 
+                ? 'Exact count of cards remaining in draw pile:' 
+                : 'Exact count of cards currently in discard pile:';
+
+            const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A', 'JKR'];
+
+            ranks.forEach(r => {
+                const count = source.filter(c => c.rank === r).length;
+                const cell = document.createElement('div');
+                cell.className = 'deck-cell';
+                cell.innerHTML = `<strong>${r}:</strong> ${count}`;
+                grid.appendChild(cell);
             });
             toggleModal('inspector-modal', true);
         }
@@ -906,10 +1348,13 @@
             if (playArea.length === 0 || deck.length === 0) return 0;
             const currentRanks = playArea.map(c => c.rank);
             const jokersInHand = playArea.filter(c => c.rank === 'JKR').length;
+
             let busts = 0;
             deck.forEach(c => {
-                if ((c.rank === 'JKR' && jokersInHand >= 1) || (c.rank !== 'JKR' && currentRanks.includes(c.rank))) busts++;
+                if (c.rank === 'JKR' && jokersInHand >= 1) busts++;
+                else if (c.rank !== 'JKR' && currentRanks.includes(c.rank)) busts++;
             });
+
             return Math.round((busts / deck.length) * 100);
         }
 
@@ -918,6 +1363,7 @@
             const discElem = document.getElementById('discard-count-display');
             discElem.innerText = `${discardPile.length}`;
             discElem.className = `discard-stack ${discardPile.length > 0 ? 'has-cards' : ''}`;
+
             document.getElementById('current-player-display').innerText = players[turnIndex].name;
 
             const isHuman = players[turnIndex].isHuman;
@@ -941,26 +1387,29 @@
                 const pendPts = p.pending.reduce((a,b) => a + b.val, 0);
                 const isCurrent = idx === turnIndex;
                 const card = document.createElement('div');
-                
-                // Smart condensation for mobile screens
-                const isInactiveEmpty = !isCurrent && pendPts === 0 && p.gems === 0;
-                card.className = `player-card ${isCurrent ? 'active' : ''} ${isInactiveEmpty ? 'compact' : ''}`;
+                card.className = `player-card ${isCurrent ? 'active' : ''}`;
 
                 const rankCounts = {};
                 p.pending.forEach(c => { rankCounts[c.rank] = (rankCounts[c.rank] || 0) + 1; });
 
-                const pills = Object.keys(rankCounts).map(r => `<span class="pill ${!isCurrent && activeRanks.includes(r) ? 'threatened' : ''}">${r}${rankCounts[r] > 1 ? ` x${rankCounts[r]}` : ''}</span>`).join('');
+                const pills = Object.keys(rankCounts).map(r => {
+                    const count = rankCounts[r];
+                    const isThreatened = !isCurrent && activeRanks.includes(r);
+                    return `<span class="pill ${isThreatened ? 'threatened' : ''}">${r}${count > 1 ? ` x${count}` : ''}</span>`;
+                }).join('');
+
+                const isWinnerStar = p.id === lastWinnerId ? ' ⭐' : '';
                 const gemDisplay = p.gems > 0 ? '💎'.repeat(p.gems) : '';
 
-                if (isInactiveEmpty) {
-                    card.innerHTML = `<div class="p-header">${p.name} <span class="p-type">${p.isHuman ? 'H' : 'AI'}</span></div><div class="p-stats-row"><span>Score:</span><span class="p-val">${p.tally}</span></div>`;
-                } else {
-                    card.innerHTML = `
-                        <div class="p-header">${p.name} <span class="p-type">${p.isHuman ? 'Human' : 'AI'}</span></div>
-                        <div class="p-stats-row"><span>Pts: <strong style="color:var(--accent-green);">${p.tally}</strong></span><span>Pend: <strong style="color:var(--accent-gold);">${pendPts}</strong></span>${gemDisplay ? `<span>${gemDisplay}</span>` : ''}</div>
-                        ${p.pending.length ? `<div class="pending-pills">${pills}</div>` : ''}
-                    `;
-                }
+                card.innerHTML = `
+                    <div class="p-header">
+                        ${p.name}${isWinnerStar} <span class="p-type">${p.isHuman ? 'Human' : p.personality ? p.personality.style : 'AI'}</span>
+                    </div>
+                    <div class="p-stat"><span>Score:</span><span class="p-val" style="color:var(--accent-green);">${p.tally}</span></div>
+                    <div class="p-stat"><span>Gems:</span><span class="p-val">${gemDisplay}</span></div>
+                    <div class="p-stat"><span>Pending:</span><span class="p-val" style="color:var(--accent-gold);">${pendPts}</span></div>
+                    <div class="pending-pills">${p.pending.length ? pills : '<span style="font-size:0.65rem; color:#64748b;">No pending</span>'}</div>
+                `;
                 sb.appendChild(card);
             });
 
@@ -968,7 +1417,9 @@
             const pa = document.getElementById('play-area');
             pa.innerHTML = '';
             const opponentPendingRanks = [];
-            players.forEach(p => { if (p.id !== players[turnIndex].id) p.pending.forEach(c => opponentPendingRanks.push(c.rank)); });
+            players.forEach(p => {
+                if (p.id !== players[turnIndex].id) p.pending.forEach(c => opponentPendingRanks.push(c.rank));
+            });
 
             const runs = findAllRuns(playArea);
             const primaryRun = runs.length > 0 ? runs[0] : [];
@@ -986,13 +1437,15 @@
                 else if (isRunCard) { badge = '<span class="card-badge badge-run">RUN</span>'; }
                 else if (isStealCard) { badge = '<span class="card-badge badge-steal">STEAL</span>'; }
 
-                el.className = `card ${isRed ? 'red' : ''} ${isJoker ? 'joker' : ''} ${extra}`;
+                const isNewCard = hasNewDraw && index === playArea.length - 1;
+
+                el.className = `card ${isRed ? 'red' : ''} ${isJoker ? 'joker' : ''} ${extra} ${isNewCard ? 'new-card' : ''}`;
                 el.style.zIndex = index + 1;
-                el.innerHTML = `${badge}<div class="card-rank">${c.rank}</div><div class="card-suit">${c.suit}</div><div class="card-val">${c.val}p</div>`;
+                el.innerHTML = `${badge}<div class="card-rank">${c.rank}</div><div class="card-suit">${c.suit}</div><div class="card-val">${c.val}pt</div>`;
                 pa.appendChild(el);
             });
 
-            document.getElementById('turn-points-val').innerText = `${playArea.reduce((a,b) => a + b.val, 0)}`;
+            document.getElementById('turn-points-val').innerText = `${playArea.reduce((a,b) => a + b.val, 0)} pts`;
             const prob = calculateBustProbability();
             const probVal = document.getElementById('prob-val');
             probVal.innerText = `${prob}%`;
