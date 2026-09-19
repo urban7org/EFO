@@ -39,7 +39,11 @@
     :root { --card-w: 92px; --card-h: 130px; }
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; scrollbar-width: thin; scrollbar-color: rgba(201,162,74,0.45) transparent; }
+*::-webkit-scrollbar { width: 6px; height: 6px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb { background: rgba(201,162,74,0.45); border-radius: 6px; }
+*::-webkit-scrollbar-thumb:hover { background: rgba(201,162,74,0.8); }
 body, button, input, select { font-family: var(--font-ui); }
 button, .chip, .card-slot, .rank-cell, .stack { user-select: none; -webkit-user-select: none; }
 
@@ -184,6 +188,13 @@ select:focus, input:focus { outline: 2px solid var(--brass); outline-offset: 1px
 .board-row { grid-template-columns: 20px 1fr auto auto auto; }
 .board-row .b-score { font-size: 0.75rem; color: var(--cream-dark); }
 .modal-content .board-row .b-score { color: #5a4a3c; }
+.help { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 50%; border: 1px solid var(--brass-dark); color: var(--brass-light); font-size: 0.7rem; font-weight: 800; cursor: pointer; background: transparent; padding: 0; margin-left: 4px; position: relative; flex-shrink: 0; }
+.help-pop { display: none; position: absolute; z-index: 20; left: 0; top: 24px; width: 240px; background: var(--cream); color: var(--ink); font-size: 0.8rem; font-weight: 400; line-height: 1.35; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--brass-dark); box-shadow: 0 8px 20px rgba(0,0,0,0.5); text-align: left; }
+.help-wrap { position: relative; display: inline-flex; align-items: center; }
+.help-wrap.open .help-pop { display: block; }
+.stack-col .form-group { margin-bottom: 12px; }
+.alltime { font-size: 0.72rem; color: var(--brass-light); margin: -2px 0 4px; }
+.modal-content .alltime { color: var(--wood-light); }
 .check-row { display: flex; align-items: center; gap: 10px; font-size: 0.95rem; color: var(--cream); font-weight: 600; margin: 4px 0 14px; cursor: pointer; }
 .check-row input { width: 20px; height: 20px; accent-color: var(--brass); cursor: pointer; }
 .hall { margin-top: 16px; border-top: 1px solid var(--wood-edge); padding-top: 10px; font-size: 0.85rem; }
@@ -624,21 +635,23 @@ button:active:not(:disabled) { transform: translateY(2px); border-bottom-width: 
                 <option value="final" selected>Final round after target</option>
                 <option value="immediate">Instant win at target</option>
             </select>
-            <div class="sub-row" id="last-call-row"><label class="check-row"><input type="checkbox" id="last-call" checked> Last call: in the final round, escaping a bust costs 1 gem instead of 2</label></div>
+            <div class="sub-row" id="last-call-row"><label class="check-row"><input type="checkbox" id="last-call" checked> Last call <span class="help-wrap"><button type="button" class="help" onclick="event.preventDefault(); this.parentNode.classList.toggle('open');" aria-label="What is last call?">?</button><span class="help-pop">In the final round, escaping a bust costs 1 gem instead of 2. Everyone chasing the leader gets a sharper knife.</span></span></label></div>
         </div>
-        <div class="form-group">
-            <label for="show-odds">Bust odds</label>
-            <select id="show-odds">
-                <option value="0" selected>Hidden</option>
-                <option value="1">Show bust percentage</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="show-counts">Card counting</label>
-            <select id="show-counts">
-                <option value="0" selected>Blind: face-up cards only</option>
-                <option value="1">Show deck counts</option>
-            </select>
+        <div class="stack-col">
+            <div class="form-group">
+                <label for="show-odds">Bust odds</label>
+                <select id="show-odds">
+                    <option value="0" selected>Hidden</option>
+                    <option value="1">Show bust percentage</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="show-counts">Card counting</label>
+                <select id="show-counts">
+                    <option value="0" selected>Blind: face-up cards only</option>
+                    <option value="1">Show deck counts</option>
+                </select>
+            </div>
         </div>
     </div>
 
@@ -1072,17 +1085,25 @@ function boardRowsHTML(rows, mine) {
             <span class="b-turns">${r.bestTurns ? r.bestTurns + ' turns' : ''}</span>
         </div>`).join('');
 }
-function groupedBoardHTML(groups, mine) {
+function groupedBoardHTML(groups, mine, alltime) {
     const targets = Object.keys(groups).sort((a, b) => parseInt(a) - parseInt(b));
     if (!targets.length) return '';
-    return targets.map(t => `<div class="board-group"><h5>Playing to ${t}</h5>${boardRowsHTML(sortRows(groups[t]).slice(0, 25), mine)}</div>`).join('');
+    return targets.map(t => {
+        const at = alltime && alltime[t];
+        const atLine = at && at.score ? `<div class="alltime">All-time high: ${at.score} by ${escapeHtml(at.name)}${at.date ? ` (${at.date})` : ''}</div>` : '';
+        return `<div class="board-group"><h5>Playing to ${t}</h5>${atLine}${boardRowsHTML(sortRows(groups[t]).slice(0, 25), mine)}</div>`;
+    }).join('');
 }
 function renderHallOfFame() {
     const list = document.getElementById('hall-list');
     const rec = loadRecords();
     const groups = {};
-    Object.entries(rec).forEach(([t, names]) => { groups[t] = Object.entries(names).map(([name, r]) => ({ name, ...r })); });
-    const html = groupedBoardHTML(groups, null);
+    const alltime = {};
+    Object.entries(rec).forEach(([t, names]) => {
+        groups[t] = Object.entries(names).map(([name, r]) => ({ name, ...r }));
+        groups[t].forEach(r => { if (!alltime[t] || r.bestScore > alltime[t].score) alltime[t] = { name: r.name, score: r.bestScore }; });
+    });
+    const html = groupedBoardHTML(groups, null, alltime);
     list.innerHTML = html || '<span class="board-empty">No wins yet. Finish a game to start the tally.</span>';
 }
 
@@ -1962,12 +1983,17 @@ function deviceId() {
         return id;
     } catch (e) { return 'anon'; }
 }
-let lastBoardRows = null;
+let lastBoardRows = null, lastAllTime = null;
 function renderBoard(el, rows) {
-    if (!rows || rows.length === 0) { el.innerHTML = '<span class="board-empty">No wins posted yet today. Be the first.</span>'; return; }
+    if (!rows || rows.length === 0) {
+        const at = lastAllTime && Object.keys(lastAllTime).length ? groupedBoardHTML(Object.fromEntries(Object.keys(lastAllTime).map(t => [t, []])), null, lastAllTime) : '';
+        el.innerHTML = '<span class="board-empty">No wins posted yet today. Be the first.</span>' + at;
+        return;
+    }
     const groups = {};
     rows.forEach(r => { const t = String(r.target || 150); (groups[t] = groups[t] || []).push(r); });
-    el.innerHTML = groupedBoardHTML(groups, deviceId());
+    if (lastAllTime) Object.keys(lastAllTime).forEach(t => { groups[t] = groups[t] || []; });
+    el.innerHTML = groupedBoardHTML(groups, deviceId(), lastAllTime);
 }
 async function loadLeaderboard() {
     if (!LEADERBOARD_URL) return;
@@ -1976,9 +2002,14 @@ async function loadLeaderboard() {
         const res = await fetch(`${LEADERBOARD_URL}?date=${chicagoDate()}&t=${Date.now()}`, { method: 'GET', redirect: 'follow' });
         const data = await res.json();
         lastBoardRows = data.rows || [];
+        lastAllTime = data.alltime || null;
         targets.forEach(el => renderBoard(el, lastBoardRows));
     } catch (e) {
-        targets.forEach(el => el.innerHTML = '<span class="board-empty">Could not reach the leaderboard.</span>');
+        const preview = /claude\.(ai|site)$/.test(location.hostname) || location.hostname.endsWith('claudeusercontent.com');
+        const msg = preview
+            ? 'The leaderboard cannot be reached from the claude.ai preview; it works from the file itself or a hosted copy.'
+            : 'Could not reach the leaderboard. Check the connection and try Refresh.';
+        targets.forEach(el => el.innerHTML = `<span class="board-empty">${msg}</span>`);
     }
 }
 function openBoardModal() {
@@ -1998,6 +2029,8 @@ async function postWin(winner) {
         setTimeout(loadLeaderboard, 1200);
     } catch (e) { /* offline; local tally still records it */ }
 }
+
+document.addEventListener('click', (e) => { if (!e.target.closest('.help-wrap')) document.querySelectorAll('.help-wrap.open').forEach(w => w.classList.remove('open')); });
 
 /* ============ Keyboard ============ */
 document.addEventListener('keydown', (e) => {
