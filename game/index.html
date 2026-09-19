@@ -1,1456 +1,1614 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Push Yer Luck!</title>
-    <style>
-        :root {
-            --bg-dark: #0f172a;
-            --card-bg: #1e293b;
-            --accent-green: #10b981;
-            --accent-red: #ef4444;
-            --accent-red-bright: #f87171;
-            --accent-gold: #f59e0b;
-            --accent-purple: #8b5cf6;
-            --accent-blue: #3b82f6;
-            --text-light: #f8fafc;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1a0b0c">
+<title>Push Yer Luck!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rye&family=Barlow+Semi+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+    --wood-deep: #150809;
+    --wood: #2a1214;
+    --wood-light: #4a2224;
+    --wood-edge: #6b3a2e;
+    --felt: #0e5a45;
+    --felt-dark: #073d2f;
+    --felt-edge: #042a20;
+    --brass: #c9a24a;
+    --brass-light: #f0d68a;
+    --brass-dark: #8a6a24;
+    --cream: #f4ead5;
+    --cream-dark: #e2d3b1;
+    --ink: #1c1410;
+    --red: #c0392b;
+    --red-bright: #f0715e;
+    --emerald: #3ddc84;
+    --gold: #f2c14e;
+    --sky: #8fd3ff;
+    --plum: #3b1f4f;
+    --font-display: 'Rye', Georgia, 'Times New Roman', serif;
+    --font-ui: 'Barlow Semi Condensed', 'Arial Narrow', Arial, sans-serif;
+    --card-w: 78px;
+    --card-h: 110px;
+    --radius: 14px;
+}
+@media (min-width: 900px) {
+    :root { --card-w: 92px; --card-h: 130px; }
+}
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            user-select: none;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body, button, input, select { font-family: var(--font-ui); }
+button, .chip, .card-slot, .rank-cell, .stack { user-select: none; -webkit-user-select: none; }
 
-        html, body {
-            background-color: var(--bg-dark);
-            color: var(--text-light);
-            height: 100%;
-            min-height: 100dvh;
-            overflow: hidden;
-        }
+html, body {
+    height: 100%;
+    min-height: 100dvh;
+    overflow: hidden;
+    color: var(--cream);
+    background-color: var(--wood);
+}
+body {
+    display: flex;
+    flex-direction: column;
+    padding: 6px 10px calc(8px + env(safe-area-inset-bottom));
+    background-image:
+        radial-gradient(ellipse at 50% 0%, rgba(255, 220, 160, 0.10), transparent 60%),
+        radial-gradient(ellipse at 50% 100%, rgba(0, 0, 0, 0.55), transparent 70%),
+        repeating-linear-gradient(90deg, rgba(0,0,0,0.16) 0 1px, transparent 1px 9px, rgba(0,0,0,0.08) 9px 10px, transparent 10px 23px),
+        linear-gradient(180deg, #33161a 0%, #251012 40%, #1c0b0c 100%);
+    background-color: var(--wood);
+}
 
-        body {
-            display: flex;
-            flex-direction: column;
-            padding: 8px 10px;
-        }
+/* ---------- Header ---------- */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 44px;
+    flex-shrink: 0;
+    padding: 0 2px 4px;
+    position: relative;
+}
+header::after {
+    content: '';
+    position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--brass) 25%, var(--brass-light) 50%, var(--brass) 75%, transparent);
+    opacity: 0.8;
+}
+.wordmark {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    letter-spacing: 0.02em;
+    background: linear-gradient(180deg, #fbe7a8 0%, var(--brass) 55%, #a57f2f 100%);
+    -webkit-background-clip: text; background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 1px 0 rgba(0,0,0,0.6));
+    white-space: nowrap;
+}
+.hdr-btns { display: flex; gap: 8px; }
+.icon-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #4a2426, #1d0c0d);
+    border: 1px solid var(--brass-dark);
+    color: var(--brass-light);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; padding: 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08);
+}
+.icon-btn svg { width: 18px; height: 18px; }
+.icon-btn:active { transform: translateY(1px); }
 
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 6px;
-            border-bottom: 1px solid #334155;
-            height: 42px;
-            flex-shrink: 0;
-        }
+/* ---------- Setup ---------- */
+#setup-screen {
+    margin: auto;
+    width: 100%;
+    max-width: 560px;
+    max-height: calc(100dvh - 70px);
+    overflow-y: auto;
+    background: linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.45));
+    border: 1px solid var(--brass-dark);
+    box-shadow: 0 0 0 4px var(--wood-deep), 0 0 0 5px var(--brass-dark), 0 30px 60px rgba(0,0,0,0.6);
+    border-radius: 10px;
+    padding: 22px 18px 18px;
+}
+.setup-title {
+    font-family: var(--font-display);
+    text-align: center;
+    font-size: clamp(2rem, 9vw, 2.9rem);
+    line-height: 1;
+    background: linear-gradient(180deg, #fbe7a8 0%, var(--brass) 55%, #a57f2f 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    filter: drop-shadow(0 2px 0 rgba(0,0,0,0.7));
+}
+.setup-sub {
+    text-align: center;
+    color: var(--cream-dark);
+    font-size: 0.95rem;
+    margin: 6px 0 18px;
+    letter-spacing: 0.02em;
+}
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
+.form-group { margin-bottom: 12px; text-align: left; }
+label { display: block; margin-bottom: 4px; color: var(--brass-light); font-weight: 600; font-size: 0.85rem; }
+select, input[type="text"] {
+    width: 100%; padding: 10px 12px; border-radius: 8px;
+    border: 1px solid var(--wood-edge); background: #180a0b; color: var(--cream); font-size: 1rem;
+    appearance: none; -webkit-appearance: none;
+}
+select {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'><path d='M1 1l5 5 5-5' fill='none' stroke='%23c9a24a' stroke-width='2'/></svg>");
+    background-repeat: no-repeat; background-position: right 12px center; padding-right: 30px;
+}
+select:focus, input:focus { outline: 2px solid var(--brass); outline-offset: 1px; }
+.player-inputs { display: flex; flex-direction: column; gap: 8px; max-height: 230px; overflow-y: auto; margin-bottom: 12px; padding-right: 2px; }
+.player-input-row { display: flex; align-items: center; gap: 8px; }
+.player-input-row span { font-size: 0.8rem; width: 56px; color: var(--cream-dark); flex-shrink: 0; }
 
-        h1 {
-            font-size: 1.3rem;
-            color: var(--accent-gold);
-            text-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
-        }
+.check-row { display: flex; align-items: center; gap: 10px; font-size: 0.95rem; color: var(--cream); font-weight: 600; margin: 4px 0 14px; cursor: pointer; }
+.check-row input { width: 20px; height: 20px; accent-color: var(--brass); cursor: pointer; }
+.hall { margin-top: 16px; border-top: 1px solid var(--wood-edge); padding-top: 10px; font-size: 0.85rem; }
+.hall-title { display: flex; justify-content: space-between; align-items: center; color: var(--brass-light); font-weight: 700; margin-bottom: 8px; }
+.hall-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.hall-item { background: #180a0b; border: 1px solid var(--wood-edge); border-radius: 999px; padding: 3px 10px; color: var(--cream); }
+.hall-item b { color: var(--brass-light); margin-left: 4px; }
+.hall-empty { color: #9a8578; font-style: italic; }
+.link-btn { background: none; border: none; color: #b39b86; font-size: 0.75rem; cursor: pointer; text-decoration: underline; }
 
-        .header-btns {
-            display: flex;
-            gap: 6px;
-        }
+/* ---------- Buttons ---------- */
+button { border: none; cursor: pointer; border-radius: 10px; font-weight: 700; }
+button:disabled { opacity: 0.45; cursor: not-allowed; }
+button:focus-visible { outline: 2px solid var(--cream); outline-offset: 2px; }
+.btn-brass {
+    background: linear-gradient(180deg, #f3d680 0%, var(--brass) 60%, #b48a33 100%);
+    color: #2a1810; border-bottom: 3px solid var(--brass-dark);
+    padding: 12px 18px; font-size: 1rem; width: 100%;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.35);
+}
+.btn-wood {
+    background: linear-gradient(180deg, #4a2426, #2a1214); color: var(--cream);
+    border: 1px solid var(--wood-edge); padding: 12px 18px; font-size: 1rem; width: 100%;
+}
+.btn-green { background: linear-gradient(180deg, #34c778, #1d8f52); color: #06281a; border-bottom: 3px solid #136437; padding: 12px 18px; font-size: 1rem; width: 100%; }
+.btn-red { background: linear-gradient(180deg, #e4573f, #b03020); color: #fff3e8; border-bottom: 3px solid #7d1f12; padding: 12px 18px; font-size: 1rem; width: 100%; }
+button:active:not(:disabled) { transform: translateY(2px); border-bottom-width: 1px; }
 
-        .hdr-btn {
-            background: #334155;
-            color: white;
-            border: 1px solid #475569;
-            padding: 5px 10px;
-            border-radius: 16px;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .hdr-btn:hover { background: #475569; }
+/* ---------- Game layout ---------- */
+#game-screen {
+    display: none;
+    flex: 1;
+    min-height: 0;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    gap: 8px;
+    margin-top: 6px;
+}
+@media (min-width: 900px) {
+    #game-screen {
+        grid-template-columns: 280px minmax(0, 1fr);
+        grid-template-rows: minmax(0, 1fr) auto;
+        gap: 10px;
+    }
+    .players { grid-row: 1 / span 2; }
+}
 
-        /* Setup Screen */
-        #setup-screen {
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            max-width: 520px;
-            width: 100%;
-            margin: auto;
-            text-align: center;
-        }
+/* Players */
+.players {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x proximity;
+    padding: 2px 2px 6px;
+    scrollbar-width: none;
+}
+.players::-webkit-scrollbar { display: none; }
+@media (min-width: 900px) {
+    .players { flex-direction: column; overflow-x: hidden; overflow-y: auto; scroll-snap-type: none; }
+}
+.chip {
+    flex: 0 0 auto;
+    min-width: 138px;
+    max-width: 180px;
+    scroll-snap-align: start;
+    background: linear-gradient(180deg, #2f171a, #1c0c0e);
+    border: 1px solid var(--wood-edge);
+    border-radius: 12px;
+    padding: 7px 9px 6px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 3px 6px rgba(0,0,0,0.4);
+    position: relative;
+    transition: border-color 0.25s, box-shadow 0.25s;
+}
+@media (min-width: 900px) { .chip { max-width: none; } }
+.chip.active {
+    border-color: var(--brass);
+    box-shadow: 0 0 0 1px var(--brass), 0 0 18px rgba(201, 162, 74, 0.35), inset 0 1px 0 rgba(255,255,255,0.08);
+    background: linear-gradient(180deg, #3d1f22, #22100f);
+}
+.chip .row1 { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+.chip .name { font-weight: 700; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--cream); }
+.chip .gems { color: var(--sky); font-size: 0.8rem; letter-spacing: 0.06em; flex-shrink: 0; min-height: 1em; }
+.chip .row2 { display: flex; align-items: baseline; justify-content: space-between; gap: 6px; margin-top: 1px; }
+.chip .score { font-size: 1.55rem; font-weight: 800; line-height: 1; color: var(--brass-light); font-variant-numeric: tabular-nums; }
+.chip .score small { font-size: 0.6rem; font-weight: 600; color: var(--cream-dark); margin-left: 2px; }
+.chip .pend { font-size: 0.78rem; font-weight: 600; color: var(--gold); white-space: nowrap; }
+.chip .pend.none { color: #7d6a5c; font-weight: 400; }
+.pills { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 5px; min-height: 16px; }
+.pill {
+    background: var(--cream); color: var(--ink);
+    border-radius: 4px; padding: 0 4px; font-size: 0.66rem; font-weight: 700; line-height: 16px;
+}
+.pill.threatened {
+    background: var(--red); color: #fff;
+    animation: pulse 0.9s infinite alternate;
+}
+@keyframes pulse { from { box-shadow: 0 0 0 0 rgba(240,113,94,0.0); } to { box-shadow: 0 0 0 3px rgba(240,113,94,0.45); } }
 
-        .form-group { margin-bottom: 12px; text-align: left; }
-        label { display: block; margin-bottom: 4px; color: #cbd5e1; font-weight: 600; font-size: 0.85rem; }
-        select, input[type="text"] {
-            width: 100%; padding: 8px; border-radius: 6px;
-            border: 1px solid #334155; background: #0f172a; color: white; font-size: 0.9rem;
-        }
+/* Table */
+.table-area {
+    position: relative;
+    min-height: 0;
+    border-radius: 22px;
+    padding: 8px;
+    background: linear-gradient(180deg, #6a3a2c, #3c1c17 40%, #2a1210);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.12);
+    display: flex;
+}
+.felt {
+    flex: 1;
+    min-height: 0;
+    border-radius: 16px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background:
+        radial-gradient(ellipse at 50% 30%, rgba(255,255,255,0.08), transparent 60%),
+        repeating-linear-gradient(0deg, rgba(0,0,0,0.05) 0 1px, transparent 1px 3px),
+        repeating-linear-gradient(90deg, rgba(0,0,0,0.05) 0 1px, transparent 1px 3px),
+        radial-gradient(ellipse at center, var(--felt) 0%, var(--felt-dark) 65%, var(--felt-edge) 100%);
+    box-shadow: inset 0 0 40px rgba(0,0,0,0.6), inset 0 0 0 2px rgba(201,162,74,0.35);
+    overflow: hidden;
+    padding: 8px 8px 6px;
+}
+.table-area.shake { animation: shake 0.45s; }
+@keyframes shake {
+    10%, 90% { transform: translateX(-2px); }
+    20%, 80% { transform: translateX(3px); }
+    30%, 50%, 70% { transform: translateX(-5px); }
+    40%, 60% { transform: translateX(5px); }
+}
+.felt.flash::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 55; border-radius: inherit;
+    background: radial-gradient(ellipse at center, transparent 35%, rgba(192,57,43,0.65));
+    animation: flashFade 0.7s forwards;
+}
+@keyframes flashFade { from { opacity: 1; } to { opacity: 0; } }
 
-        .player-inputs {
-            display: flex; flex-direction: column; gap: 8px;
-            max-height: 220px; overflow-y: auto; margin-bottom: 12px;
-            padding-right: 4px;
-        }
-        .player-input-row { display: flex; align-items: center; gap: 8px; }
-        .player-input-row span { font-size: 0.8rem; width: 65px; color: #94a3b8; flex-shrink: 0; }
+.felt-top {
+    display: flex; justify-content: space-between; align-items: flex-start; flex-shrink: 0;
+}
+.turn-banner { font-size: 0.95rem; color: var(--cream); font-weight: 600; text-shadow: 0 1px 2px rgba(0,0,0,0.6); padding-top: 4px; }
+.turn-banner .who { color: var(--brass-light); font-weight: 800; }
+.turn-banner .odds { display: block; font-size: 0.75rem; color: var(--cream-dark); font-weight: 600; margin-top: 2px; }
+.turn-banner .odds b { font-weight: 800; }
+.odds-low { color: var(--emerald); } .odds-med { color: var(--gold); } .odds-high { color: var(--red-bright); }
+.dots::after { content: ''; animation: dots 1.2s steps(4, end) infinite; }
+@keyframes dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
 
-        /* App Main Grid */
-        #game-screen {
-            display: none;
-            flex: 1;
-            grid-template-columns: 300px 1fr;
-            gap: 10px;
-            margin-top: 6px;
-            min-height: 0;
-            overflow: hidden;
-        }
+.stacks { display: flex; gap: 10px; }
+.stack { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+.stack-label { font-size: 0.6rem; color: var(--cream-dark); margin-top: 3px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.back {
+    width: 46px; height: 64px; border-radius: 6px; position: relative;
+    background:
+        repeating-linear-gradient(45deg, rgba(240,214,138,0.28) 0 1px, transparent 1px 7px),
+        repeating-linear-gradient(-45deg, rgba(240,214,138,0.28) 0 1px, transparent 1px 7px),
+        radial-gradient(circle at center, #8a1f22, #4a0f12);
+    border: 2px solid var(--cream);
+    box-shadow: -2px -2px 0 #4a0f12, -2px -2px 0 1px #e8d8b8, -4px -4px 0 #4a0f12, -4px -4px 0 1px #e8d8b8, 0 5px 10px rgba(0,0,0,0.6);
+    display: flex; align-items: center; justify-content: center;
+}
+.back::before { content: ''; position: absolute; inset: 4px; border: 1px solid rgba(240,214,138,0.7); border-radius: 3px; }
+.back .cnt {
+    position: relative; z-index: 1;
+    background: var(--cream); color: var(--wood); font-weight: 800; font-size: 0.78rem;
+    border-radius: 999px; padding: 1px 6px; min-width: 22px; text-align: center;
+}
+.back.empty { opacity: 0.35; box-shadow: none; }
+.discard {
+    width: 46px; height: 64px; border-radius: 6px; border: 2px dashed rgba(244,234,213,0.45);
+    display: flex; align-items: center; justify-content: center; flex-direction: column; color: var(--cream-dark); font-size: 0.7rem;
+}
+.discard.has { border: 2px solid var(--cream-dark); background: var(--cream); color: var(--ink); box-shadow: 0 4px 8px rgba(0,0,0,0.5); }
+.discard.has.red { color: var(--red); }
+.discard .drk { font-weight: 800; font-size: 1.1rem; line-height: 1; }
+.discard .dst { font-size: 1.1rem; line-height: 1; }
+.discard .dcnt { font-size: 0.6rem; font-weight: 700; margin-top: 2px; color: #6b5a48; }
 
-        /* Sidebar */
-        .sidebar {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 8px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            overflow-y: auto;
-            border: 1px solid #334155;
-        }
+/* Fan of cards */
+#play-area { position: relative; flex: 1; min-height: calc(var(--card-h) + 44px); }
+.card-slot {
+    position: absolute;
+    width: var(--card-w); height: var(--card-h);
+    transform-origin: 50% 130%;
+    transition: left 0.25s ease, top 0.25s ease, transform 0.25s ease;
+}
+.card {
+    width: 100%; height: 100%;
+    border-radius: 9px;
+    background:
+        repeating-linear-gradient(0deg, rgba(0,0,0,0.018) 0 1px, transparent 1px 3px),
+        linear-gradient(160deg, #fbf5e6, var(--cream) 60%, #ece0c4);
+    color: var(--ink);
+    position: relative;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(0,0,0,0.08);
+    border: 1px solid #d8c9a6;
+    display: flex; align-items: center; justify-content: center;
+    backface-visibility: hidden;
+}
+.card.red { color: var(--red); }
+.card.new-card { animation: dealIn 0.42s cubic-bezier(0.2, 0.85, 0.25, 1) both; }
+@keyframes dealIn {
+    0% { transform: translate(140px, -120px) rotateY(-95deg) scale(0.75); opacity: 0; }
+    55% { opacity: 1; }
+    100% { transform: translate(0, 0) rotateY(0) scale(1); opacity: 1; }
+}
+.corner { position: absolute; display: flex; flex-direction: column; align-items: center; line-height: 0.95; }
+.corner.tl { top: 5px; left: 6px; }
+.corner.br { bottom: 5px; right: 6px; transform: rotate(180deg); }
+.corner .rk { font-weight: 800; font-size: 1.05rem; letter-spacing: -0.02em; }
+.corner .st { font-size: 0.85rem; }
+.pip { font-size: 2.6rem; line-height: 1; text-shadow: 0 1px 0 rgba(255,255,255,0.6); }
+.face-frame {
+    width: 58%; height: 58%; border: 2px solid currentColor; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center; position: relative;
+}
+.face-frame::before { content: ''; position: absolute; inset: 3px; border: 1px solid currentColor; opacity: 0.6; border-radius: 3px; }
+.face-frame span { font-family: var(--font-display); font-size: 2rem; line-height: 1; }
+.card .pts {
+    position: absolute; bottom: 5px; left: 6px;
+    font-size: 0.6rem; font-weight: 800; color: #6b5a48; background: rgba(0,0,0,0.06); border-radius: 4px; padding: 0 4px;
+}
+.card.joker {
+    background: linear-gradient(160deg, #5a2f72, var(--plum) 60%, #2a1438);
+    color: var(--brass-light); border-color: #7a4e94;
+}
+.card.joker .pip { font-size: 2.4rem; }
+.card.joker .joker-label { position: absolute; font-family: var(--font-display); font-size: 0.7rem; letter-spacing: 0.15em; bottom: 20px; left: 0; right: 0; text-align: center; opacity: 0.9; }
+.card.joker .pts { color: var(--brass-light); background: rgba(255,255,255,0.12); }
+.card.busting {
+    border: 2px solid var(--red-bright);
+    box-shadow: 0 0 0 2px rgba(240,113,94,0.5), 0 0 22px var(--red), 0 8px 18px rgba(0,0,0,0.5);
+}
+.card-badge {
+    position: absolute; top: -8px; left: 50%; transform: translateX(-50%);
+    font-size: 0.58rem; padding: 2px 7px; border-radius: 999px; font-weight: 800; letter-spacing: 0.08em;
+    z-index: 5; box-shadow: 0 2px 4px rgba(0,0,0,0.4); white-space: nowrap;
+}
+.badge-steal { background: var(--gold); color: var(--ink); }
+.badge-run { background: var(--emerald); color: #04301a; }
+.badge-bust { background: var(--red); color: #fff; }
 
-        .scoreboard-title {
-            font-size: 0.8rem;
-            font-weight: bold;
-            color: var(--accent-gold);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-bottom: 1px solid #334155;
-            padding-bottom: 4px;
-        }
+/* Stamps */
+.stamp {
+    position: absolute; left: 50%; top: 46%;
+    transform: translate(-50%, -50%) rotate(-8deg);
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 11vw, 4rem);
+    letter-spacing: 0.04em;
+    padding: 0.05em 0.35em;
+    border: 4px double currentColor;
+    border-radius: 12px;
+    color: var(--red-bright);
+    text-shadow: 0 2px 0 rgba(0,0,0,0.45);
+    pointer-events: none; z-index: 60; opacity: 0;
+    background: rgba(20, 8, 9, 0.35);
+    animation: stampIn 0.5s cubic-bezier(0.2, 1.4, 0.4, 1) forwards, stampOut 0.45s ease-in 1.15s forwards;
+    white-space: nowrap;
+}
+.stamp.green { color: var(--emerald); }
+.stamp.gold { color: var(--gold); }
+.stamp.sky { color: var(--sky); }
+@keyframes stampIn {
+    from { opacity: 0; transform: translate(-50%, -50%) rotate(-16deg) scale(2.4); }
+    60% { opacity: 1; transform: translate(-50%, -50%) rotate(-8deg) scale(0.94); }
+    to { opacity: 1; transform: translate(-50%, -50%) rotate(-8deg) scale(1); }
+}
+@keyframes stampOut { to { opacity: 0; } }
 
-        .scoreboard-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 6px;
-        }
+/* Rank strip */
+.rank-strip { display: flex; gap: 3px; flex-shrink: 0; margin-top: 4px; }
+.rank-cell {
+    flex: 1 1 0; min-width: 0;
+    text-align: center; border-radius: 5px; padding: 3px 0 2px;
+    font-size: 0.74rem; font-weight: 800; line-height: 1.05;
+    background: rgba(0,0,0,0.28); border: 1px solid rgba(244,234,213,0.18); color: var(--cream-dark);
+}
+.rank-cell .rc-n { display: block; font-size: 0.58rem; font-weight: 600; opacity: 0.85; }
+.rank-cell.steal { border-color: var(--gold); color: var(--gold); background: rgba(242,193,78,0.15); }
+.rank-cell.held { border-color: var(--red-bright); background: rgba(192,57,43,0.55); color: #fff; }
+.rank-cell.empty { opacity: 0.35; }
 
-        .player-card {
-            background: #0f172a;
-            border-radius: 8px;
-            padding: 6px 8px;
-            border: 2px solid transparent;
-            transition: all 0.2s;
-            position: relative;
-        }
+/* Action bar */
+.controls {
+    display: flex; gap: 10px; align-items: stretch; flex-shrink: 0;
+}
+.big-btn {
+    flex: 1; min-height: 62px; border-radius: 16px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
+    font-size: 1.35rem; font-weight: 800; letter-spacing: 0.06em; line-height: 1;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.45);
+}
+.big-btn small { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.02em; opacity: 0.85; }
+.big-btn .amt { font-size: 1.35rem; }
+.big-btn .amt .plus { color: #6a3d00; font-size: 0.85rem; margin-left: 4px; font-weight: 800; }
+.btn-hit { background: linear-gradient(180deg, #e8604a, #b23222); color: #fff3e8; border-bottom: 4px solid #7d1f12; text-shadow: 0 1px 0 rgba(0,0,0,0.3); }
+.btn-bank { background: linear-gradient(180deg, #f5d98a 0%, var(--brass) 65%, #b48a33 100%); color: #2a1810; border-bottom: 4px solid var(--brass-dark); text-shadow: 0 1px 0 rgba(255,255,255,0.35); }
+.btn-continue { background: linear-gradient(180deg, #4a2426, #2a1214); color: var(--cream); border: 1px solid var(--wood-edge); border-bottom: 4px solid var(--wood-deep); }
+.big-btn:active:not(:disabled) { transform: translateY(2px); border-bottom-width: 2px; }
+.hint { font-size: 0.68rem; color: #8f7a6a; text-align: center; margin-top: 4px; display: none; }
+@media (min-width: 900px) { .hint { display: block; } }
 
-        .player-card.active {
-            border-color: var(--accent-gold);
-            box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
-            background: #1e293b;
-        }
+/* Toasts */
+.toast-container { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); z-index: 80; display: flex; flex-direction: column; gap: 6px; pointer-events: none; width: max-content; max-width: 92%; }
+.toast {
+    background: rgba(26, 11, 12, 0.94); border: 1px solid var(--brass); color: var(--cream);
+    padding: 6px 14px; border-radius: 999px; font-size: 0.85rem; font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5); animation: toastFade 2.6s forwards; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+@keyframes toastFade { 0% { opacity: 0; transform: translateY(-10px); } 12% { opacity: 1; transform: translateY(0); } 80% { opacity: 1; } 100% { opacity: 0; transform: translateY(-10px); } }
 
-        .p-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: bold;
-            font-size: 0.8rem;
-            margin-bottom: 2px;
-        }
+/* Log drawer */
+.drawer {
+    position: fixed; top: 0; right: -360px; width: 340px; max-width: 100vw; height: 100dvh;
+    background: linear-gradient(180deg, #241012, #170a0b); border-left: 2px solid var(--brass);
+    box-shadow: -5px 0 25px rgba(0,0,0,0.8); z-index: 100;
+    transition: right 0.3s ease; display: flex; flex-direction: column; padding: 15px; padding-bottom: calc(15px + env(safe-area-inset-bottom));
+}
+.drawer.open { right: 0; }
+.drawer-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--wood-edge); padding-bottom: 8px; margin-bottom: 10px; }
+.drawer-header h3 { font-family: var(--font-display); color: var(--brass-light); font-size: 1.1rem; font-weight: 400; }
+.log-list { flex: 1; overflow-y: auto; font-size: 0.82rem; display: flex; flex-direction: column; gap: 5px; }
+.log-entry { padding: 5px 8px; border-radius: 4px; background: rgba(0,0,0,0.3); border-left: 3px solid var(--wood-edge); color: var(--cream-dark); }
+.log-bust { border-color: var(--red); color: #f5a89a; }
+.log-steal { border-color: var(--gold); color: #f7d98a; }
+.log-run { border-color: var(--emerald); color: #a5efc6; }
 
-        .p-type { font-size: 0.65rem; background: #334155; padding: 1px 4px; border-radius: 3px; }
-        .p-stat { font-size: 0.72rem; color: #94a3b8; display: flex; justify-content: space-between; margin-top: 1px; }
-        .p-val { font-weight: bold; color: white; }
+/* Modals: cream notices */
+.modal { display: none; position: fixed; inset: 0; background: rgba(10, 4, 5, 0.85); justify-content: center; align-items: center; z-index: 110; padding: 14px; }
+.modal-content {
+    background: linear-gradient(160deg, #fbf5e6, var(--cream) 60%, #ece0c4);
+    color: var(--ink); padding: 20px 18px; border-radius: 8px;
+    text-align: center; max-width: 440px; width: 100%; max-height: 88dvh; overflow-y: auto;
+    border: 2px solid var(--brass-dark);
+    box-shadow: 0 0 0 5px var(--wood-deep), 0 0 0 6px var(--brass-dark), 0 30px 60px rgba(0,0,0,0.7);
+}
+.modal-content h2, .modal-content h3 { font-family: var(--font-display); font-weight: 400; color: var(--wood-light); }
+.modal-content h2 { font-size: 1.6rem; margin-bottom: 8px; }
+.modal-content h3 { font-size: 1.25rem; margin-bottom: 6px; }
+.modal-content p { font-size: 0.92rem; color: #4a3b30; }
+.modal-btns { display: flex; gap: 8px; margin-top: 16px; }
+.deck-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 14px 0; }
+.deck-cell { background: rgba(0,0,0,0.05); padding: 6px 4px; border-radius: 6px; font-size: 0.85rem; border: 1px solid #d8c9a6; }
+.deck-cell b { color: var(--wood-light); }
+.rules-text { text-align: left; font-size: 0.9rem; line-height: 1.45; color: #3a2e25; }
+.rules-text h3 { color: var(--wood-light); margin: 12px 0 3px; font-size: 1.05rem; border-bottom: 1px solid #d8c9a6; padding-bottom: 2px; }
+.rules-text ul { padding-left: 18px; }
+.rules-text li { margin-bottom: 3px; }
+.run-option { background: rgba(255,255,255,0.45); border: 1px solid #d8c9a6; padding: 9px 10px; border-radius: 8px; margin-bottom: 6px; cursor: pointer; text-align: left; }
+.run-option.selected { border-color: var(--brass-dark); background: #fff8e6; box-shadow: 0 0 0 2px rgba(201,162,74,0.5); }
+.run-option .ro-title { font-weight: 800; color: var(--wood-light); }
+.run-option .ro-cards { font-size: 0.85rem; color: #5a4a3c; margin-top: 2px; }
+.endgame-btn-group { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+.final-board { display: flex; flex-direction: column; gap: 4px; margin: 12px 0 0; text-align: left; }
+.final-row {
+    display: grid; grid-template-columns: 22px 1fr auto auto; gap: 8px; align-items: center;
+    background: rgba(255,255,255,0.4); border: 1px solid #d8c9a6; border-radius: 6px; padding: 7px 10px; font-size: 0.95rem;
+}
+.final-row.winner { border-color: var(--brass-dark); background: #fff4d6; }
+.final-row .fr-score { font-weight: 800; color: var(--wood-light); font-variant-numeric: tabular-nums; }
+.final-row .fr-wins { font-size: 0.72rem; color: #7a6a5a; }
 
-        .pending-pills {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 3px;
-            margin-top: 4px;
-            padding-top: 3px;
-            border-top: 1px dashed #334155;
-            min-height: 20px;
-        }
-
-        .pill {
-            background: #334155;
-            color: #f8fafc;
-            border-radius: 4px;
-            padding: 1px 4px;
-            font-size: 0.68rem;
-            font-weight: bold;
-        }
-
-        .pill.threatened {
-            background: rgba(239, 68, 68, 0.35);
-            color: var(--accent-red-bright);
-            border: 1px solid var(--accent-red);
-            animation: pulse 1s infinite alternate;
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 2px var(--accent-red); }
-            100% { box-shadow: 0 0 6px var(--accent-red); }
-        }
-
-        /* Play Table Area */
-        .table-area {
-            background: radial-gradient(circle at center, #064e3b 0%, #042f2e 100%);
-            border: 3px solid #0f172a;
-            border-radius: 12px;
-            padding: 10px 12px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: relative;
-            box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
-            min-height: 0;
-            overflow: hidden;
-        }
-
-        .table-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.85rem;
-            color: #cbd5e1;
-            flex-shrink: 0;
-        }
-
-        .decks-container {
-            display: flex;
-            gap: 12px;
-        }
-
-        .deck-widget {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        .deck-widget:hover { transform: scale(1.04); }
-
-        .deck-label {
-            font-size: 0.6rem;
-            color: #94a3b8;
-            margin-top: 2px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .deck-stack {
-            width: 52px;
-            height: 72px;
-            background: 
-                radial-gradient(circle at center, transparent 30%, #7f1d1d 30%),
-                repeating-linear-gradient(45deg, #b91c1c 0, #b91c1c 4px, #991b1b 4px, #991b1b 8px);
-            border: 2px solid #fef08a;
-            border-radius: 6px;
-            box-shadow: -2px -2px 0 #1e293b, -4px -4px 0 #991b1b, 0 6px 12px rgba(0,0,0,0.6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            color: #fef08a;
-            font-size: 0.95rem;
-            text-shadow: 0 0 5px rgba(0,0,0,0.8);
-            position: relative;
-            outline: 2px solid #7f1d1d;
-            outline-offset: -3px;
-        }
-
-        .discard-stack {
-            width: 52px;
-            height: 72px;
-            background: #1e293b;
-            border: 2px dashed #475569;
-            border-radius: 6px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            color: #94a3b8;
-            font-size: 0.95rem;
-            position: relative;
-        }
-
-        .discard-stack.has-cards {
-            background: #334155;
-            border: 2px solid #64748b;
-            color: #f8fafc;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-        }
-
-        /* Zoomed Card Fan Display */
-        .card-fan-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex: 1;
-            width: 100%;
-            margin: 6px 0;
-            min-height: 140px;
-            overflow-x: auto;
-        }
-
-        .card {
-            width: 88px;
-            height: 128px;
-            background: white;
-            border-radius: 8px;
-            color: #0f172a;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 6px 8px;
-            font-weight: bold;
-            box-shadow: 0 6px 16px rgba(0,0,0,0.45);
-            position: relative;
-            margin-left: -32px;
-            border: 1px solid #cbd5e1;
-            transition: transform 0.2s, z-index 0.2s;
-            flex-shrink: 0;
-        }
-
-        .card.new-card {
-            animation: slideCard 0.25s ease-out forwards;
-        }
-
-        .card:first-child { margin-left: 0; }
-        .card.red { color: var(--accent-red); }
-        .card.joker { background: linear-gradient(135deg, #a855f7, #6366f1); color: white; }
-
-        .card.busting-card {
-            border: 3px solid var(--accent-red) !important;
-            box-shadow: 0 0 15px var(--accent-red) !important;
-            z-index: 30 !important;
-        }
-
-        .card-badge {
-            position: absolute;
-            top: -7px; 
-            left: -7px;
-            font-size: 0.6rem; 
-            padding: 2px 5px;
-            border-radius: 6px; 
-            color: white; 
-            font-weight: bold;
-            z-index: 5;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-        .badge-steal { background: var(--accent-gold); color: #0f172a; }
-        .badge-run { background: var(--accent-green); }
-        .badge-bust { background: var(--accent-red); }
-
-        .card-rank { font-size: 1.25rem; }
-        .card-suit { font-size: 1.6rem; text-align: center; }
-        .card-val { font-size: 0.7rem; text-align: right; opacity: 0.85; }
-
-        @keyframes slideCard {
-            from { transform: translateX(40px) translateY(-10px); opacity: 0; }
-            to { transform: translateX(0) translateY(0); opacity: 1; }
-        }
-
-        /* Controls Bar */
-        .controls-bar {
-            background: rgba(15, 23, 42, 0.92);
-            border: 1px solid #334155;
-            border-radius: 8px;
-            padding: 8px 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-shrink: 0;
-        }
-
-        .prob-info { font-size: 0.8rem; }
-        .prob-val { font-weight: bold; }
-        .prob-low { color: var(--accent-green); }
-        .prob-med { color: var(--accent-gold); }
-        .prob-high { color: var(--accent-red); }
-
-        .controls-btns { display: flex; gap: 8px; }
-
-        button {
-            padding: 9px 18px; font-size: 0.88rem; font-weight: bold;
-            border: none; border-radius: 6px; cursor: pointer; transition: all 0.2s;
-        }
-        button:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        .btn-hit { background: var(--accent-green); color: white; }
-        .btn-hit:hover:not(:disabled) { background: #059669; }
-
-        .btn-stay { background: var(--accent-gold); color: white; }
-        .btn-stay:hover:not(:disabled) { background: #d97706; }
-
-        .btn-continue { background: var(--accent-red); color: white; }
-        .btn-primary { background: var(--accent-purple); color: white; width: 100%; }
-
-        /* Toasts Overlay */
-        .toast-container {
-            position: absolute;
-            top: 12px; left: 50%; transform: translateX(-50%);
-            z-index: 80; display: flex; flex-direction: column; gap: 6px;
-            pointer-events: none;
-        }
-
-        .toast {
-            background: rgba(15, 23, 42, 0.95);
-            border: 1px solid var(--accent-gold);
-            color: white; padding: 6px 14px; border-radius: 20px;
-            font-size: 0.8rem; box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-            animation: toastFade 2.5s forwards; white-space: nowrap;
-        }
-
-        @keyframes toastFade {
-            0% { opacity: 0; transform: translateY(-10px); }
-            15% { opacity: 1; transform: translateY(0); }
-            80% { opacity: 1; }
-            100% { opacity: 0; transform: translateY(-10px); }
-        }
-
-        /* Slide-Out Drawer Log */
-        .drawer {
-            position: fixed; top: 0; right: -360px; width: 340px; height: 100vh;
-            background: var(--card-bg); border-left: 2px solid var(--accent-gold);
-            box-shadow: -5px 0 25px rgba(0,0,0,0.8); z-index: 100;
-            transition: right 0.3s ease; display: flex; flex-direction: column; padding: 15px;
-        }
-        .drawer.open { right: 0; }
-
-        .drawer-header {
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid #334155; padding-bottom: 8px; margin-bottom: 10px;
-        }
-
-        .log-list { flex: 1; overflow-y: auto; font-family: monospace; font-size: 0.8rem; display: flex; flex-direction: column; gap: 6px; }
-        .log-entry { padding: 5px 8px; border-radius: 4px; background: #0f172a; border-left: 3px solid #334155; }
-        .log-bust { border-color: var(--accent-red); color: #fca5a5; }
-        .log-steal { border-color: var(--accent-gold); color: #fde047; }
-        .log-run { border-color: var(--accent-green); color: #86efac; }
-
-        /* Modals */
-        .modal {
-            display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,0.85); justify-content: center; align-items: center;
-            z-index: 110; padding: 15px;
-        }
-
-        .modal-content {
-            background: var(--card-bg); padding: 20px; border-radius: 12px;
-            text-align: center; max-width: 440px; width: 100%; max-height: 85vh; overflow-y: auto;
-        }
-
-        .deck-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 15px 0;
-        }
-        .deck-cell {
-            background: #0f172a; padding: 6px; border-radius: 4px; font-size: 0.8rem; border: 1px solid #334155;
-        }
-
-        .rules-text { text-align: left; font-size: 0.8rem; line-height: 1.4; color: #cbd5e1; }
-        .rules-text h3 { color: var(--accent-gold); margin: 8px 0 3px 0; font-size: 0.9rem; }
-        .rules-text ul { padding-left: 15px; }
-
-        .run-option {
-            background: #0f172a; border: 1px solid #334155; padding: 8px; border-radius: 6px;
-            margin-bottom: 6px; cursor: pointer; text-align: left; transition: all 0.2s;
-        }
-        .run-option:hover { border-color: var(--accent-gold); background: #1e293b; }
-        .run-option.selected { border-color: var(--accent-green); background: #064e3b; }
-
-        .endgame-btn-group {
-            display: flex; flex-direction: column; gap: 8px; margin-top: 15px;
-        }
-
-        /* Mobile Responsive Adjustments */
-        @media (max-width: 768px) {
-            #game-screen {
-                grid-template-columns: 1fr;
-                grid-template-rows: auto 1fr;
-            }
-            .sidebar { max-height: 110px; }
-            .scoreboard-grid {
-                display: flex;
-                overflow-x: auto;
-                padding-bottom: 4px;
-                gap: 8px;
-            }
-            .player-card {
-                min-width: 130px;
-                flex-shrink: 0;
-            }
-            .card {
-                width: 80px;
-                height: 116px;
-                margin-left: -28px;
-            }
-        }
-    </style>
+@media (prefers-reduced-motion: reduce) {
+    .card.new-card, .table-area.shake, .pill.threatened, .toast, .stamp, .dots::after { animation-duration: 0.01s !important; animation-iteration-count: 1 !important; }
+    .card-slot, .drawer, .chip { transition: none; }
+}
+@media (max-width: 380px) {
+    .wordmark { font-size: 1.15rem; }
+    .chip { min-width: 128px; }
+    .big-btn { font-size: 1.2rem; min-height: 58px; }
+}
+</style>
 </head>
 <body>
 
-    <header>
-        <h1>PUSH YER LUCK</h1>
-        <div class="header-btns">
-            <button class="hdr-btn" onclick="toggleModal('rules-modal', true)">📜 Rules</button>
-            <button class="hdr-btn" onclick="toggleDrawer()">💬 Log</button>
-            <button class="hdr-btn" id="mute-btn" onclick="toggleMute()">🔊 Sound On</button>
-        </div>
-    </header>
+<header>
+    <div class="wordmark">PUSH YER LUCK</div>
+    <div class="hdr-btns">
+        <button class="icon-btn" onclick="toggleModal('rules-modal', true)" title="Rules" aria-label="Rules">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M9.6 9.6a2.6 2.6 0 1 1 3.6 2.4c-.9.5-1.2 1-1.2 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="17" r="1.1" fill="currentColor"/></svg>
+        </button>
+        <button class="icon-btn" onclick="toggleDrawer()" title="Game log" aria-label="Game log">
+            <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <button class="icon-btn" id="mute-btn" onclick="toggleMute()" title="Sound" aria-label="Toggle sound">
+            <svg viewBox="0 0 24 24" id="snd-icon"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+    </div>
+</header>
 
-    <!-- SETUP SCREEN -->
-    <div id="setup-screen">
-        <h2 style="margin-bottom:12px; color:var(--accent-gold);">Game Setup</h2>
+<!-- SETUP -->
+<div id="setup-screen">
+    <div class="setup-title">PUSH YER LUCK</div>
+    <div class="setup-sub">Draw. Don't match. Bank before it bites.</div>
+
+    <div class="settings-grid">
         <div class="form-group">
-            <label for="total-players">Total Players (2–6):</label>
+            <label for="total-players">Players at the table</label>
             <select id="total-players" onchange="buildPlayerInputs()">
-                <option value="2">2 Players</option>
-                <option value="3" selected>3 Players</option>
-                <option value="4">4 Players</option>
-                <option value="5">5 Players</option>
-                <option value="6">6 Players</option>
+                <option value="2">2 players</option>
+                <option value="3" selected>3 players</option>
+                <option value="4">4 players</option>
+                <option value="5">5 players</option>
+                <option value="6">6 players</option>
             </select>
         </div>
         <div class="form-group">
-            <label for="human-players">Human Players:</label>
+            <label for="human-players">Humans</label>
             <select id="human-players" onchange="buildPlayerInputs()"></select>
         </div>
-
         <div class="form-group">
-            <label>Players & Personalities:</label>
-            <div class="player-inputs" id="player-inputs-container"></div>
+            <label for="target-score">Play to</label>
+            <select id="target-score">
+                <option value="100">100 points</option>
+                <option value="150" selected>150 points</option>
+                <option value="200">200 points</option>
+            </select>
         </div>
-
-        <button class="btn-primary" onclick="initGame()">Start Game</button>
+        <div class="form-group">
+            <label for="ai-speed">Bot speed</label>
+            <select id="ai-speed">
+                <option value="450">Fast</option>
+                <option value="1000" selected>Normal</option>
+                <option value="1800">Slow</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="end-rule">How the game ends</label>
+            <select id="end-rule">
+                <option value="final" selected>Final round after target</option>
+                <option value="immediate">Instant win at target</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="show-counts">Card counting</label>
+            <select id="show-counts">
+                <option value="0" selected>Blind: no counts or odds</option>
+                <option value="1">Show deck counts and odds</option>
+            </select>
+        </div>
     </div>
 
-    <!-- MAIN GAME SCREEN -->
-    <div id="game-screen">
-        <aside class="sidebar">
-            <div class="scoreboard-title">Scoreboard (First to 150)</div>
-            <div class="scoreboard-grid" id="scoreboard-grid"></div>
-        </aside>
+    <div class="form-group">
+        <label>Who is playing</label>
+        <div class="player-inputs" id="player-inputs-container"></div>
+    </div>
 
-        <section class="table-area">
+    <label class="check-row"><input type="checkbox" id="random-start" checked> Random player deals first</label>
+
+    <button class="btn-brass" onclick="initGame()">Deal me in</button>
+
+    <div class="hall">
+        <div class="hall-title">
+            <span>Hall of Fame</span>
+            <button class="link-btn" onclick="clearWins()">Clear</button>
+        </div>
+        <div class="hall-list" id="hall-list"></div>
+    </div>
+</div>
+
+<!-- GAME -->
+<div id="game-screen">
+    <div class="players" id="players"></div>
+
+    <section class="table-area" id="table-area">
+        <div class="felt" id="felt">
             <div class="toast-container" id="toast-container"></div>
-
-            <div class="table-top">
-                <div>Turn: <strong id="current-player-display" style="color:var(--accent-gold);">--</strong></div>
-                
-                <div class="decks-container">
-                    <div class="deck-widget" onclick="openInspector('deck')" title="View Deck Breakdown">
-                        <div class="deck-stack" id="deck-count-display">138</div>
-                        <div class="deck-label">Deck</div>
+            <div class="felt-top">
+                <div class="turn-banner" id="turn-banner"></div>
+                <div class="stacks">
+                    <div class="stack" onclick="openInspector('deck')" title="Deck">
+                        <div class="back" id="deck-back"><span class="cnt" id="deck-cnt"></span></div>
+                        <div class="stack-label">Deck</div>
                     </div>
-                    <div class="deck-widget" onclick="openInspector('discard')" title="View Discarded Cards">
-                        <div class="discard-stack" id="discard-count-display">0</div>
-                        <div class="deck-label">Discard</div>
+                    <div class="stack" onclick="openInspector('discard')" title="Discard">
+                        <div class="discard" id="discard-top"></div>
+                        <div class="stack-label">Discard</div>
                     </div>
                 </div>
             </div>
-
-            <!-- Table Card Fan (Play Area) -->
-            <div class="card-fan-container" id="play-area"></div>
-
-            <div class="controls-bar">
-                <div class="prob-info">
-                    <div>Points: <strong id="turn-points-val" style="color:var(--accent-gold);">0 pts</strong></div>
-                    <div>Bust Chance: <span class="prob-val prob-low" id="prob-val">0%</span></div>
-                </div>
-
-                <div class="controls-btns">
-                    <button class="btn-hit" id="btn-hit" onclick="humanHit()">HIT / DRAW</button>
-                    <button class="btn-stay" id="btn-stay" onclick="humanStay()">STOP & BANK</button>
-                    <button class="btn-continue" id="btn-continue" style="display:none;" onclick="confirmBust()">BUST! CONTINUE</button>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <!-- LOG DRAWER -->
-    <div class="drawer" id="log-drawer">
-        <div class="drawer-header">
-            <h3 style="color:var(--accent-gold);">Game History</h3>
-            <button class="hdr-btn" onclick="toggleDrawer()">✕ Close</button>
+            <div id="play-area"></div>
+            <div class="rank-strip" id="rank-strip"></div>
         </div>
-        <div class="log-list" id="log-list"></div>
-    </div>
+    </section>
 
-    <!-- DECK / DISCARD INSPECTOR MODAL -->
-    <div class="modal" id="inspector-modal">
-        <div class="modal-content">
-            <h3 id="inspector-title" style="color:var(--accent-gold); margin-bottom:6px;">🃏 Card Inspector</h3>
-            <p id="inspector-desc" style="font-size:0.75rem; color:#cbd5e1;"></p>
-            <div class="deck-grid" id="inspector-grid"></div>
-            <button class="btn-primary" onclick="toggleModal('inspector-modal', false)">Close</button>
+    <div>
+        <div class="controls" id="controls">
+            <button class="big-btn btn-hit" id="btn-hit" onclick="humanHit()">HIT<small>draw another</small></button>
+            <button class="big-btn btn-bank" id="btn-bank" onclick="humanStay()"><span class="amt" id="bank-amt">BANK</span><small id="bank-sub">stop and keep</small></button>
+            <button class="big-btn btn-continue" id="btn-continue" style="display:none;" onclick="confirmBust()">CONTINUE<small>hand is lost</small></button>
         </div>
+        <div class="hint">H hit · S bank · Enter continue · Y / N gem safeguard · L log</div>
     </div>
+</div>
 
-    <!-- RULES MODAL -->
-    <div class="modal" id="rules-modal">
-        <div class="modal-content">
-            <h2 style="color:var(--accent-gold); margin-bottom:10px;">📜 Rules of Play</h2>
-            <div class="rules-text">
-                <h3>Objective</h3>
-                <p>First player to reach <strong>150 points</strong> wins!</p>
+<!-- LOG -->
+<div class="drawer" id="log-drawer">
+    <div class="drawer-header">
+        <h3>Table Talk</h3>
+        <button class="icon-btn" onclick="toggleDrawer()" aria-label="Close log"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+    </div>
+    <div class="log-list" id="log-list"></div>
+</div>
 
-                <h3>138-Card Deck Breakdown</h3>
-                <ul>
-                    <li><strong>2 through 5:</strong> 12 copies each (48 cards) • 2–5 pts</li>
-                    <li><strong>6 through 9:</strong> 10 copies each (40 cards) • 6–9 pts</li>
-                    <li><strong>10, J, Q, K:</strong> 8 copies each (32 cards) • 10 pts each</li>
-                    <li><strong>Aces (A):</strong> 12 copies (12 cards) • 15 pts each</li>
-                    <li><strong>Jokers (JKR):</strong> 6 copies • Wilds for Runs (0 pts)</li>
-                </ul>
+<!-- INSPECTOR -->
+<div class="modal" id="inspector-modal">
+    <div class="modal-content">
+        <h3 id="inspector-title">Deck</h3>
+        <p id="inspector-desc"></p>
+        <div class="deck-grid" id="inspector-grid"></div>
+        <button class="btn-wood" onclick="toggleModal('inspector-modal', false)">Close</button>
+    </div>
+</div>
 
-                <h3>On Your Turn</h3>
-                <ul>
-                    <li>Draw cards sequentially. Drawing a matching rank causes a standard <strong>Bust</strong>.</li>
-                    <li><strong>Double Joker Bust:</strong> Instantly resets Score to 0! (And grants a Pity Gem).</li>
-                </ul>
+<!-- RULES -->
+<div class="modal" id="rules-modal">
+    <div class="modal-content">
+        <h2>House Rules</h2>
+        <div class="rules-text">
+            <h3>The goal</h3>
+            <p>Reach the target score (150 by default). With the <em>final round</em> rule, once anyone reaches the target every other player gets one last turn, all pending piles are cashed in, and the highest score wins. With <em>instant win</em>, the first player to reach the target wins on the spot.</p>
 
-                <h3>Pending Piles & Stealing</h3>
-                <ul>
-                    <li>Banked cards go to your <strong>Pending Pile</strong>, converting to Score at the start of your next turn.</li>
-                    <li>Drawing cards matching an opponent's Pending cards lets you <strong>steal</strong> them when you bank!</li>
-                </ul>
+            <h3>The deck (138 cards)</h3>
+            <ul>
+                <li>2 through 5: 12 of each, worth face value</li>
+                <li>6 through 9: 10 of each, worth face value</li>
+                <li>10, J, Q, K: 8 of each, worth 10</li>
+                <li>Aces: 12, worth 15</li>
+                <li>Jokers: 6, worth 0, wild in runs</li>
+            </ul>
 
-                <h3>Gems & Runs</h3>
-                <ul>
-                    <li>Busting early (3 or fewer cards) gives 1 Pity Gem. Spend 2 Gems to cancel a drawn bust card!</li>
-                    <li>Collect <strong>3 Gems</strong> to automatically convert them into <strong>+50 Bonus Score Points</strong>!</li>
-                    <li>5+ card runs can be doubled directly to Score or sent unscored to Pending. Straight sequences support High (10-J-Q-K-A) or Low (A-2-3-4-5) without wrapping.</li>
-                </ul>
-            </div>
-            <button class="btn-primary" style="margin-top:15px;" onclick="toggleModal('rules-modal', false)">Close Rules</button>
+            <h3>Your turn</h3>
+            <ul>
+                <li>Draw one card at a time. Draw a rank you already hold and you bust: the whole hand is lost.</li>
+                <li>Two jokers in one hand is a double joker bust: your score resets to 0 (and you get a pity gem).</li>
+                <li>The strip under the table shows every rank. Red cells are ranks you hold; drawing one busts you. Gold cells match an opponent's pending pile; banking with one steals it.</li>
+            </ul>
+
+            <h3>Pending piles and stealing</h3>
+            <ul>
+                <li>Banked cards go to your pending pile and become score at the start of your next turn.</li>
+                <li>If your hand holds a rank that matches cards in an opponent's pending pile, you steal those cards when you bank. The bank button shows what you would take.</li>
+            </ul>
+
+            <h3>Gems and runs</h3>
+            <ul>
+                <li>Busting on 3 or fewer cards gives one pity gem. Spend 2 gems to cancel a bust card and keep going.</li>
+                <li>Three gems convert into a 50-point bonus.</li>
+                <li>Five or more cards in sequence make a run. Score the run at double value on the spot, or send the whole hand to pending unscored. Runs may be high (10-J-Q-K-A) or low (A-2-3-4-5) but never wrap.</li>
+            </ul>
+
+            <h3>Keyboard</h3>
+            <p>H to hit, S to bank, Enter to continue after a bust, Y or N to answer the gem safeguard, L for the log.</p>
         </div>
+        <button class="btn-wood" style="margin-top:16px;" onclick="toggleModal('rules-modal', false)">Back to the table</button>
     </div>
+</div>
 
-    <!-- GEM MODAL -->
-    <div class="modal" id="gem-modal">
-        <div class="modal-content">
-            <h3 style="color:var(--accent-gold);">💎 SAFEGUARD AVAILABLE!</h3>
-            <p style="font-size:0.85rem; margin:10px 0;">Spend <strong>2 Gems</strong> to cancel drawing this bust card?</p>
-            <div style="display:flex; gap:8px; margin-top:15px;">
-                <button class="btn-primary" style="background:var(--accent-green)" onclick="resolveGemSafeguard(true)">Use Gems</button>
-                <button class="btn-primary" style="background:var(--accent-red)" onclick="resolveGemSafeguard(false)">Accept Bust</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- RUN SELECTION MODAL -->
-    <div class="modal" id="run-modal">
-        <div class="modal-content">
-            <h3 style="color:var(--accent-gold);">🎯 RUN COMPLETED!</h3>
-            <p style="font-size:0.8rem; margin:6px 0; color:#cbd5e1;">Select the run sequence you wish to score:</p>
-            <div id="run-options-container"></div>
-
-            <div style="display:flex; flex-direction:column; gap:8px; margin-top:12px;">
-                <button class="btn-primary" style="background:var(--accent-green)" onclick="resolveRunChoice('score')">Double Selected Run & Score Instantly</button>
-                <button class="btn-primary" style="background:var(--accent-gold)" onclick="resolveRunChoice('pending')">Move Entire Hand to Pending (Unscored)</button>
-            </div>
+<!-- GEM -->
+<div class="modal" id="gem-modal">
+    <div class="modal-content">
+        <h3>Spend two gems?</h3>
+        <p>That bust card can be waved off and your turn continues. It costs 2 gems.</p>
+        <div class="modal-btns">
+            <button class="btn-green" onclick="resolveGemSafeguard(true)">Use gems (Y)</button>
+            <button class="btn-red" onclick="resolveGemSafeguard(false)">Take the bust (N)</button>
         </div>
     </div>
+</div>
 
-    <!-- WIN MODAL -->
-    <div class="modal" id="win-modal">
-        <div class="modal-content">
-            <h2 id="winner-title" style="color:var(--accent-gold);">🏆 GAME OVER 🏆</h2>
-            <p id="winner-details" style="margin:15px 0;"></p>
-            
-            <div class="endgame-btn-group">
-                <button class="btn-primary" style="background:var(--accent-green)" onclick="rematchGame()">🔄 Rematch</button>
-                <button class="btn-primary" style="background:var(--accent-blue)" onclick="resetToSetup()">🎮 New Game</button>
-                <button class="btn-primary" style="background:#475569" onclick="endSession()">✕ End</button>
-            </div>
+<!-- RUN -->
+<div class="modal" id="run-modal">
+    <div class="modal-content">
+        <h3>You made a run</h3>
+        <p style="margin-bottom:10px;">Pick the run to score, or hold the whole hand.</p>
+        <div id="run-options-container"></div>
+        <div class="endgame-btn-group">
+            <button class="btn-green" onclick="resolveRunChoice('score')">Score the run at double value</button>
+            <button class="btn-brass" onclick="resolveRunChoice('pending')">Send the whole hand to pending</button>
         </div>
     </div>
+</div>
 
-    <script>
-        // Centralized Config Constants
-        const CONFIG = {
-            TARGET_SCORE: 150,
-            SAFEGUARD_GEM_COST: 2,
-            GEM_BONUS_THRESHOLD: 3,
-            GEM_BONUS_PTS: 50,
-            PITY_GEM_HAND_LIMIT: 3
-        };
+<!-- WIN -->
+<div class="modal" id="win-modal">
+    <div class="modal-content">
+        <h2 id="winner-title">Game over</h2>
+        <p id="winner-details"></p>
+        <div class="final-board" id="final-board"></div>
+        <div class="endgame-btn-group">
+            <button class="btn-green" onclick="rematchGame()">Rematch, same table</button>
+            <button class="btn-wood" onclick="resetToSetup()">New game</button>
+        </div>
+    </div>
+</div>
 
-        // AI Personalities
-        const AI_PERSONALITIES = [
-            { id: 'reaper', name: 'R34P3R-Bot', style: 'Risky / Aggressive', bustTol: 45, minCards: 4, minPts: 18, stealBonus: 1.0 },
-            { id: 'riskomatic', name: 'Risk-O-Matic', style: 'Balanced / Analytical', bustTol: 30, minCards: 3, minPts: 12, stealBonus: 1.2 },
-            { id: 'bluffer', name: 'Bluffer-9000', style: 'Adversarial Thief', bustTol: 35, minCards: 3, minPts: 10, stealBonus: 2.5 },
-            { id: 'pushbot', name: 'PushBot-v2', style: 'Conservative / Safe', bustTol: 20, minCards: 3, minPts: 15, stealBonus: 1.0 }
-        ];
+<script>
+const CONFIG = { SAFEGUARD_GEM_COST: 2, GEM_BONUS_THRESHOLD: 3, GEM_BONUS_PTS: 50, PITY_GEM_HAND_LIMIT: 3 };
+let SETTINGS = { target: 150, aiDelay: 1000, showCounts: false, endRule: 'final' };
 
-        const RANK_ORDER = { '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14, 'JKR': 99 };
-        const VALUES = { '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 10, 'Q': 10, 'K': 10, 'A': 15, 'JKR': 0 };
-        const SUITS = ['♠', '♥', '♦', '♣'];
+const AI_PERSONALITIES = [
+    { id: 'reaper', name: 'R34P3R-Bot', style: 'Risky / Aggressive', bustTol: 45, minCards: 4, minPts: 18, stealBonus: 1.0 },
+    { id: 'riskomatic', name: 'Risk-O-Matic', style: 'Balanced / Analytical', bustTol: 30, minCards: 3, minPts: 12, stealBonus: 1.2 },
+    { id: 'bluffer', name: 'Bluffer-9000', style: 'Adversarial Thief', bustTol: 35, minCards: 3, minPts: 10, stealBonus: 2.5 },
+    { id: 'pushbot', name: 'PushBot-v2', style: 'Conservative / Safe', bustTol: 20, minCards: 3, minPts: 15, stealBonus: 1.0 }
+];
 
-        // Web Audio Synth Engine
-        let audioCtx = null;
-        let isMuted = false;
+const RANKS = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A', 'JKR'];
+const RANK_ORDER = { '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14, 'JKR': 99 };
+const VALUES = { '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 10, 'Q': 10, 'K': 10, 'A': 15, 'JKR': 0 };
+const SUITS = ['♠', '♥', '♦', '♣'];
 
-        function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
+/* ============ Sound engine ============ */
+let audioCtx = null, master = null, room = null, noiseBuf = null, isMuted = false;
+const BELL = [[1, 1], [2, 0.42], [3, 0.18], [4.2, 0.07]];
+
+function initAudio() {
+    try {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            master = audioCtx.createGain(); master.gain.value = 0.9;
+            const comp = audioCtx.createDynamicsCompressor();
+            comp.threshold.value = -16; comp.ratio.value = 4; comp.attack.value = 0.004; comp.release.value = 0.2;
+            master.connect(comp); comp.connect(audioCtx.destination);
+
+            // A small "room": feedback delay with a low-pass in the loop
+            room = audioCtx.createGain(); room.gain.value = 0.4;
+            const delay = audioCtx.createDelay(1.0); delay.delayTime.value = 0.17;
+            const fb = audioCtx.createGain(); fb.gain.value = 0.3;
+            const lp = audioCtx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 2600;
+            room.connect(delay); delay.connect(lp); lp.connect(fb); fb.connect(delay); lp.connect(master);
+
+            const len = Math.floor(audioCtx.sampleRate * 1.5);
+            noiseBuf = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
+            const d = noiseBuf.getChannelData(0);
+            for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
         }
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+    } catch (e) { audioCtx = null; }
+}
 
-        function toggleMute() {
-            initAudio();
-            isMuted = !isMuted;
-            document.getElementById('mute-btn').innerText = isMuted ? '🔇 Muted' : '🔊 Sound On';
+function noise(start, dur, o = {}) {
+    const { type = 'bandpass', freq = 1800, q = 1, vol = 0.4, attack = 0.003, sweepTo = null } = o;
+    const src = audioCtx.createBufferSource(); src.buffer = noiseBuf;
+    src.playbackRate.value = 0.9 + Math.random() * 0.2;
+    const f = audioCtx.createBiquadFilter(); f.type = type; f.Q.value = q;
+    f.frequency.setValueAtTime(freq, start);
+    if (sweepTo) f.frequency.exponentialRampToValueAtTime(sweepTo, start + dur);
+    const g = audioCtx.createGain();
+    g.gain.setValueAtTime(0.0001, start);
+    g.gain.exponentialRampToValueAtTime(vol, start + attack);
+    g.gain.exponentialRampToValueAtTime(0.0001, start + dur);
+    src.connect(f); f.connect(g); g.connect(master);
+    src.start(start); src.stop(start + dur + 0.03);
+}
+
+function note(freq, start, dur, o = {}) {
+    const { type = 'sine', vol = 0.2, partials = null, send = 0.4, attack = 0.006 } = o;
+    const g = audioCtx.createGain();
+    g.gain.setValueAtTime(0.0001, start);
+    g.gain.exponentialRampToValueAtTime(vol, start + attack);
+    g.gain.exponentialRampToValueAtTime(0.0001, start + dur);
+    (partials || [[1, 1]]).forEach(([mult, amp]) => {
+        const osc = audioCtx.createOscillator(); osc.type = type;
+        osc.frequency.setValueAtTime(freq * mult, start);
+        const og = audioCtx.createGain(); og.gain.value = amp;
+        osc.connect(og); og.connect(g);
+        osc.start(start); osc.stop(start + dur + 0.05);
+    });
+    g.connect(master);
+    if (send > 0) { const s = audioCtx.createGain(); s.gain.value = send; g.connect(s); s.connect(room); }
+}
+
+function playSound(type) {
+    if (isMuted) return;
+    initAudio();
+    if (!audioCtx) return;
+    const t = audioCtx.currentTime + 0.005;
+    try {
+        switch (type) {
+            case 'card': // a paper snap, then the card sliding onto felt
+                noise(t, 0.05, { type: 'bandpass', freq: 2500 + Math.random() * 700, q: 0.7, vol: 0.55, attack: 0.002 });
+                noise(t + 0.04, 0.13, { type: 'lowpass', freq: 1500, q: 0.5, vol: 0.22, attack: 0.015, sweepTo: 420 });
+                break;
+            case 'bank': // chips clinking as the hand is pushed to pending
+                noise(t, 0.03, { type: 'highpass', freq: 3200, vol: 0.28 });
+                note(2600, t, 0.16, { vol: 0.11, partials: [[1, 1], [1.5, 0.35]], send: 0.25 });
+                note(3250, t + 0.07, 0.16, { vol: 0.08, partials: [[1, 1], [1.5, 0.35]], send: 0.25 });
+                break;
+            case 'bust': // slap on the felt, low thud, and a falling minor third
+                noise(t, 0.2, { type: 'lowpass', freq: 1000, q: 0.7, vol: 0.6, attack: 0.004, sweepTo: 110 });
+                note(105, t, 0.4, { type: 'sine', vol: 0.5, partials: [[1, 1], [0.5, 0.6]], send: 0.1 });
+                note(330, t + 0.06, 0.5, { type: 'triangle', vol: 0.11, send: 0.35 });
+                note(262, t + 0.26, 0.6, { type: 'triangle', vol: 0.09, send: 0.35 });
+                break;
+            case 'wipe': // double joker: everything falls away
+                noise(t, 0.7, { type: 'lowpass', freq: 700, vol: 0.5, sweepTo: 55 });
+                note(82, t, 1.0, { vol: 0.4, partials: [[1, 1], [0.5, 0.5]], send: 0.2 });
+                note(392, t + 0.1, 0.5, { type: 'triangle', vol: 0.1, send: 0.4 });
+                note(311, t + 0.4, 0.6, { type: 'triangle', vol: 0.1, send: 0.4 });
+                note(233, t + 0.75, 0.9, { type: 'triangle', vol: 0.1, send: 0.4 });
+                break;
+            case 'steal':
+                [784, 1047].forEach((f, i) => note(f, t + i * 0.09, 0.4, { vol: 0.17, partials: BELL, send: 0.5 }));
+                break;
+            case 'run':
+                [523, 659, 784, 1047].forEach((f, i) => note(f, t + i * 0.085, 0.65, { vol: 0.15, partials: BELL, send: 0.5 }));
+                [1319, 1568].forEach((f, i) => note(f, t + 0.42 + i * 0.07, 0.9, { vol: 0.09, partials: BELL, send: 0.6 }));
+                break;
+            case 'gem':
+                note(1568, t, 1.3, { vol: 0.15, partials: [[1, 1], [2.76, 0.32], [5.4, 0.1]], send: 0.6 });
+                break;
+            case 'final':
+                [392, 523, 659].forEach((f, i) => note(f, t + i * 0.13, 0.9, { type: 'triangle', vol: 0.13, partials: [[1, 1], [2, 0.3]], send: 0.5 }));
+                break;
+            case 'shuffle':
+                for (let i = 0; i < 8; i++) noise(t + i * 0.045, 0.06, { type: 'bandpass', freq: 1700 + i * 60, q: 1, vol: 0.22 });
+                break;
+            case 'win':
+                [[523, 0], [659, 0], [784, 0], [1047, 0.16], [1319, 0.32], [1568, 0.48]].forEach(([f, d]) =>
+                    note(f, t + d, 1.5, { type: 'triangle', vol: 0.1, partials: [[1, 1], [2, 0.22]], send: 0.6 }));
+                note(2093, t + 0.72, 1.7, { vol: 0.07, partials: BELL, send: 0.7 });
+                break;
         }
+    } catch (e) { /* audio hiccup; keep playing silently */ }
+}
 
-        function playSound(type) {
-            if (isMuted) return;
-            initAudio();
-            if (!audioCtx) return;
-            const now = audioCtx.currentTime;
+function toggleMute() {
+    initAudio();
+    isMuted = !isMuted;
+    document.getElementById('snd-icon').innerHTML = isMuted
+        ? '<path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>'
+        : '<path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>';
+}
+function buzz(pattern) { try { if (navigator.vibrate) navigator.vibrate(pattern); } catch (e) { } }
 
-            if (type === 'card') {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'triangle'; osc.frequency.setValueAtTime(450, now);
-                osc.frequency.exponentialRampToValueAtTime(80, now + 0.05);
-                gain.gain.setValueAtTime(0.3, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.05);
-                osc.connect(gain); gain.connect(audioCtx.destination);
-                osc.start(now); osc.stop(now + 0.05);
-            } else if (type === 'bust') {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(220, now);
-                osc.frequency.linearRampToValueAtTime(50, now + 0.35);
-                gain.gain.setValueAtTime(0.4, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.35);
-                osc.connect(gain); gain.connect(audioCtx.destination);
-                osc.start(now); osc.stop(now + 0.35);
-            } else if (type === 'steal') {
-                [523, 659].forEach((freq, idx) => {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = 'sine'; osc.frequency.setValueAtTime(freq, now + idx * 0.08);
-                    gain.gain.setValueAtTime(0.25, now + idx * 0.08);
-                    gain.gain.linearRampToValueAtTime(0.01, now + idx * 0.08 + 0.12);
-                    osc.connect(gain); gain.connect(audioCtx.destination);
-                    osc.start(now + idx * 0.08); osc.stop(now + idx * 0.08 + 0.12);
-                });
-            }
+/* ============ State ============ */
+let deck = [], discardPile = [], players = [], turnIndex = 0, playArea = [];
+let awaitingBustConfirm = false, pendingBustState = null, pendingRunState = null, selectedRunIndex = 0;
+let isDrawerOpen = false, lastWinnerId = null, aiTimer = null, cardIdCounter = 0;
+let finalRound = false, finalTriggerId = null, gameOver = false, lastRenderedTurn = -1;
+
+function clearAiTimer() { if (aiTimer) { clearTimeout(aiTimer); aiTimer = null; } }
+function toggleModal(id, show) { document.getElementById(id).style.display = show ? 'flex' : 'none'; }
+function modalOpen(id) { return document.getElementById(id).style.display === 'flex'; }
+function toggleDrawer() { isDrawerOpen = !isDrawerOpen; document.getElementById('log-drawer').classList.toggle('open', isDrawerOpen); }
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch])); }
+
+/* ============ Persistent win tally ============ */
+const WINS_KEY = 'pyl_wins';
+function loadWins() { try { return JSON.parse(localStorage.getItem(WINS_KEY) || '{}') || {}; } catch (e) { return {}; } }
+function recordWin(name) { try { const w = loadWins(); w[name] = (w[name] || 0) + 1; localStorage.setItem(WINS_KEY, JSON.stringify(w)); } catch (e) { } }
+function clearWins() { try { localStorage.removeItem(WINS_KEY); } catch (e) { } renderHallOfFame(); }
+function renderHallOfFame() {
+    const list = document.getElementById('hall-list');
+    const entries = Object.entries(loadWins()).sort((a, b) => b[1] - a[1]);
+    list.innerHTML = entries.length
+        ? entries.map(([n, c]) => `<span class="hall-item">${escapeHtml(n)}<b>${c}</b></span>`).join('')
+        : '<span class="hall-empty">No wins yet. Finish a game to start the tally.</span>';
+}
+
+/* ============ Setup ============ */
+function buildPlayerInputs() {
+    const total = parseInt(document.getElementById('total-players').value);
+    const humanSelect = document.getElementById('human-players');
+    const prevHumans = parseInt(humanSelect.value) || 1;
+    humanSelect.innerHTML = '';
+    for (let i = 0; i <= total; i++) {
+        const opt = document.createElement('option');
+        opt.value = i;
+        if (i === prevHumans || (i === 1 && prevHumans > total)) opt.selected = true;
+        opt.innerText = i === 0 ? '0 (all bots)' : i === total ? `${i} humans` : `${i} human, ${total - i} bot${total - i > 1 ? 's' : ''}`;
+        humanSelect.appendChild(opt);
+    }
+    const numHumans = parseInt(humanSelect.value);
+    const container = document.getElementById('player-inputs-container');
+    container.innerHTML = '';
+    let aiCount = 0;
+    for (let i = 0; i < total; i++) {
+        const row = document.createElement('div');
+        row.className = 'player-input-row';
+        if (i < numHumans) {
+            row.innerHTML = `<span>Seat ${i + 1}</span><input type="text" id="player-name-input-${i}" value="Player ${i + 1}" maxlength="16">`;
+        } else {
+            const aiOptions = AI_PERSONALITIES.map((p, idx) =>
+                `<option value="${idx}" ${idx === aiCount % AI_PERSONALITIES.length ? 'selected' : ''}>${p.name} (${p.style})</option>`).join('');
+            row.innerHTML = `<span>Seat ${i + 1}</span><select id="player-ai-select-${i}">${aiOptions}</select>`;
+            aiCount++;
         }
+        container.appendChild(row);
+    }
+}
+window.onload = () => { buildPlayerInputs(); renderHallOfFame(); };
+window.addEventListener('resize', () => layoutFan(false));
 
-        // Global State Variables
-        let deck = [];
-        let discardPile = [];
-        let players = [];
-        let turnIndex = 0;
-        let playArea = [];
-        let awaitingBustConfirm = false;
-        let pendingBustState = null;
-        let pendingRunState = null;
-        let selectedRunIndex = 0;
-        let isDrawerOpen = false;
-        let lastWinnerId = null;
-        let aiTimer = null;
-        let cardIdCounter = 0;
+function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; }
+}
 
-        function clearAiTimer() {
-            if (aiTimer) {
-                clearTimeout(aiTimer);
-                aiTimer = null;
-            }
+function createDeck() {
+    deck = []; cardIdCounter = 0;
+    [{ ranks: ['2', '3', '4', '5'], count: 12 }, { ranks: ['6', '7', '8', '9'], count: 10 }, { ranks: ['10', 'J', 'Q', 'K'], count: 8 }, { ranks: ['A'], count: 12 }]
+        .forEach(group => group.ranks.forEach(r => {
+            for (let i = 0; i < group.count; i++) deck.push({ id: ++cardIdCounter, rank: r, suit: SUITS[i % 4], val: VALUES[r] });
+        }));
+    for (let j = 0; j < 6; j++) deck.push({ id: ++cardIdCounter, rank: 'JKR', suit: '★', val: 0 });
+    shuffle(deck);
+}
+
+function recycleDiscards() {
+    if (discardPile.length === 0) return;
+    log(`Deck empty. ${discardPile.length} discards shuffled back in.`);
+    showToast(`Reshuffled ${discardPile.length} discards`);
+    playSound('shuffle');
+    deck = [...discardPile]; discardPile = [];
+    shuffle(deck);
+}
+
+function initGame() {
+    initAudio();
+    clearAiTimer();
+    const total = parseInt(document.getElementById('total-players').value);
+    const humans = parseInt(document.getElementById('human-players').value);
+    SETTINGS = {
+        target: parseInt(document.getElementById('target-score').value) || 150,
+        aiDelay: parseInt(document.getElementById('ai-speed').value) || 1000,
+        showCounts: document.getElementById('show-counts').value === '1',
+        endRule: document.getElementById('end-rule').value,
+        randomStart: document.getElementById('random-start').checked
+    };
+
+    players = [];
+    const used = {};
+    for (let i = 0; i < total; i++) {
+        let name, isHuman = i < humans, personality = null;
+        if (isHuman) {
+            const el = document.getElementById(`player-name-input-${i}`);
+            name = (el && el.value.trim()) || `Player ${i + 1}`;
+        } else {
+            const sel = document.getElementById(`player-ai-select-${i}`);
+            personality = AI_PERSONALITIES[sel ? parseInt(sel.value) : 0];
+            name = personality.name;
         }
+        if (used[name]) name = `${name} ${++used[name]}`; else used[name] = 1;
+        players.push({ id: i, name, isHuman, personality, tally: 0, pending: [], gems: 0 });
+    }
 
-        function toggleModal(id, show) {
-            document.getElementById(id).style.display = show ? 'flex' : 'none';
-        }
+    createDeck();
+    discardPile = []; lastWinnerId = null; lastRenderedTurn = -1;
+    turnIndex = SETTINGS.randomStart ? Math.floor(Math.random() * players.length) : 0;
+    finalRound = false; finalTriggerId = null; gameOver = false;
+    document.getElementById('log-list').innerHTML = '';
+    document.getElementById('setup-screen').style.display = 'none';
+    document.getElementById('game-screen').style.display = 'grid';
+    log(`New game. First to ${SETTINGS.target} (${SETTINGS.endRule === 'final' ? 'final round after target' : 'instant win'})${SETTINGS.showCounts ? '' : ', playing blind'}.`);
+    if (SETTINGS.randomStart) { log(`${players[turnIndex].name} deals first.`); showToast(`${players[turnIndex].name} deals first`); }
+    playSound('shuffle');
+    startTurn();
+}
 
-        function toggleDrawer() {
-            isDrawerOpen = !isDrawerOpen;
-            document.getElementById('log-drawer').classList.toggle('open', isDrawerOpen);
-        }
+/* ============ Turn flow ============ */
+function startTurn() {
+    clearAiTimer();
+    if (gameOver) return;
+    if (deck.length === 0) recycleDiscards();
+    playArea = []; awaitingBustConfirm = false; pendingBustState = null; pendingRunState = null;
+    const p = players[turnIndex];
 
-        function buildPlayerInputs() {
-            const total = parseInt(document.getElementById('total-players').value);
-            const humanSelect = document.getElementById('human-players');
-            const prevHumans = parseInt(humanSelect.value) || 1;
+    if (p.pending.length > 0) {
+        const points = p.pending.reduce((a, b) => a + b.val, 0);
+        p.tally += points;
+        log(`${p.name} banks ${points} from pending. Score ${p.tally}.`, 'log-run');
+        discardPile.push(...p.pending);
+        p.pending = [];
+    }
+    if (checkTarget(p)) return;
+    render(false);
+    const ended = drawCard();
+    if (!ended && !p.isHuman) aiTimer = setTimeout(aiLogic, SETTINGS.aiDelay);
+}
 
-            humanSelect.innerHTML = '';
-            for (let i = 0; i <= total; i++) {
-                const opt = document.createElement('option');
-                opt.value = i;
-                if (i === prevHumans || (i === 1 && prevHumans > total)) opt.selected = true;
-                opt.innerText = i === 0 ? `0 (All AI)` : i === total ? `${i} Humans` : `${i} Human, ${total - i} AI`;
-                humanSelect.appendChild(opt);
-            }
+function checkTarget(p) {
+    if (gameOver) return true;
+    if (p.tally < SETTINGS.target) return false;
+    if (SETTINGS.endRule === 'immediate') { endGame(); return true; }
+    if (!finalRound) {
+        finalRound = true; finalTriggerId = p.id;
+        log(`${p.name} reached ${SETTINGS.target}. Final round: everyone else gets one last turn.`, 'log-run');
+        showToast(`Final round! ${p.name} reached ${SETTINGS.target}`);
+        stamp('FINAL ROUND', 'gold');
+        playSound('final');
+    }
+    return false;
+}
 
-            const numHumans = parseInt(humanSelect.value);
-            const container = document.getElementById('player-inputs-container');
-            container.innerHTML = '';
+function bestRunIndex(runs) {
+    let best = 0, bestVal = -1;
+    runs.forEach((r, i) => { const v = r.reduce((a, b) => a + b.val, 0); if (v > bestVal) { bestVal = v; best = i; } });
+    return best;
+}
 
-            let aiCount = 0;
-            for (let i = 0; i < total; i++) {
-                const row = document.createElement('div');
-                row.className = 'player-input-row';
-                const isHuman = i < numHumans;
-
-                if (isHuman) {
-                    row.innerHTML = `
-                        <span>Player ${i + 1}:</span>
-                        <input type="text" id="player-name-input-${i}" value="Player ${i + 1}">
-                    `;
-                } else {
-                    const aiOptions = AI_PERSONALITIES.map((p, idx) => 
-                        `<option value="${idx}" ${idx === aiCount % AI_PERSONALITIES.length ? 'selected' : ''}>${p.name} (${p.style})</option>`
-                    ).join('');
-                    
-                    row.innerHTML = `
-                        <span>Player ${i + 1}:</span>
-                        <select id="player-ai-select-${i}">${aiOptions}</select>
-                    `;
-                    aiCount++;
-                }
-                container.appendChild(row);
-            }
-        }
-        window.onload = buildPlayerInputs;
-
-        function createDeck() {
-            deck = [];
-            cardIdCounter = 0;
-            const distribution = [
-                { ranks: ['2', '3', '4', '5'], count: 12 },
-                { ranks: ['6', '7', '8', '9'], count: 10 },
-                { ranks: ['10', 'J', 'Q', 'K'], count: 8 },
-                { ranks: ['A'], count: 12 }
-            ];
-
-            distribution.forEach(group => {
-                group.ranks.forEach(r => {
-                    for (let i = 0; i < group.count; i++) {
-                        deck.push({ id: ++cardIdCounter, rank: r, suit: SUITS[i % 4], val: VALUES[r] });
-                    }
-                });
-            });
-
-            for (let j = 0; j < 6; j++) deck.push({ id: ++cardIdCounter, rank: 'JKR', suit: '★', val: 0 });
-
-            for (let i = deck.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [deck[i], deck[j]] = [deck[j], deck[i]];
-            }
-        }
-
-        function recycleDiscards() {
-            if (discardPile.length === 0) return;
-            log(`🔄 Deck empty! Reshuffling ${discardPile.length} discarded cards back into deck...`);
-            showToast(`Reshuffled ${discardPile.length} discarded cards!`);
-            deck = [...discardPile];
-            discardPile = [];
-            for (let i = deck.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [deck[i], deck[j]] = [deck[j], deck[i]];
-            }
-        }
-
-        function initGame() {
-            initAudio();
-            clearAiTimer();
-            const total = parseInt(document.getElementById('total-players').value);
-            const humans = parseInt(document.getElementById('human-players').value);
-
-            players = [];
-            for (let i = 0; i < total; i++) {
-                const isHuman = i < humans;
-                if (isHuman) {
-                    const nameInput = document.getElementById(`player-name-input-${i}`);
-                    players.push({
-                        id: i,
-                        name: nameInput ? nameInput.value.trim() || `Player ${i + 1}` : `Player ${i + 1}`,
-                        isHuman: true,
-                        personality: null,
-                        tally: 0,
-                        pending: [],
-                        gems: 0
-                    });
-                } else {
-                    const selectEl = document.getElementById(`player-ai-select-${i}`);
-                    const personalityIdx = selectEl ? parseInt(selectEl.value) : 0;
-                    const personality = AI_PERSONALITIES[personalityIdx];
-                    players.push({
-                        id: i,
-                        name: personality.name,
-                        isHuman: false,
-                        personality: personality,
-                        tally: 0,
-                        pending: [],
-                        gems: 0
-                    });
-                }
-            }
-
-            createDeck();
-            discardPile = [];
-            lastWinnerId = null;
-            document.getElementById('setup-screen').style.display = 'none';
-            document.getElementById('game-screen').style.display = 'grid';
-            log(`Game started! First to ${CONFIG.TARGET_SCORE} points wins.`);
-            startTurn();
-        }
-
-        function startTurn() {
-            clearAiTimer();
-            if (deck.length === 0) recycleDiscards();
-            playArea = [];
-            awaitingBustConfirm = false;
-            pendingBustState = null;
-            pendingRunState = null;
-
-            const p = players[turnIndex];
-
-            // Convert Pending Cards to Permanent Score & Move Cards to Discard
-            if (p.pending.length > 0) {
-                const points = p.pending.reduce((a, b) => a + b.val, 0);
-                p.tally += points;
-                log(`✨ ${p.name} secured ${points} pts from Pending to Score!`, 'log-run');
-                
-                // FIX: Send scored pending cards to the discard pile instead of clearing them
-                discardPile.push(...p.pending);
-                p.pending = [];
-            }
-
-            render(false);
-
-            if (p.tally >= CONFIG.TARGET_SCORE) {
-                endGame(p);
-                return;
-            }
-
-            drawCard();
-
-            if (!p.isHuman) aiTimer = setTimeout(aiLogic, 1000);
-        }
-
-        function drawCard() {
-            if (deck.length === 0) recycleDiscards();
-            if (deck.length === 0) {
-                showToast("No cards left to draw!");
-                return true;
-            }
-
-            const card = deck.pop();
-            card.isNew = true;
-            playArea.push(card);
-            playSound('card');
-
-            const p = players[turnIndex];
-            const jokers = playArea.filter(c => c.rank === 'JKR');
-            let isBust = false;
-            let bustType = '';
-            let originalMatchIndex = -1;
-
-            if (jokers.length >= 2) {
-                isBust = true; bustType = 'joker';
-            } else if (playArea.length > 1) {
-                const ranks = playArea.map(c => c.rank);
-                const currentRank = card.rank;
-                if (currentRank !== 'JKR') {
-                    const firstMatch = ranks.indexOf(currentRank);
-                    if (firstMatch !== -1 && firstMatch < playArea.length - 1) {
-                        isBust = true; 
-                        bustType = 'match';
-                        originalMatchIndex = firstMatch;
-                    }
-                }
-            }
-
-            if (isBust) {
-                playSound('bust');
-                card.isBustingCard = true;
-                if (bustType === 'match' && originalMatchIndex !== -1) {
-                    playArea[originalMatchIndex].isBustingCard = true;
-                } else if (bustType === 'joker') {
-                    playArea.filter(c => c.rank === 'JKR').forEach(c => c.isBustingCard = true);
-                }
-
-                const handStr = playArea.map(c => `${c.rank}${c.suit}`).join(', ');
-                log(`💥 ${p.name} drew ${handStr} -- BUST!`, 'log-bust');
-                showToast(`${p.name} BUSTED!`);
-
-                if (bustType === 'joker') {
-                    executeBust(bustType);
-                    return true;
-                }
-
-                if (p.gems >= CONFIG.SAFEGUARD_GEM_COST) {
-                    pendingBustState = { card, bustType, originalMatchIndex };
-                    if (p.isHuman) {
-                        render(true);
-                        toggleModal('gem-modal', true);
-                    } else {
-                        resolveGemSafeguard(playArea.length > CONFIG.PITY_GEM_HAND_LIMIT);
-                    }
-                    return true;
-                }
-
-                executeBust(bustType);
-                return true;
-            }
-
-            render(true);
-            return false;
-        }
-
-        function resolveGemSafeguard(useGems) {
-            toggleModal('gem-modal', false);
-            const p = players[turnIndex];
-
-            if (useGems && p.gems >= CONFIG.SAFEGUARD_GEM_COST) {
-                p.gems -= CONFIG.SAFEGUARD_GEM_COST;
-                const savedCard = playArea.pop();
-                discardPile.push(savedCard);
-                playArea.forEach(c => c.isBustingCard = false);
-                log(`💎 ${p.name} SPENT ${CONFIG.SAFEGUARD_GEM_COST} GEMS to cancel drawing ${savedCard.rank}!`, 'log-steal');
-                showToast(`${p.name} spent ${CONFIG.SAFEGUARD_GEM_COST} Gems to cancel bust!`);
-                render(false);
-                if (!p.isHuman) aiTimer = setTimeout(aiLogic, 1000);
-            } else {
-                executeBust(pendingBustState.bustType);
-            }
-            pendingBustState = null;
-        }
-
-        function executeBust(bustType) {
-            const p = players[turnIndex];
-            awaitingBustConfirm = true;
-
-            if (bustType === 'joker') {
-                log(`💣 DOUBLE JOKER BUST! ${p.name}'s Score Wiped to 0!`, 'log-bust');
-                p.tally = 0;
-            }
-
-            if (playArea.length <= CONFIG.PITY_GEM_HAND_LIMIT) addGem(p);
-
-            discardPile.push(...playArea);
-            render(false);
-
-            if (!p.isHuman) aiTimer = setTimeout(confirmBust, 2200);
-        }
-
-        function confirmBust() {
-            awaitingBustConfirm = false;
-            playArea = [];
-            endTurn();
-        }
-
-        function addGem(player) {
-            player.gems++;
-            if (player.gems >= CONFIG.GEM_BONUS_THRESHOLD) {
-                player.gems = 0;
-                player.tally += CONFIG.GEM_BONUS_PTS;
-                log(`💎 ${player.name} converted ${CONFIG.GEM_BONUS_THRESHOLD} Gems into +${CONFIG.GEM_BONUS_PTS} Bonus Score!`, 'log-run');
-                showToast(`${player.name} converted ${CONFIG.GEM_BONUS_THRESHOLD} Gems into +${CONFIG.GEM_BONUS_PTS} Score!`);
-            }
-        }
-
-        function humanHit() {
-            initAudio();
-            if (awaitingBustConfirm || !players[turnIndex].isHuman) return;
-            drawCard();
-        }
-
-        function humanStay() {
-            initAudio();
-            if (awaitingBustConfirm || !players[turnIndex].isHuman) return;
+function drawCard() {
+    if (gameOver) return true;
+    if (deck.length === 0) recycleDiscards();
+    if (deck.length === 0) {
+        const p = players[turnIndex];
+        log(`No cards left anywhere. ${p.name}'s hand is banked automatically.`);
+        showToast('Deck exhausted: hand banked');
+        if (playArea.length > 0) {
             const runs = findAllRuns(playArea);
-            if (runs.length > 0) {
-                pendingRunState = runs;
-                buildRunModal(runs);
-                toggleModal('run-modal', true);
-            } else {
-                bankTurn(false);
-            }
+            if (runs.length > 0) { pendingRunState = runs; selectedRunIndex = bestRunIndex(runs); }
+            bankTurn(runs.length > 0);
+        } else endTurn();
+        return true;
+    }
+
+    const card = deck.pop();
+    playArea.push(card);
+    playSound('card');
+
+    const p = players[turnIndex];
+    const jokers = playArea.filter(c => c.rank === 'JKR');
+    let isBust = false, bustType = '', originalMatchIndex = -1;
+
+    if (jokers.length >= 2) { isBust = true; bustType = 'joker'; }
+    else if (playArea.length > 1 && card.rank !== 'JKR') {
+        const firstMatch = playArea.map(c => c.rank).indexOf(card.rank);
+        if (firstMatch !== -1 && firstMatch < playArea.length - 1) { isBust = true; bustType = 'match'; originalMatchIndex = firstMatch; }
+    }
+
+    if (isBust) {
+        card.isBustingCard = true;
+        if (bustType === 'match') playArea[originalMatchIndex].isBustingCard = true;
+        else playArea.filter(c => c.rank === 'JKR').forEach(c => c.isBustingCard = true);
+
+        log(`${p.name} drew ${handString()} and busted.`, 'log-bust');
+
+        if (bustType === 'joker') { executeBust(bustType); return true; }
+
+        if (p.gems >= CONFIG.SAFEGUARD_GEM_COST) {
+            pendingBustState = { card, bustType, originalMatchIndex };
+            playSound('bust');
+            if (p.isHuman) { render(true); toggleModal('gem-modal', true); }
+            else resolveGemSafeguard(playArea.length > CONFIG.PITY_GEM_HAND_LIMIT);
+            return true;
         }
+        executeBust(bustType);
+        return true;
+    }
 
-        function buildRunModal(runs) {
-            const container = document.getElementById('run-options-container');
-            container.innerHTML = '';
-            selectedRunIndex = 0;
+    render(true);
+    return false;
+}
 
-            runs.forEach((r, idx) => {
-                const basePts = r.reduce((a, b) => a + b.val, 0);
-                const str = r.map(c => `${c.rank}${c.suit}`).join(' - ');
-                const div = document.createElement('div');
-                div.className = `run-option ${idx === 0 ? 'selected' : ''}`;
-                div.onclick = () => {
-                    document.querySelectorAll('.run-option').forEach(el => el.classList.remove('selected'));
-                    div.classList.add('selected');
-                    selectedRunIndex = idx;
-                };
-                div.innerHTML = `
-                    <div style="font-weight:bold; color:var(--accent-gold);">${r.length}-Card Run (${basePts * 2} scored)</div>
-                    <div style="font-size:0.75rem; color:#cbd5e1; margin-top:2px;">${str}</div>
-                `;
-                container.appendChild(div);
-            });
+function handString() { return playArea.map(c => c.rank === 'JKR' ? 'JKR' : `${c.rank}${c.suit}`).join(' '); }
+
+function resolveGemSafeguard(useGems) {
+    toggleModal('gem-modal', false);
+    if (!pendingBustState) return;
+    const p = players[turnIndex];
+    if (useGems && p.gems >= CONFIG.SAFEGUARD_GEM_COST) {
+        p.gems -= CONFIG.SAFEGUARD_GEM_COST;
+        const savedCard = playArea.pop();
+        discardPile.push(savedCard);
+        playArea.forEach(c => c.isBustingCard = false);
+        playSound('gem');
+        stamp('SAVED', 'sky');
+        log(`${p.name} spent 2 gems to wave off the ${savedCard.rank}.`, 'log-steal');
+        render(false);
+        if (!p.isHuman) aiTimer = setTimeout(aiLogic, SETTINGS.aiDelay);
+    } else {
+        executeBust(pendingBustState.bustType, true);
+    }
+    pendingBustState = null;
+}
+
+function executeBust(bustType, soundAlreadyPlayed = false) {
+    const p = players[turnIndex];
+    awaitingBustConfirm = true;
+
+    if (bustType === 'joker') {
+        log(`Double joker! ${p.name}'s score is wiped to 0.`, 'log-bust');
+        p.tally = 0;
+        playSound('wipe');
+        stamp('WIPED OUT', 'red');
+        buzz([80, 60, 160]);
+    } else {
+        if (!soundAlreadyPlayed) playSound('bust');
+        stamp('BUST', 'red');
+        buzz(70);
+    }
+    shakeTable();
+
+    if (playArea.length <= CONFIG.PITY_GEM_HAND_LIMIT) addGem(p);
+    if (gameOver) return;
+
+    discardPile.push(...playArea);
+    render(false);
+    if (!p.isHuman) aiTimer = setTimeout(confirmBust, Math.round(SETTINGS.aiDelay * 2.2));
+}
+
+function confirmBust() {
+    if (!awaitingBustConfirm) return;
+    awaitingBustConfirm = false;
+    playArea = [];
+    endTurn();
+}
+
+function addGem(player) {
+    player.gems++;
+    if (player.gems >= CONFIG.GEM_BONUS_THRESHOLD) {
+        player.gems = 0;
+        player.tally += CONFIG.GEM_BONUS_PTS;
+        setTimeout(() => playSound('gem'), 350);
+        log(`${player.name} turns 3 gems into a ${CONFIG.GEM_BONUS_PTS}-point bonus.`, 'log-run');
+        showToast(`${player.name}: 3 gems become +${CONFIG.GEM_BONUS_PTS}`);
+        checkTarget(player);
+    } else {
+        setTimeout(() => playSound('gem'), 350);
+        showToast(`${player.name} gets a pity gem`);
+    }
+}
+
+function humanHit() {
+    initAudio();
+    if (gameOver || awaitingBustConfirm || !players[turnIndex].isHuman) return;
+    if (modalOpen('gem-modal') || modalOpen('run-modal')) return;
+    drawCard();
+}
+
+function humanStay() {
+    initAudio();
+    if (gameOver || awaitingBustConfirm || !players[turnIndex].isHuman || playArea.length < 1) return;
+    if (modalOpen('gem-modal') || modalOpen('run-modal')) return;
+    const runs = findAllRuns(playArea);
+    if (runs.length > 0) { pendingRunState = runs; buildRunModal(runs); toggleModal('run-modal', true); }
+    else bankTurn(false);
+}
+
+function buildRunModal(runs) {
+    const container = document.getElementById('run-options-container');
+    container.innerHTML = '';
+    selectedRunIndex = bestRunIndex(runs);
+    runs.forEach((r, idx) => {
+        const basePts = r.reduce((a, b) => a + b.val, 0);
+        const div = document.createElement('div');
+        div.className = `run-option ${idx === selectedRunIndex ? 'selected' : ''}`;
+        div.onclick = () => { document.querySelectorAll('.run-option').forEach(el => el.classList.remove('selected')); div.classList.add('selected'); selectedRunIndex = idx; };
+        div.innerHTML = `<div class="ro-title">${r.length}-card run, scores ${basePts * 2}</div><div class="ro-cards">${r.map(c => c.rank === 'JKR' ? 'JKR' : `${c.rank}${c.suit}`).join(' · ')}</div>`;
+        container.appendChild(div);
+    });
+}
+
+function resolveRunChoice(choice) { toggleModal('run-modal', false); bankTurn(choice === 'score'); }
+
+function stealTargets(handCards, me) {
+    const myRanks = handCards.filter(c => c.rank !== 'JKR').map(c => c.rank);
+    const result = [];
+    players.forEach(op => {
+        if (op.id !== me.id && op.pending.length > 0) {
+            const cards = op.pending.filter(c => c.rank !== 'JKR' && myRanks.includes(c.rank));
+            if (cards.length > 0) result.push({ from: op, cards });
         }
+    });
+    return result;
+}
 
-        function resolveRunChoice(choice) {
-            toggleModal('run-modal', false);
-            bankTurn(choice === 'score');
+function bankTurn(scoreRun) {
+    if (gameOver) return;
+    const p = players[turnIndex];
+    log(`${p.name} holds with ${handString()}.`);
+    let leftovers = [...playArea];
+
+    if (scoreRun && pendingRunState && pendingRunState.length > 0) {
+        const runCards = pendingRunState[selectedRunIndex] || pendingRunState[0];
+        const runVal = runCards.reduce((a, b) => a + b.val, 0) * 2;
+        p.tally += runVal;
+        playSound('run');
+        stamp('RUN', 'green');
+        log(`${p.name} scores a ${runCards.length}-card run for ${runVal}.`, 'log-run');
+        showToast(`${p.name} scores a run for ${runVal}`);
+        runCards.forEach(rc => { const idx = leftovers.findIndex(c => c.id === rc.id); if (idx > -1) discardPile.push(leftovers.splice(idx, 1)[0]); });
+    } else {
+        playSound('bank');
+    }
+
+    const stolen = [];
+    const steals = stealTargets(leftovers, p);
+    steals.forEach(({ from, cards }) => {
+        const pts = cards.reduce((a, b) => a + b.val, 0);
+        log(`${p.name} steals ${cards.length} card${cards.length > 1 ? 's' : ''} worth ${pts} from ${from.name}.`, 'log-steal');
+        showToast(`${p.name} steals ${pts} from ${from.name}`);
+        stolen.push(...cards);
+        from.pending = from.pending.filter(c => !cards.includes(c));
+    });
+    if (steals.length) { setTimeout(() => playSound('steal'), 120); stamp('STEAL', 'gold'); buzz(25); }
+
+    p.pending.push(...leftovers.filter(c => c.rank !== 'JKR'), ...stolen);
+    p.pending.sort((a, b) => RANK_ORDER[a.rank] - RANK_ORDER[b.rank]);
+    discardPile.push(...leftovers.filter(c => c.rank === 'JKR'));
+
+    pendingRunState = null;
+    playArea = [];
+    if (checkTarget(p)) return;
+    endTurn();
+}
+
+function findAllRuns(cards) {
+    const valMap = { 'A': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13 };
+    const jokers = cards.filter(c => c.rank === 'JKR');
+    const nonJokers = cards.filter(c => c.rank !== 'JKR');
+    const all = [];
+    for (let start = 1; start <= 10; start++) {
+        const run = [], jokersLeft = [...jokers], used = new Set();
+        for (let v = start; v <= 14; v++) {
+            const match = nonJokers.find(c => !used.has(c.id) && (valMap[c.rank] === v || (v === 14 && c.rank === 'A')));
+            if (match) { run.push(match); used.add(match.id); }
+            else if (jokersLeft.length > 0) run.push(jokersLeft.shift());
+            else break;
         }
-
-        function bankTurn(scoreRun) {
-            const p = players[turnIndex];
-            const handStr = playArea.map(c => `${c.rank}${c.suit}`).join(', ');
-            log(`📥 ${p.name} drew ${handStr} -- Holds`);
-
-            let leftovers = [...playArea];
-
-            if (scoreRun && pendingRunState) {
-                const runCards = pendingRunState[selectedRunIndex] || pendingRunState[0];
-                playSound('steal');
-                const runVal = runCards.reduce((a, b) => a + b.val, 0) * 2;
-                p.tally += runVal;
-                log(`🎯 ${p.name} scored a ${runCards.length}-Card RUN directly to Score for ${runVal} PTS!`, 'log-run');
-                
-                runCards.forEach(rc => {
-                    const idx = leftovers.findIndex(c => c.id === rc.id);
-                    if (idx > -1) {
-                        const removed = leftovers.splice(idx, 1)[0];
-                        discardPile.push(removed);
-                    }
-                });
-            }
-
-            let stolenCards = [];
-            players.forEach(op => {
-                if (op.id !== p.id && op.pending.length > 0) {
-                    const myRanks = leftovers.map(c => c.rank);
-                    const toSteal = op.pending.filter(c => c.rank !== 'JKR' && myRanks.includes(c.rank));
-                    if (toSteal.length > 0) {
-                        playSound('steal');
-                        log(`⚡ ${p.name} STOLE ${toSteal.length} card(s) from ${op.name}!`, 'log-steal');
-                        showToast(`${p.name} STOLE ${toSteal.length} cards from ${op.name}!`);
-                        stolenCards.push(...toSteal);
-                        op.pending = op.pending.filter(c => !toSteal.includes(c));
-                    }
-                }
-            });
-
-            const nonJokerLeftovers = leftovers.filter(c => c.rank !== 'JKR');
-            const jokersToDiscard = leftovers.filter(c => c.rank === 'JKR');
-
-            p.pending.push(...nonJokerLeftovers, ...stolenCards);
-            p.pending.sort((a, b) => RANK_ORDER[a.rank] - RANK_ORDER[b.rank]);
-
-            discardPile.push(...jokersToDiscard);
-
-            pendingRunState = null;
-            playArea = [];
-            endTurn();
+        if (run.length >= 5) {
+            for (let len = run.length; len >= 5; len--)
+                for (let off = 0; off <= run.length - len; off++) all.push(run.slice(off, off + len));
         }
+    }
+    const unique = [], keys = new Set();
+    all.forEach(r => { const key = r.map(c => c.id).sort((a, b) => a - b).join('|'); if (!keys.has(key)) { keys.add(key); unique.push(r); } });
+    return unique;
+}
 
-        function findAllRuns(cards) {
-            const valMap = { 'A': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13 };
-            const jokers = cards.filter(c => c.rank === 'JKR');
-            const nonJokers = cards.filter(c => c.rank !== 'JKR');
+function aiLogic() {
+    clearAiTimer();
+    if (gameOver || players[turnIndex].isHuman || awaitingBustConfirm) return;
+    const p = players[turnIndex];
+    const persona = p.personality || AI_PERSONALITIES[1];
+    const runs = findAllRuns(playArea);
+    const count = playArea.length;
+    const points = playArea.reduce((a, b) => a + b.val, 0);
+    const bustProb = calculateBustProbability();
+    const availableSteals = stealTargets(playArea, p).reduce((a, s) => a + s.cards.length, 0);
 
-            let allValidRuns = [];
+    const currentTotal = p.tally + p.pending.reduce((a, b) => a + b.val, 0) + points;
+    if (currentTotal >= SETTINGS.target || runs.length > 0) {
+        if (runs.length > 0) { pendingRunState = runs; selectedRunIndex = bestRunIndex(runs); }
+        bankTurn(runs.length > 0);
+        return;
+    }
+    if (count < 3 && count < persona.minCards && bustProb < 60) {
+        const busted = drawCard();
+        if (!busted && !awaitingBustConfirm) aiTimer = setTimeout(aiLogic, SETTINGS.aiDelay);
+        return;
+    }
+    let shouldHold = false;
+    if (bustProb >= persona.bustTol) shouldHold = true;
+    if (count >= persona.minCards && points >= persona.minPts && bustProb >= 20) shouldHold = true;
+    if (availableSteals > 0 && Math.random() < 0.4 * persona.stealBonus) shouldHold = true;
 
-            for (let start = 1; start <= 10; start++) {
-                let currentRun = [];
-                let jokersLeft = [...jokers];
+    if (shouldHold) bankTurn(false);
+    else {
+        const busted = drawCard();
+        if (!busted && !awaitingBustConfirm) aiTimer = setTimeout(aiLogic, SETTINGS.aiDelay);
+    }
+}
 
-                for (let v = start; v < start + 14; v++) {
-                    const match = nonJokers.find(c => valMap[c.rank] === v || (v === 14 && c.rank === 'A'));
-                    if (match) {
-                        currentRun.push(match);
-                    } else if (jokersLeft.length > 0) {
-                        currentRun.push(jokersLeft.shift());
-                    } else {
-                        break;
-                    }
-                }
+function endTurn() {
+    clearAiTimer();
+    if (gameOver) return;
+    render(false);
+    turnIndex = (turnIndex + 1) % players.length;
+    if (finalRound && turnIndex === finalTriggerId) { endGame(); return; }
+    aiTimer = setTimeout(startTurn, Math.min(800, SETTINGS.aiDelay));
+}
 
-                if (currentRun.length >= 5) {
-                    for (let len = currentRun.length; len >= 5; len--) {
-                        for (let offset = 0; offset <= currentRun.length - len; offset++) {
-                            const sub = currentRun.slice(offset, offset + len);
-                            allValidRuns.push(sub);
-                        }
-                    }
-                }
-            }
-
-            const unique = [];
-            const keys = new Set();
-            allValidRuns.forEach(r => {
-                const key = r.map(c => c.id).sort((a,b) => a - b).join('|');
-                if (!keys.has(key)) {
-                    keys.add(key);
-                    unique.push(r);
-                }
-            });
-
-            return unique;
+function endGame() {
+    clearAiTimer();
+    gameOver = true; awaitingBustConfirm = false;
+    players.forEach(p => {
+        if (p.pending.length > 0) {
+            const pts = p.pending.reduce((a, b) => a + b.val, 0);
+            p.tally += pts;
+            log(`${p.name} cashes ${pts} pending at the end.`, 'log-run');
+            discardPile.push(...p.pending); p.pending = [];
         }
+    });
+    const sorted = [...players].sort((a, b) => b.tally - a.tally);
+    const top = sorted[0];
+    const winners = sorted.filter(p => p.tally === top.tally);
+    lastWinnerId = top.id;
+    winners.forEach(w => recordWin(w.name));
+    const wins = loadWins();
+    playSound('win');
+    buzz([40, 40, 40, 40, 120]);
+    render(false);
 
-        function aiLogic() {
-            clearAiTimer();
-            if (players[turnIndex].isHuman || awaitingBustConfirm) return;
-            const p = players[turnIndex];
-            const persona = p.personality || AI_PERSONALITIES[1];
-            const runs = findAllRuns(playArea);
-            const count = playArea.length;
-            const points = playArea.reduce((a, b) => a + b.val, 0);
-            const bustProb = calculateBustProbability();
+    document.getElementById('winner-title').innerText = winners.length > 1
+        ? `Tie: ${winners.map(w => w.name).join(' and ')}`
+        : `${top.name} wins`;
+    document.getElementById('winner-details').innerText = winners.length > 1
+        ? `Shared victory at ${top.tally} points.`
+        : `${top.tally} points, playing to ${SETTINGS.target}.`;
+    document.getElementById('final-board').innerHTML = sorted.map((p, i) => `
+        <div class="final-row ${p.tally === top.tally ? 'winner' : ''}">
+            <span>${i + 1}.</span><span>${escapeHtml(p.name)}</span>
+            <span class="fr-score">${p.tally}</span>
+            <span class="fr-wins">${wins[p.name] || 0} win${(wins[p.name] || 0) === 1 ? '' : 's'}</span>
+        </div>`).join('');
+    setTimeout(() => toggleModal('win-modal', true), 500);
+}
 
-            let availableSteals = 0;
-            const currentRanks = playArea.map(c => c.rank);
-            players.forEach(op => {
-                if (op.id !== p.id && op.pending.length > 0) {
-                    op.pending.forEach(c => {
-                        if (c.rank !== 'JKR' && currentRanks.includes(c.rank)) availableSteals++;
-                    });
-                }
-            });
+function rematchGame() {
+    clearAiTimer();
+    toggleModal('win-modal', false);
+    players.forEach(p => { p.tally = 0; p.pending = []; p.gems = 0; });
+    createDeck(); discardPile = []; playArea = []; lastRenderedTurn = -1;
+    turnIndex = SETTINGS.randomStart ? Math.floor(Math.random() * players.length) : 0;
+    finalRound = false; finalTriggerId = null; gameOver = false;
+    log(`Rematch. ${players[turnIndex].name} deals first.`);
+    playSound('shuffle');
+    startTurn();
+}
 
-            const currentTotal = p.tally + p.pending.reduce((a, b) => a + b.val, 0) + points;
-            if (currentTotal >= CONFIG.TARGET_SCORE) {
-                bankTurn(runs.length > 0);
-                return;
-            }
+function resetToSetup() {
+    clearAiTimer(); gameOver = true;
+    toggleModal('win-modal', false);
+    document.getElementById('game-screen').style.display = 'none';
+    document.getElementById('setup-screen').style.display = 'block';
+    renderHallOfFame();
+}
 
-            if (runs.length > 0) {
-                bankTurn(true);
-                return;
-            }
+/* ============ UI ============ */
+function log(msg, className = '') {
+    const list = document.getElementById('log-list');
+    const div = document.createElement('div');
+    div.className = `log-entry ${className}`;
+    div.innerText = msg;
+    list.appendChild(div);
+    list.scrollTop = list.scrollHeight;
+}
+function showToast(msg) {
+    const c = document.getElementById('toast-container');
+    const t = document.createElement('div');
+    t.className = 'toast'; t.innerText = msg;
+    c.appendChild(t);
+    setTimeout(() => t.remove(), 2600);
+}
+function stamp(text, color) {
+    const felt = document.getElementById('felt');
+    const el = document.createElement('div');
+    el.className = `stamp ${color}`;
+    el.innerText = text;
+    felt.appendChild(el);
+    setTimeout(() => el.remove(), 1700);
+}
+function shakeTable() {
+    const t = document.getElementById('table-area'), f = document.getElementById('felt');
+    t.classList.remove('shake'); f.classList.remove('flash');
+    void t.offsetWidth;
+    t.classList.add('shake'); f.classList.add('flash');
+    setTimeout(() => { t.classList.remove('shake'); f.classList.remove('flash'); }, 800);
+}
 
-            // Pity Gem logic: Do not hold under 3 cards unless bust probability is extremely high (> 60%)
-            if (count < 3 && count < persona.minCards) {
-                if (bustProb < 60) {
-                    const busted = drawCard();
-                    if (!busted && !awaitingBustConfirm) aiTimer = setTimeout(aiLogic, 1000);
-                    return;
-                }
-            }
+function openInspector(type) {
+    if (!SETTINGS.showCounts) { showToast('Card counting is off for this game'); return; }
+    const grid = document.getElementById('inspector-grid');
+    grid.innerHTML = '';
+    const source = type === 'deck' ? deck : discardPile;
+    document.getElementById('inspector-title').innerText = type === 'deck' ? 'Left in the deck' : 'In the discard pile';
+    document.getElementById('inspector-desc').innerText = `${source.length} cards`;
+    RANKS.forEach(r => {
+        const cell = document.createElement('div');
+        cell.className = 'deck-cell';
+        cell.innerHTML = `<b>${r}</b> ${source.filter(c => c.rank === r).length}`;
+        grid.appendChild(cell);
+    });
+    toggleModal('inspector-modal', true);
+}
 
-            let shouldHold = false;
-            if (bustProb >= persona.bustTol) shouldHold = true;
-            if (count >= persona.minCards && points >= persona.minPts && bustProb >= 20) shouldHold = true;
-            if (availableSteals > 0 && Math.random() < (0.4 * persona.stealBonus)) shouldHold = true;
+function calculateBustProbability() {
+    if (playArea.length === 0 || deck.length === 0) return 0;
+    const ranks = playArea.map(c => c.rank);
+    const jokersInHand = playArea.filter(c => c.rank === 'JKR').length;
+    let busts = 0;
+    deck.forEach(c => { if (c.rank === 'JKR' ? jokersInHand >= 1 : ranks.includes(c.rank)) busts++; });
+    return Math.round((busts / deck.length) * 100);
+}
 
-            if (shouldHold) {
-                bankTurn(false);
-            } else {
-                const busted = drawCard();
-                if (!busted && !awaitingBustConfirm) aiTimer = setTimeout(aiLogic, 1000);
-            }
+function cardHTML(c, badge, extraClass) {
+    const isJoker = c.rank === 'JKR';
+    const isRed = c.suit === '♥' || c.suit === '♦';
+    const face = ['J', 'Q', 'K'].includes(c.rank);
+    let center;
+    if (isJoker) center = `<div class="pip">★</div><div class="joker-label">JOKER</div>`;
+    else if (face) center = `<div class="face-frame"><span>${c.rank}</span></div>`;
+    else center = `<div class="pip">${c.suit}</div>`;
+    const corner = isJoker ? `<span class="rk">★</span>` : `<span class="rk">${c.rank}</span><span class="st">${c.suit}</span>`;
+    return `<div class="card ${isRed ? 'red' : ''} ${isJoker ? 'joker' : ''} ${extraClass}">${badge}
+        <div class="corner tl">${corner}</div>${center}<div class="corner br">${corner}</div>
+        <div class="pts">${isJoker ? 'wild' : c.val}</div></div>`;
+}
+
+function layoutFan() {
+    const pa = document.getElementById('play-area');
+    const slots = pa.querySelectorAll('.card-slot');
+    const n = slots.length;
+    if (!n) return;
+    const W = pa.clientWidth, H = pa.clientHeight;
+    if (!W) return;
+    const cardW = slots[0].offsetWidth || 78, cardH = slots[0].offsetHeight || 110;
+    const step = n > 1 ? Math.min(cardW * 0.62, (W - cardW - 6) / (n - 1)) : 0;
+    const totalW = cardW + step * (n - 1);
+    const left0 = (W - totalW) / 2;
+    const mid = (n - 1) / 2;
+    const totalAngle = n > 1 ? Math.min(30, 7 * (n - 1)) : 0;
+    const per = n > 1 ? totalAngle / (n - 1) : 0;
+    const top0 = Math.max(0, (H - cardH) / 2 - 8);
+    const pivot = cardH * 0.8; // distance from card centre to the rotation pivot (transform-origin 50% 130%)
+    slots.forEach((s, i) => {
+        const d = i - mid;
+        const rot = d * per;
+        const rad = rot * Math.PI / 180;
+        const lift = mid > 0 ? (d * d) / (mid * mid) * 10 : 0;
+        const driftX = pivot * Math.sin(rad);          // rotation pushes outer cards sideways
+        const driftY = pivot * (1 - Math.cos(rad));    // and slightly downward
+        s.style.left = `${left0 + i * step}px`;
+        s.style.top = `${top0 + lift}px`;
+        s.style.transform = `translate(${(-driftX).toFixed(1)}px, ${(-driftY * 0.5).toFixed(1)}px) rotate(${rot}deg)`;
+        s.style.zIndex = s.classList.contains('busting') ? 40 : i + 1;
+    });
+}
+
+function render(hasNewDraw = false) {
+    const me = players[turnIndex];
+    const humanCount = players.filter(p => p.isHuman).length;
+
+    // Deck and discard
+    const deckBack = document.getElementById('deck-back');
+    deckBack.classList.toggle('empty', deck.length === 0);
+    document.getElementById('deck-cnt').innerText = SETTINGS.showCounts ? deck.length : '';
+    document.getElementById('deck-cnt').style.display = SETTINGS.showCounts ? 'inline-block' : 'none';
+    const disc = document.getElementById('discard-top');
+    const topD = discardPile[discardPile.length - 1];
+    if (topD) {
+        const isRed = topD.suit === '♥' || topD.suit === '♦';
+        disc.className = `discard has ${isRed ? 'red' : ''}`;
+        disc.innerHTML = `<div class="drk">${topD.rank === 'JKR' ? '★' : topD.rank}</div><div class="dst">${topD.rank === 'JKR' ? '' : topD.suit}</div>${SETTINGS.showCounts ? `<div class="dcnt">${discardPile.length}</div>` : ''}`;
+    } else { disc.className = 'discard'; disc.innerHTML = 'empty'; }
+
+    // Turn banner
+    const banner = document.getElementById('turn-banner');
+    let who = me.isHuman ? (humanCount === 1 ? 'Your turn' : `<span class="who">${escapeHtml(me.name)}</span>, your turn`) : `<span class="who">${escapeHtml(me.name)}</span> is drawing<span class="dots"></span>`;
+    if (awaitingBustConfirm) who = `<span class="who">${escapeHtml(me.name)}</span> busted`;
+    let odds = '';
+    if (SETTINGS.showCounts && !awaitingBustConfirm && playArea.length) {
+        const prob = calculateBustProbability();
+        odds = `<span class="odds">Bust chance <b class="${prob > 40 ? 'odds-high' : prob > 20 ? 'odds-med' : 'odds-low'}">${prob}%</b></span>`;
+    }
+    banner.innerHTML = who + odds;
+
+    // Buttons
+    const btnHit = document.getElementById('btn-hit'), btnBank = document.getElementById('btn-bank'), btnCont = document.getElementById('btn-continue');
+    const handPts = playArea.reduce((a, b) => a + b.val, 0);
+    const stealPts = stealTargets(playArea, me).reduce((a, s) => a + s.cards.reduce((x, y) => x + y.val, 0), 0);
+    if (awaitingBustConfirm) {
+        btnHit.style.display = 'none'; btnBank.style.display = 'none';
+        btnCont.style.display = me.isHuman ? 'flex' : 'none';
+    } else {
+        btnHit.style.display = 'flex'; btnBank.style.display = 'flex'; btnCont.style.display = 'none';
+        btnHit.disabled = !me.isHuman || gameOver;
+        btnBank.disabled = !me.isHuman || gameOver || playArea.length < 1;
+        document.getElementById('bank-amt').innerHTML = `BANK ${handPts}${stealPts ? `<span class="plus">+${stealPts}</span>` : ''}`;
+        document.getElementById('bank-sub').innerText = stealPts ? `keep ${handPts}, steal ${stealPts}` : 'stop and keep';
+    }
+
+    // Players
+    const activeRanks = playArea.map(c => c.rank);
+    const list = document.getElementById('players');
+    list.innerHTML = '';
+    players.forEach((p, idx) => {
+        const pendPts = p.pending.reduce((a, b) => a + b.val, 0);
+        const isCurrent = idx === turnIndex;
+        const counts = {};
+        p.pending.forEach(c => { counts[c.rank] = (counts[c.rank] || 0) + 1; });
+        const pills = Object.keys(counts).sort((a, b) => RANK_ORDER[a] - RANK_ORDER[b]).map(r =>
+            `<span class="pill ${!isCurrent && activeRanks.includes(r) ? 'threatened' : ''}">${r}${counts[r] > 1 ? `×${counts[r]}` : ''}</span>`).join('');
+        const flags = `${p.id === lastWinnerId ? ' ★' : ''}${finalRound && p.id === finalTriggerId ? ' 🏁' : ''}`;
+        const el = document.createElement('div');
+        el.className = `chip ${isCurrent ? 'active' : ''}`;
+        el.innerHTML = `
+            <div class="row1"><span class="name">${escapeHtml(p.name)}${flags}</span><span class="gems">${'◆'.repeat(p.gems)}</span></div>
+            <div class="row2"><span class="score">${p.tally}<small>pts</small></span><span class="pend ${pendPts ? '' : 'none'}">${pendPts ? `+${pendPts} pending` : 'nothing pending'}</span></div>
+            <div class="pills">${pills}</div>`;
+        list.appendChild(el);
+        if (isCurrent && lastRenderedTurn !== turnIndex) {
+            lastRenderedTurn = turnIndex;
+            requestAnimationFrame(() => { try { el.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); } catch (e) { } });
         }
+    });
 
-        function endTurn() {
-            clearAiTimer();
-            render(false);
-            turnIndex = (turnIndex + 1) % players.length;
-            aiTimer = setTimeout(startTurn, 800);
-        }
+    // Cards
+    const pa = document.getElementById('play-area');
+    pa.innerHTML = '';
+    const opponentPendingRanks = [];
+    players.forEach(p => { if (p.id !== me.id) p.pending.forEach(c => opponentPendingRanks.push(c.rank)); });
+    const runs = findAllRuns(playArea);
+    const primaryRun = runs.length ? runs[bestRunIndex(runs)] : [];
+    playArea.forEach((c, i) => {
+        const isJoker = c.rank === 'JKR';
+        let badge = '', extra = '';
+        if (c.isBustingCard) { extra = 'busting'; badge = '<span class="card-badge badge-bust">BUST</span>'; }
+        else if (primaryRun.some(rc => rc.id === c.id)) badge = '<span class="card-badge badge-run">RUN</span>';
+        else if (!isJoker && opponentPendingRanks.includes(c.rank)) badge = '<span class="card-badge badge-steal">STEAL</span>';
+        const isNew = hasNewDraw && i === playArea.length - 1;
+        const slot = document.createElement('div');
+        slot.className = `card-slot ${c.isBustingCard ? 'busting' : ''}`;
+        slot.innerHTML = cardHTML(c, badge, `${extra} ${isNew ? 'new-card' : ''}`);
+        pa.appendChild(slot);
+    });
+    layoutFan();
 
-        function endGame(winner) {
-            clearAiTimer();
-            lastWinnerId = winner.id;
-            document.getElementById('winner-title').innerText = `🏆 ${winner.name.toUpperCase()} WINS! 🏆`;
-            document.getElementById('winner-details').innerText = `Final Score: ${winner.tally} Points`;
-            toggleModal('win-modal', true);
-        }
+    renderRankStrip(activeRanks, opponentPendingRanks);
+}
 
-        function rematchGame() {
-            clearAiTimer();
-            toggleModal('win-modal', false);
-            players.forEach(p => {
-                p.tally = 0;
-                p.pending = [];
-                p.gems = 0;
-            });
-            createDeck();
-            discardPile = [];
-            playArea = [];
-            turnIndex = 0;
-            log(`🔄 REMATCH STARTED!`);
-            startTurn();
-        }
+function renderRankStrip(activeRanks, opponentPendingRanks) {
+    const jokersInHand = playArea.filter(c => c.rank === 'JKR').length;
+    const deckCounts = {};
+    deck.forEach(c => { deckCounts[c.rank] = (deckCounts[c.rank] || 0) + 1; });
+    document.getElementById('rank-strip').innerHTML = RANKS.map(r => {
+        const count = deckCounts[r] || 0;
+        const held = r === 'JKR' ? jokersInHand >= 1 : activeRanks.includes(r);
+        const steal = !held && r !== 'JKR' && opponentPendingRanks.includes(r);
+        const empty = SETTINGS.showCounts && count === 0 && !held;
+        const sub = SETTINGS.showCounts ? `<span class="rc-n">${count}</span>` : '';
+        const title = held ? `${r}: drawing this busts you` : steal ? `${r}: steals from a pending pile` : SETTINGS.showCounts ? `${r}: ${count} left` : r;
+        return `<div class="rank-cell ${held ? 'held' : ''} ${steal ? 'steal' : ''} ${empty ? 'empty' : ''}" title="${title}">${r === 'JKR' ? '★' : r}${sub}</div>`;
+    }).join('');
+}
 
-        function resetToSetup() {
-            clearAiTimer();
-            toggleModal('win-modal', false);
-            document.getElementById('game-screen').style.display = 'none';
-            document.getElementById('setup-screen').style.display = 'block';
-        }
-
-        function endSession() {
-            clearAiTimer();
-            toggleModal('win-modal', false);
-            showToast("Thanks for playing Push Yer Luck!");
-        }
-
-        function log(msg, className = '') {
-            const list = document.getElementById('log-list');
-            const div = document.createElement('div');
-            div.className = `log-entry ${className}`;
-            div.innerText = msg;
-            list.appendChild(div);
-            list.scrollTop = list.scrollHeight;
-        }
-
-        function showToast(msg) {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.innerText = msg;
-            container.appendChild(toast);
-            setTimeout(() => toast.remove(), 2500);
-        }
-
-        function openInspector(type) {
-            const grid = document.getElementById('inspector-grid');
-            grid.innerHTML = '';
-            const title = document.getElementById('inspector-title');
-            const desc = document.getElementById('inspector-desc');
-
-            const source = type === 'deck' ? deck : discardPile;
-            title.innerText = type === 'deck' ? '🃏 Deck Composition' : '🗑️ Discard Pile';
-            desc.innerText = type === 'deck' 
-                ? 'Exact count of cards remaining in draw pile:' 
-                : 'Exact count of cards currently in discard pile:';
-
-            const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A', 'JKR'];
-
-            ranks.forEach(r => {
-                const count = source.filter(c => c.rank === r).length;
-                const cell = document.createElement('div');
-                cell.className = 'deck-cell';
-                cell.innerHTML = `<strong>${r}:</strong> ${count}`;
-                grid.appendChild(cell);
-            });
-            toggleModal('inspector-modal', true);
-        }
-
-        function calculateBustProbability() {
-            if (playArea.length === 0 || deck.length === 0) return 0;
-            const currentRanks = playArea.map(c => c.rank);
-            const jokersInHand = playArea.filter(c => c.rank === 'JKR').length;
-
-            let busts = 0;
-            deck.forEach(c => {
-                if (c.rank === 'JKR' && jokersInHand >= 1) busts++;
-                else if (c.rank !== 'JKR' && currentRanks.includes(c.rank)) busts++;
-            });
-
-            return Math.round((busts / deck.length) * 100);
-        }
-
-        function render(hasNewDraw = false) {
-            document.getElementById('deck-count-display').innerText = `${deck.length}`;
-            const discElem = document.getElementById('discard-count-display');
-            discElem.innerText = `${discardPile.length}`;
-            discElem.className = `discard-stack ${discardPile.length > 0 ? 'has-cards' : ''}`;
-
-            document.getElementById('current-player-display').innerText = players[turnIndex].name;
-
-            const isHuman = players[turnIndex].isHuman;
-            if (awaitingBustConfirm) {
-                document.getElementById('btn-hit').style.display = 'none';
-                document.getElementById('btn-stay').style.display = 'none';
-                document.getElementById('btn-continue').style.display = isHuman ? 'inline-block' : 'none';
-            } else {
-                document.getElementById('btn-hit').style.display = 'inline-block';
-                document.getElementById('btn-stay').style.display = 'inline-block';
-                document.getElementById('btn-continue').style.display = 'none';
-                document.getElementById('btn-hit').disabled = !isHuman;
-                document.getElementById('btn-stay').disabled = !isHuman || playArea.length < 1;
-            }
-
-            const activeRanks = playArea.map(c => c.rank);
-            const sb = document.getElementById('scoreboard-grid');
-            sb.innerHTML = '';
-
-            players.forEach((p, idx) => {
-                const pendPts = p.pending.reduce((a,b) => a + b.val, 0);
-                const isCurrent = idx === turnIndex;
-                const card = document.createElement('div');
-                card.className = `player-card ${isCurrent ? 'active' : ''}`;
-
-                const rankCounts = {};
-                p.pending.forEach(c => { rankCounts[c.rank] = (rankCounts[c.rank] || 0) + 1; });
-
-                const pills = Object.keys(rankCounts).map(r => {
-                    const count = rankCounts[r];
-                    const isThreatened = !isCurrent && activeRanks.includes(r);
-                    return `<span class="pill ${isThreatened ? 'threatened' : ''}">${r}${count > 1 ? ` x${count}` : ''}</span>`;
-                }).join('');
-
-                const isWinnerStar = p.id === lastWinnerId ? ' ⭐' : '';
-                const gemDisplay = p.gems > 0 ? '💎'.repeat(p.gems) : '';
-
-                card.innerHTML = `
-                    <div class="p-header">
-                        ${p.name}${isWinnerStar} <span class="p-type">${p.isHuman ? 'Human' : p.personality ? p.personality.style : 'AI'}</span>
-                    </div>
-                    <div class="p-stat"><span>Score:</span><span class="p-val" style="color:var(--accent-green);">${p.tally}</span></div>
-                    <div class="p-stat"><span>Gems:</span><span class="p-val">${gemDisplay}</span></div>
-                    <div class="p-stat"><span>Pending:</span><span class="p-val" style="color:var(--accent-gold);">${pendPts}</span></div>
-                    <div class="pending-pills">${p.pending.length ? pills : '<span style="font-size:0.65rem; color:#64748b;">No pending</span>'}</div>
-                `;
-                sb.appendChild(card);
-            });
-
-            // Play Table Cards
-            const pa = document.getElementById('play-area');
-            pa.innerHTML = '';
-            const opponentPendingRanks = [];
-            players.forEach(p => {
-                if (p.id !== players[turnIndex].id) p.pending.forEach(c => opponentPendingRanks.push(c.rank));
-            });
-
-            const runs = findAllRuns(playArea);
-            const primaryRun = runs.length > 0 ? runs[0] : [];
-
-            playArea.forEach((c, index) => {
-                const el = document.createElement('div');
-                const isRed = c.suit === '♥' || c.suit === '♦';
-                const isJoker = c.rank === 'JKR';
-                const isBusting = c.isBustingCard;
-                const isRunCard = primaryRun.some(rc => rc.id === c.id);
-                const isStealCard = opponentPendingRanks.includes(c.rank) && !isJoker;
-
-                let extra = ''; let badge = '';
-                if (isBusting) { extra = 'busting-card'; badge = '<span class="card-badge badge-bust">BUST</span>'; }
-                else if (isRunCard) { badge = '<span class="card-badge badge-run">RUN</span>'; }
-                else if (isStealCard) { badge = '<span class="card-badge badge-steal">STEAL</span>'; }
-
-                const isNewCard = hasNewDraw && index === playArea.length - 1;
-
-                el.className = `card ${isRed ? 'red' : ''} ${isJoker ? 'joker' : ''} ${extra} ${isNewCard ? 'new-card' : ''}`;
-                el.style.zIndex = index + 1;
-                el.innerHTML = `${badge}<div class="card-rank">${c.rank}</div><div class="card-suit">${c.suit}</div><div class="card-val">${c.val}pt</div>`;
-                pa.appendChild(el);
-            });
-
-            document.getElementById('turn-points-val').innerText = `${playArea.reduce((a,b) => a + b.val, 0)} pts`;
-            const prob = calculateBustProbability();
-            const probVal = document.getElementById('prob-val');
-            probVal.innerText = `${prob}%`;
-            probVal.className = `prob-val ${prob > 40 ? 'prob-high' : prob > 20 ? 'prob-med' : 'prob-low'}`;
-        }
-    </script>
+/* ============ Keyboard ============ */
+document.addEventListener('keydown', (e) => {
+    if (document.getElementById('game-screen').style.display !== 'grid') return;
+    const tag = (e.target && e.target.tagName) || '';
+    if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
+    const k = e.key.toLowerCase();
+    if (modalOpen('gem-modal')) {
+        if (k === 'y') { e.preventDefault(); resolveGemSafeguard(true); }
+        else if (k === 'n') { e.preventDefault(); resolveGemSafeguard(false); }
+        return;
+    }
+    if (modalOpen('run-modal') || modalOpen('win-modal') || modalOpen('rules-modal') || modalOpen('inspector-modal')) {
+        if (k === 'escape') ['rules-modal', 'inspector-modal'].forEach(id => toggleModal(id, false));
+        return;
+    }
+    if (awaitingBustConfirm) {
+        if (k === 'enter' || k === ' ') { e.preventDefault(); if (players[turnIndex].isHuman) confirmBust(); }
+        return;
+    }
+    if (k === 'h') { e.preventDefault(); humanHit(); }
+    else if (k === 's') { e.preventDefault(); humanStay(); }
+    else if (k === 'l') toggleDrawer();
+});
+</script>
 </body>
 </html>
