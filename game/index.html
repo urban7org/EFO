@@ -165,6 +165,25 @@ select:focus, input:focus { outline: 2px solid var(--brass); outline-offset: 1px
 .modal-content .board-row { background: rgba(255,255,255,0.4); border-color: #d8c9a6; color: var(--ink); }
 .modal-content .board-row .b-wins { color: var(--wood-light); }
 .modal-content .board-row .b-turns { color: #7a6a5a; }
+.particle { position: absolute; width: 9px; height: 13px; border-radius: 2px; pointer-events: none; z-index: 58; }
+.flyer { position: fixed; z-index: 200; pointer-events: none; transform: translate(-50%, -50%); }
+.flyer .mini { width: 36px; height: 50px; border-radius: 5px; background: var(--cream); color: var(--ink); border: 1px solid #d8c9a6; box-shadow: 0 6px 14px rgba(0,0,0,0.6); display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 800; font-size: 0.95rem; line-height: 1; }
+.flyer .mini.red { color: var(--red); }
+.flyer .mini small { font-size: 0.8rem; }
+.flyer.gem { font-size: 2rem; color: var(--sky); text-shadow: 0 0 12px rgba(143,211,255,0.9), 0 2px 4px rgba(0,0,0,0.6); }
+.card-slot.cashing .card { box-shadow: 0 0 0 2px rgba(61,220,132,0.6), 0 0 22px rgba(61,220,132,0.5), 0 8px 18px rgba(0,0,0,0.5); }
+.card-slot.scatter { transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.3, 1), opacity 0.7s; opacity: 0; }
+.chip.flash { animation: chipFlash 0.9s; }
+@keyframes chipFlash { 0%, 100% { box-shadow: 0 0 0 1px var(--brass); } 40% { box-shadow: 0 0 0 3px var(--emerald), 0 0 24px rgba(61,220,132,0.6); } }
+.stamp.big { font-size: clamp(2.6rem, 14vw, 5rem); border-width: 6px; }
+.big-btn .amt .run { color: #0a5c34; font-size: 0.85rem; margin-left: 6px; font-weight: 800; }
+.sort-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 0.8rem; color: var(--cream-dark); }
+.sort-row select { width: auto; padding: 4px 26px 4px 8px; font-size: 0.8rem; }
+.board-group { margin-bottom: 8px; }
+.board-group h5 { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: #9a8578; margin: 6px 0 4px; }
+.board-row { grid-template-columns: 20px 1fr auto auto auto; }
+.board-row .b-score { font-size: 0.75rem; color: var(--cream-dark); }
+.modal-content .board-row .b-score { color: #5a4a3c; }
 .check-row { display: flex; align-items: center; gap: 10px; font-size: 0.95rem; color: var(--cream); font-weight: 600; margin: 4px 0 14px; cursor: pointer; }
 .check-row input { width: 20px; height: 20px; accent-color: var(--brass); cursor: pointer; }
 .hall { margin-top: 16px; border-top: 1px solid var(--wood-edge); padding-top: 10px; font-size: 0.85rem; }
@@ -605,7 +624,7 @@ button:active:not(:disabled) { transform: translateY(2px); border-bottom-width: 
                 <option value="final" selected>Final round after target</option>
                 <option value="immediate">Instant win at target</option>
             </select>
-            <div class="sub-row" id="last-call-row"><label class="check-row"><input type="checkbox" id="last-call" checked> Last call: gems cost 1 in the final round</label></div>
+            <div class="sub-row" id="last-call-row"><label class="check-row"><input type="checkbox" id="last-call" checked> Last call: in the final round, escaping a bust costs 1 gem instead of 2</label></div>
         </div>
         <div class="form-group">
             <label for="show-odds">Bust odds</label>
@@ -634,10 +653,11 @@ button:active:not(:disabled) { transform: translateY(2px); border-bottom-width: 
 
     <div class="hall">
         <div class="hall-title">
-            <span>Hall of Fame</span>
+            <span>Hall of Fame (this device)</span>
             <button class="link-btn" onclick="clearWins()">Clear</button>
         </div>
-        <div class="hall-list" id="hall-list"></div>
+        <div class="sort-row">Sort by <select id="board-sort" onchange="renderHallOfFame(); loadLeaderboard();"><option value="wins">most wins</option><option value="score">highest score</option><option value="turns">fewest turns</option></select></div>
+        <div class="board" id="hall-list"></div>
     </div>
     <div class="hall" id="global-board-wrap" style="display:none;">
         <div class="hall-title">
@@ -708,40 +728,61 @@ button:active:not(:disabled) { transform: translateY(2px); border-bottom-width: 
         <h2>House Rules</h2>
         <div class="rules-text">
             <h3>The goal</h3>
-            <p>Reach the target score (150 by default). With the <em>final round</em> rule, once anyone reaches the target every other player gets one last turn, all pending piles are cashed in, and the highest score wins. With <em>instant win</em>, the first player to reach the target wins on the spot.</p>
+            <p>Be the first to the target score (150 by default). Your <strong>score</strong> is safe. Your <strong>pending pile</strong> is not: it becomes score at the start of your next turn, and until then other players can steal from it.</p>
 
             <h3>The deck (138 cards)</h3>
             <ul>
-                <li>2 through 5: 12 of each, worth face value</li>
-                <li>6 through 9: 10 of each, worth face value</li>
-                <li>10, J, Q, K: 8 of each, worth 10</li>
-                <li>Aces: 12, worth 15</li>
-                <li>Jokers: 6, worth 0, wild in runs</li>
+                <li>2 through 5: twelve of each, worth face value</li>
+                <li>6 through 9: ten of each, worth face value</li>
+                <li>10, J, Q, K: eight of each, worth 10</li>
+                <li>Aces: twelve, worth 15</li>
+                <li>Jokers: six, worth 0, wild in runs</li>
             </ul>
 
             <h3>Your turn</h3>
             <ul>
-                <li>Draw one card at a time. Draw a rank you already hold and you bust: the whole hand is lost.</li>
-                <li>Two jokers in one hand is a double joker bust: your score resets to 0 (and you get a pity gem).</li>
-                <li>The strip under the table shows every rank. Red cells are ranks you hold; drawing one busts you. Gold cells match an opponent's pending pile; banking with one steals it.</li>
+                <li>Any cards in your pending pile are banked into your score first.</li>
+                <li>Then draw one card at a time. Hit for another, or bank to stop.</li>
+                <li>Draw a rank you already hold and you <strong>bust</strong>: the whole hand is lost and your turn ends.</li>
+                <li>Two jokers in one hand is a <strong>double joker bust</strong>: the hand is lost and your score resets to 0.</li>
+                <li>When you bank, the cards in your hand go to your pending pile (jokers are discarded).</li>
             </ul>
 
-            <h3>Pending piles and stealing</h3>
+            <h3>Stealing</h3>
+            <p>If your hand holds a rank that also sits in an opponent's pending pile, banking steals those cards into your own pending pile. The bank button shows what you would take, and the gold cells under the table mark ranks that would steal.</p>
+
+            <h3>Gems</h3>
             <ul>
-                <li>Banked cards go to your pending pile and become score at the start of your next turn.</li>
-                <li>If your hand holds a rank that matches cards in an opponent's pending pile, you steal those cards when you bank. The bank button shows what you would take.</li>
+                <li>Bust on three cards or fewer and you receive a <strong>pity gem</strong>.</li>
+                <li>Hold 2 gems and you may <strong>escape</strong> a bust: spend both, discard the bust card, and keep drawing.</li>
+                <li>Hold 3 gems and they convert at once into a 50-point bonus.</li>
             </ul>
 
-            <h3>Gems and runs</h3>
+            <h3>Runs</h3>
+            <p>Five or more cards in sequence make a run; jokers fill gaps. A run may be high (10-J-Q-K-A) or low (A-2-3-4-5) but never wraps. When you bank with a run you choose: score the run immediately at double value, or hold the whole hand as pending unscored.</p>
+
+            <h3>The table strip</h3>
+            <p>The row of ranks beneath the table shows red for ranks you hold (a bust if drawn) and gold for ranks that would steal. In blind play the small number is how many of that rank are face up in hands and pending piles. With card counting on, it is how many remain in the deck.</p>
+
+            <h3>Turn order</h3>
+            <p>The first game follows seat order, or a shuffled order if that option is on. In every rematch the winner of the previous game deals first and the order stays the same.</p>
+
+            <h3>Ending the game</h3>
             <ul>
-                <li>Busting on 3 or fewer cards gives one pity gem. Spend 2 gems to cancel a bust card and keep going.</li>
-                <li>Three gems convert into a 50-point bonus.</li>
-                <li>Last call (optional, final round only): once the final round begins, a gem safeguard costs 1 gem instead of 2.</li>
-                <li>Five or more cards in sequence make a run. Score the run at double value on the spot, or send the whole hand to pending unscored. Runs may be high (10-J-Q-K-A) or low (A-2-3-4-5) but never wrap.</li>
+                <li><strong>Final round</strong> (default): when a player reaches the target, every other player takes one last turn. All pending piles are then banked and the highest score wins.</li>
+                <li><strong>Instant win</strong>: the first player to reach the target wins on the spot.</li>
+            </ul>
+
+            <h3>Optional rules</h3>
+            <ul>
+                <li><strong>Last call</strong> (final round only, on by default): once the final round begins, escaping a bust costs 1 gem instead of 2.</li>
+                <li><strong>Shuffled seating</strong>: randomize the order for the first game.</li>
+                <li><strong>Bust odds</strong>: show the chance that the next card busts you.</li>
+                <li><strong>Card counting</strong>: show how many of each rank remain in the deck, and open the deck and discard inspectors.</li>
             </ul>
 
             <h3>Keyboard</h3>
-            <p>H to hit, S to bank, Enter to continue after a bust, Y or N to answer the gem safeguard, L for the log.</p>
+            <p>H to hit, S to bank, Enter to continue after a bust, Y or N to answer the gem prompt, L for the log, Esc to open or close the menu.</p>
         </div>
         <button class="btn-wood" style="margin-top:16px;" onclick="toggleModal('rules-modal', false)">Back to the table</button>
     </div>
@@ -750,8 +791,8 @@ button:active:not(:disabled) { transform: translateY(2px); border-bottom-width: 
 <!-- GEM -->
 <div class="modal sheet" id="gem-modal">
     <div class="modal-content">
-        <h3 id="gem-title">Spend two gems?</h3>
-        <p id="gem-text">That bust card can be waved off and your turn continues. It costs 2 gems.</p>
+        <h3 id="gem-title">Escape for two gems?</h3>
+        <p id="gem-text">Spend 2 gems to discard the bust card and keep drawing.</p>
         <div class="modal-btns">
             <button class="btn-green" onclick="resolveGemSafeguard(true)">Use gems (Y)</button>
             <button class="btn-red" onclick="resolveGemSafeguard(false)">Take the bust (N)</button>
@@ -760,14 +801,14 @@ button:active:not(:disabled) { transform: translateY(2px); border-bottom-width: 
 </div>
 
 <!-- RUN -->
-<div class="modal" id="run-modal">
+<div class="modal sheet" id="run-modal">
     <div class="modal-content">
         <h3>You made a run</h3>
-        <p style="margin-bottom:10px;">Pick the run to score, or hold the whole hand.</p>
+        <p style="margin-bottom:10px;">Score it now at double value, or hold the whole hand as pending.</p>
         <div id="run-options-container"></div>
         <div class="endgame-btn-group">
-            <button class="btn-green" onclick="resolveRunChoice('score')">Score the run at double value</button>
-            <button class="btn-brass" onclick="resolveRunChoice('pending')">Send the whole hand to pending</button>
+            <button class="btn-green" id="run-score-btn" onclick="resolveRunChoice('score')">Score the run</button>
+            <button class="btn-brass" id="run-hold-btn" onclick="resolveRunChoice('pending')">Hold everything as pending</button>
         </div>
     </div>
 </div>
@@ -833,6 +874,7 @@ let SETTINGS = { target: 150, aiDelay: 450, showCounts: false, showOdds: false, 
 
 /* Global daily leaderboard: paste the Apps Script web-app URL between the quotes to switch it on. */
 const LEADERBOARD_URL = 'https://script.google.com/macros/s/AKfycbxVjBE71S70vcNFUJ9pTB7mHxqm1tDEhvPwZnOrnvICr8p2tpb8PWpXVIw4kJVA4TkIcA/exec';
+function animMs(base) { return Math.round(base * Math.min(2, Math.max(0.5, SETTINGS.aiDelay / 450))); }
 
 const AI_PERSONALITIES = [
     { id: 'reaper', name: 'R34P3R-Bot', style: 'Risky / Aggressive', bustTol: 45, minCards: 4, minPts: 18, stealBonus: 1.0 },
@@ -974,7 +1016,7 @@ function buzz(pattern) { try { if (navigator.vibrate) navigator.vibrate(pattern)
 let deck = [], discardPile = [], players = [], turnIndex = 0, playArea = [];
 let awaitingBustConfirm = false, pendingBustState = null, pendingRunState = null, selectedRunIndex = 0;
 let isDrawerOpen = false, lastWinnerId = null, aiTimer = null, cardIdCounter = 0;
-let finalRound = false, finalTriggerIndex = null, gameOver = false, lastRenderedTurn = -1, turnLocked = false;
+let finalRound = false, finalTriggerIndex = null, gameOver = false, lastRenderedTurn = -1, turnLocked = false, cashing = null;
 function gemCost() { return (finalRound && SETTINGS.lastCall && SETTINGS.endRule === 'final') ? 1 : CONFIG.SAFEGUARD_GEM_COST; }
 
 function clearAiTimer() { if (aiTimer) { clearTimeout(aiTimer); aiTimer = null; } }
@@ -983,17 +1025,65 @@ function modalOpen(id) { return document.getElementById(id).style.display === 'f
 function toggleDrawer() { isDrawerOpen = !isDrawerOpen; document.getElementById('log-drawer').classList.toggle('open', isDrawerOpen); }
 function escapeHtml(s) { return String(s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch])); }
 
-/* ============ Persistent win tally ============ */
-const WINS_KEY = 'pyl_wins';
-function loadWins() { try { return JSON.parse(localStorage.getItem(WINS_KEY) || '{}') || {}; } catch (e) { return {}; } }
-function recordWin(name) { try { const w = loadWins(); w[name] = (w[name] || 0) + 1; localStorage.setItem(WINS_KEY, JSON.stringify(w)); } catch (e) { } }
-function clearWins() { try { localStorage.removeItem(WINS_KEY); } catch (e) { } renderHallOfFame(); }
+/* ============ Persistent records (per device) ============ */
+const RECORDS_KEY = 'pyl_records';
+function loadRecords() {
+    try {
+        let rec = JSON.parse(localStorage.getItem(RECORDS_KEY) || 'null');
+        if (!rec) {
+            rec = {};
+            const old = JSON.parse(localStorage.getItem('pyl_wins') || '{}') || {};
+            if (Object.keys(old).length) { rec['150'] = {}; Object.entries(old).forEach(([n, w]) => { rec['150'][n] = { wins: w, bestScore: 0, bestTurns: 0 }; }); }
+            localStorage.setItem(RECORDS_KEY, JSON.stringify(rec));
+        }
+        return rec;
+    } catch (e) { return {}; }
+}
+function recordWin(name, score, turns, target) {
+    try {
+        const rec = loadRecords();
+        const t = String(target);
+        rec[t] = rec[t] || {};
+        const r = rec[t][name] || { wins: 0, bestScore: 0, bestTurns: 0 };
+        r.wins += 1;
+        if (score > r.bestScore) r.bestScore = score;
+        if (!r.bestTurns || turns < r.bestTurns) r.bestTurns = turns;
+        rec[t][name] = r;
+        localStorage.setItem(RECORDS_KEY, JSON.stringify(rec));
+    } catch (e) { }
+}
+function winsFor(name, target) { try { return ((loadRecords()[String(target)] || {})[name] || {}).wins || 0; } catch (e) { return 0; } }
+function clearWins() { try { localStorage.removeItem(RECORDS_KEY); localStorage.removeItem('pyl_wins'); } catch (e) { } renderHallOfFame(); }
+function boardSort() { const el = document.getElementById('board-sort'); return el ? el.value : 'wins'; }
+function sortRows(rows) {
+    const mode = boardSort();
+    return rows.slice().sort((a, b) => {
+        if (mode === 'score') return b.bestScore - a.bestScore || b.wins - a.wins;
+        if (mode === 'turns') return (a.bestTurns || 999) - (b.bestTurns || 999) || b.wins - a.wins;
+        return b.wins - a.wins || b.bestScore - a.bestScore;
+    });
+}
+function boardRowsHTML(rows, mine) {
+    return rows.map((r, i) => `
+        <div class="board-row ${mine && r.device === mine ? 'me' : ''}">
+            <span>${i + 1}.</span><span>${escapeHtml(r.name)}</span>
+            <span class="b-wins">${r.wins} win${r.wins === 1 ? '' : 's'}</span>
+            <span class="b-score">best ${r.bestScore || '–'}</span>
+            <span class="b-turns">${r.bestTurns ? r.bestTurns + ' turns' : ''}</span>
+        </div>`).join('');
+}
+function groupedBoardHTML(groups, mine) {
+    const targets = Object.keys(groups).sort((a, b) => parseInt(a) - parseInt(b));
+    if (!targets.length) return '';
+    return targets.map(t => `<div class="board-group"><h5>Playing to ${t}</h5>${boardRowsHTML(sortRows(groups[t]).slice(0, 25), mine)}</div>`).join('');
+}
 function renderHallOfFame() {
     const list = document.getElementById('hall-list');
-    const entries = Object.entries(loadWins()).sort((a, b) => b[1] - a[1]);
-    list.innerHTML = entries.length
-        ? entries.map(([n, c]) => `<span class="hall-item">${escapeHtml(n)}<b>${c}</b></span>`).join('')
-        : '<span class="hall-empty">No wins yet. Finish a game to start the tally.</span>';
+    const rec = loadRecords();
+    const groups = {};
+    Object.entries(rec).forEach(([t, names]) => { groups[t] = Object.entries(names).map(([name, r]) => ({ name, ...r })); });
+    const html = groupedBoardHTML(groups, null);
+    list.innerHTML = html || '<span class="board-empty">No wins yet. Finish a game to start the tally.</span>';
 }
 
 /* ============ Setup ============ */
@@ -1094,7 +1184,7 @@ function initGame() {
     if (SETTINGS.randomStart) shuffle(players);
 
     createDeck();
-    discardPile = []; lastWinnerId = null; lastRenderedTurn = -1; turnIndex = 0;
+    discardPile = []; lastWinnerId = null; lastRenderedTurn = -1; turnIndex = 0; cashing = null;
     finalRound = false; finalTriggerIndex = null; gameOver = false;
     document.getElementById('log-list').innerHTML = '';
     document.getElementById('setup-screen').style.display = 'none';
@@ -1111,18 +1201,36 @@ function startTurn() {
     if (gameOver) return;
     if (deck.length === 0) recycleDiscards();
     playArea = []; awaitingBustConfirm = false; pendingBustState = null; pendingRunState = null;
-    turnLocked = false;
     const p = players[turnIndex];
     p.turns++;
+    turnLocked = true;
 
     if (p.pending.length > 0) {
-        const points = p.pending.reduce((a, b) => a + b.val, 0);
-        p.tally += points;
-        log(`${p.name} banks ${points} from pending. Score ${p.tally}.`, 'log-run');
-        discardPile.push(...p.pending);
-        p.pending = [];
+        const cards = [...p.pending];
+        const points = cards.reduce((a, b) => a + b.val, 0);
+        cashing = { cards, points };
+        render(false);
+        stamp(`+${points}`, 'green');
+        playSound('bank');
+        const chip = document.querySelector(`.chip[data-seat="${turnIndex}"]`);
+        if (chip) chip.classList.add('flash');
+        aiTimer = setTimeout(() => {
+            cashing = null;
+            p.tally += points;
+            log(`${p.name} banks ${points} from pending. Score ${p.tally}.`, 'log-run');
+            discardPile.push(...p.pending);
+            p.pending = [];
+            if (checkTarget(p)) return;
+            beginDraw(p);
+        }, animMs(1500));
+        return;
     }
-    if (checkTarget(p)) return;
+    beginDraw(p);
+}
+
+function beginDraw(p) {
+    if (gameOver) return;
+    turnLocked = false;
     render(false);
     const ended = drawCard();
     if (!ended && !p.isHuman) aiTimer = setTimeout(aiLogic, SETTINGS.aiDelay);
@@ -1134,9 +1242,9 @@ function checkTarget(p) {
     if (SETTINGS.endRule === 'immediate') { endGame(); return true; }
     if (!finalRound) {
         finalRound = true; finalTriggerIndex = turnIndex;
-        const lc = SETTINGS.lastCall ? ' Gems now cost 1.' : '';
+        const lc = SETTINGS.lastCall ? ' Last call: escaping a bust costs 1 gem.' : '';
         log(`${p.name} reached ${SETTINGS.target}. Final round: everyone else gets one last turn.${lc}`, 'log-run');
-        showToast(`Final round! ${p.name} reached ${SETTINGS.target}${SETTINGS.lastCall ? '. Gems cost 1' : ''}`);
+        showToast(`Final round! ${p.name} reached ${SETTINGS.target}${SETTINGS.lastCall ? '. Escapes cost 1 gem' : ''}`);
         stamp('FINAL ROUND', 'gold');
         playSound('final');
     }
@@ -1193,10 +1301,10 @@ function drawCard() {
             if (p.isHuman) {
                 render(true);
                 const cost = gemCost();
-                document.getElementById('gem-title').innerText = cost === 1 ? 'Last call: spend one gem?' : 'Spend two gems?';
+                document.getElementById('gem-title').innerText = cost === 1 ? 'Last call: escape for one gem?' : 'Escape for two gems?';
                 document.getElementById('gem-text').innerText = cost === 1
-                    ? 'Final round rule: one gem waves off this bust card and your turn continues.'
-                    : 'That bust card can be waved off and your turn continues. It costs 2 gems.';
+                    ? 'Final round rule: spend 1 gem to discard the bust card and keep drawing.'
+                    : 'Spend 2 gems to discard the bust card and keep drawing.';
                 toggleModal('gem-modal', true);
             }
             else resolveGemSafeguard(finalRound || playArea.length > CONFIG.PITY_GEM_HAND_LIMIT);
@@ -1236,26 +1344,29 @@ function resolveGemSafeguard(useGems) {
 function executeBust(bustType, soundAlreadyPlayed = false) {
     const p = players[turnIndex];
     awaitingBustConfirm = true;
+    discardPile.push(...playArea);
+    render(false);
 
     if (bustType === 'joker') {
         log(`Double joker! ${p.name}'s score is wiped to 0.`, 'log-bust');
         p.tally = 0;
         playSound('wipe');
-        stamp('WIPED OUT', 'red');
-        buzz([80, 60, 160]);
+        stamp('WIPED OUT', 'red big');
+        burst(['#ff6b3d', '#ffb347', '#f0715e', '#ffe08a', '#3a3a3a'], 46, { spread: 260, gravity: 140 });
+        scatterCards();
+        buzz([80, 60, 160, 60, 240]);
+        shakeTable();
+        setTimeout(() => render(false), 700);
     } else {
         if (!soundAlreadyPlayed) playSound('bust');
         stamp('BUST', 'red');
         buzz(70);
+        shakeTable();
     }
-    shakeTable();
 
     if (playArea.length <= CONFIG.PITY_GEM_HAND_LIMIT) addGem(p);
     if (gameOver) return;
-
-    discardPile.push(...playArea);
-    render(false);
-    if (!p.isHuman) aiTimer = setTimeout(confirmBust, Math.max(900, Math.round(SETTINGS.aiDelay * 2.2)));
+    if (!p.isHuman) aiTimer = setTimeout(confirmBust, Math.max(animMs(1300), Math.round(SETTINGS.aiDelay * 2.2)));
 }
 
 function confirmBust() {
@@ -1267,17 +1378,20 @@ function confirmBust() {
 
 function addGem(player) {
     player.gems++;
-    if (player.gems >= CONFIG.GEM_BONUS_THRESHOLD) {
-        player.gems = 0;
-        player.tally += CONFIG.GEM_BONUS_PTS;
-        setTimeout(() => playSound('gem'), 350);
-        log(`${player.name} turns 3 gems into a ${CONFIG.GEM_BONUS_PTS}-point bonus.`, 'log-run');
-        showToast(`${player.name}: 3 gems become +${CONFIG.GEM_BONUS_PTS}`);
-        checkTarget(player);
-    } else {
-        setTimeout(() => playSound('gem'), 350);
-        showToast(`${player.name} gets a pity gem`);
-    }
+    const seat = players.indexOf(player);
+    flyGem(seat, () => {
+        playSound('gem');
+        if (player.gems >= CONFIG.GEM_BONUS_THRESHOLD) {
+            player.gems = 0;
+            player.tally += CONFIG.GEM_BONUS_PTS;
+            log(`${player.name} turns 3 gems into a ${CONFIG.GEM_BONUS_PTS}-point bonus.`, 'log-run');
+            stamp(`+${CONFIG.GEM_BONUS_PTS}`, 'sky');
+            burst(['#8fd3ff', '#ffffff', '#c9a24a'], 24, { spread: 160, gravity: 60 });
+            checkTarget(player);
+        }
+        render(false);
+    });
+    log(`${player.name} gets a pity gem.`);
 }
 
 function humanHit() {
@@ -1296,15 +1410,24 @@ function humanStay() {
     else bankTurn(false);
 }
 
+function runChoiceLabels(runs) {
+    const handPts = playArea.reduce((a, b) => a + b.val, 0);
+    const run = runs[selectedRunIndex] || runs[0];
+    const runVal = run.reduce((a, b) => a + b.val, 0) * 2;
+    const rest = playArea.filter(c => !run.some(rc => rc.id === c.id)).reduce((a, b) => a + b.val, 0);
+    document.getElementById('run-score-btn').innerText = `Score the run: +${runVal} now, ${rest} to pending`;
+    document.getElementById('run-hold-btn').innerText = `Hold everything as pending: ${handPts}`;
+}
 function buildRunModal(runs) {
     const container = document.getElementById('run-options-container');
     container.innerHTML = '';
     selectedRunIndex = bestRunIndex(runs);
+    runChoiceLabels(runs);
     runs.forEach((r, idx) => {
         const basePts = r.reduce((a, b) => a + b.val, 0);
         const div = document.createElement('div');
         div.className = `run-option ${idx === selectedRunIndex ? 'selected' : ''}`;
-        div.onclick = () => { document.querySelectorAll('.run-option').forEach(el => el.classList.remove('selected')); div.classList.add('selected'); selectedRunIndex = idx; };
+        div.onclick = () => { document.querySelectorAll('.run-option').forEach(el => el.classList.remove('selected')); div.classList.add('selected'); selectedRunIndex = idx; runChoiceLabels(runs); };
         div.innerHTML = `<div class="ro-title">${r.length}-card run, scores ${basePts * 2}</div><div class="ro-cards">${r.map(c => c.rank === 'JKR' ? 'JKR' : `${c.rank}${c.suit}`).join(' · ')}</div>`;
         container.appendChild(div);
     });
@@ -1335,7 +1458,9 @@ function bankTurn(scoreRun) {
         const runVal = runCards.reduce((a, b) => a + b.val, 0) * 2;
         p.tally += runVal;
         playSound('run');
-        stamp('RUN', 'green');
+        stamp(`RUN +${runVal}`, 'green big');
+        burst(['#3ddc84', '#f2c14e', '#f0d68a', '#ffffff'], 40, { spread: 220, gravity: 90 });
+        buzz([30, 40, 30, 40, 60]);
         log(`${p.name} scores a ${runCards.length}-card run for ${runVal}.`, 'log-run');
         showToast(`${p.name} scores a run for ${runVal}`);
         runCards.forEach(rc => { const idx = leftovers.findIndex(c => c.id === rc.id); if (idx > -1) discardPile.push(leftovers.splice(idx, 1)[0]); });
@@ -1345,14 +1470,16 @@ function bankTurn(scoreRun) {
 
     const stolen = [];
     const steals = stealTargets(leftovers, p);
+    const thiefSeat = turnIndex;
+    const flights = [];
     steals.forEach(({ from, cards }) => {
         const pts = cards.reduce((a, b) => a + b.val, 0);
         log(`${p.name} steals ${cards.length} card${cards.length > 1 ? 's' : ''} worth ${pts} from ${from.name}.`, 'log-steal');
         showToast(`${p.name} steals ${pts} from ${from.name}`);
         stolen.push(...cards);
+        flights.push({ fromSeat: players.indexOf(from), cards });
         from.pending = from.pending.filter(c => !cards.includes(c));
     });
-    if (steals.length) { setTimeout(() => playSound('steal'), 120); stamp('STEAL', 'gold'); buzz(25); }
 
     p.pending.push(...leftovers.filter(c => c.rank !== 'JKR'), ...stolen);
     p.pending.sort((a, b) => RANK_ORDER[a.rank] - RANK_ORDER[b.rank]);
@@ -1360,8 +1487,17 @@ function bankTurn(scoreRun) {
 
     pendingRunState = null;
     playArea = [];
+    let wait = 0;
+    if (flights.length) {
+        turnLocked = true;
+        render(false);
+        setTimeout(() => playSound('steal'), 120);
+        stamp('STEAL', 'gold');
+        buzz(25);
+        wait = flySteals(flights, thiefSeat);
+    }
     if (checkTarget(p)) return;
-    endTurn();
+    if (wait) aiTimer = setTimeout(endTurn, wait); else endTurn();
 }
 
 function findAllRuns(cards) {
@@ -1462,8 +1598,7 @@ function endGame() {
     const top = sorted[0];
     const winners = sorted.filter(p => p.tally === top.tally);
     lastWinnerId = top.id;
-    winners.forEach(w => { recordWin(w.name); if (w.isHuman) postWin(w); });
-    const wins = loadWins();
+    winners.forEach(w => { recordWin(w.name, w.tally, w.turns, SETTINGS.target); if (w.isHuman) postWin(w); });
     playSound('win');
     buzz([40, 40, 40, 40, 120]);
     render(false);
@@ -1478,7 +1613,7 @@ function endGame() {
         <div class="final-row ${p.tally === top.tally ? 'winner' : ''}">
             <span>${i + 1}.</span><span>${escapeHtml(p.name)}</span>
             <span class="fr-score">${p.tally}</span>
-            <span class="fr-wins">${wins[p.name] || 0} win${(wins[p.name] || 0) === 1 ? '' : 's'}</span>
+            <span class="fr-wins">${winsFor(p.name, SETTINGS.target)} win${winsFor(p.name, SETTINGS.target) === 1 ? '' : 's'} at ${SETTINGS.target}</span>
         </div>`).join('');
     setTimeout(() => toggleModal('win-modal', true), 500);
 }
@@ -1486,11 +1621,13 @@ function endGame() {
 function rematchGame() {
     clearAiTimer();
     toggleModal('win-modal', false);
+    const wi = players.findIndex(p => p.id === lastWinnerId);
+    if (wi > 0) players = [...players.slice(wi), ...players.slice(0, wi)];
     players.forEach(p => { p.tally = 0; p.pending = []; p.gems = 0; p.turns = 0; });
-    if (SETTINGS.randomStart) shuffle(players);
-    createDeck(); discardPile = []; playArea = []; lastRenderedTurn = -1; turnIndex = 0;
+    createDeck(); discardPile = []; playArea = []; lastRenderedTurn = -1; turnIndex = 0; cashing = null;
     finalRound = false; finalTriggerIndex = null; gameOver = false;
-    log(`Rematch. ${players[turnIndex].name} deals first.`);
+    log(`Rematch. ${players[0].name} deals first as last game's winner.`);
+    showToast(`${players[0].name} deals first`);
     playSound('shuffle');
     startTurn();
 }
@@ -1526,6 +1663,73 @@ function stamp(text, color) {
     el.innerText = text;
     felt.appendChild(el);
     setTimeout(() => el.remove(), 1700);
+}
+function burst(colors, count, opts = {}) {
+    const felt = document.getElementById('felt');
+    const W = felt.clientWidth, H = felt.clientHeight;
+    for (let i = 0; i < count; i++) {
+        const el = document.createElement('div');
+        el.className = 'particle';
+        el.style.background = colors[i % colors.length];
+        el.style.left = `${W / 2}px`; el.style.top = `${H * 0.45}px`;
+        felt.appendChild(el);
+        const ang = Math.random() * Math.PI * 2, dist = 50 + Math.random() * (opts.spread || 160);
+        const dx = Math.cos(ang) * dist, dy = Math.sin(ang) * dist + (opts.gravity || 80);
+        el.animate([
+            { transform: 'translate(0,0) rotate(0deg) scale(1)', opacity: 1 },
+            { transform: `translate(${dx}px, ${dy}px) rotate(${Math.random() * 720 - 360}deg) scale(0.3)`, opacity: 0 }
+        ], { duration: animMs(900) + Math.random() * 400, easing: 'cubic-bezier(0.2, 0.8, 0.3, 1)', fill: 'forwards' }).onfinish = () => el.remove();
+    }
+}
+function scatterCards() {
+    document.querySelectorAll('#play-area .card-slot').forEach(s => {
+        const dx = (Math.random() - 0.5) * 500, dy = 120 + Math.random() * 300, r = (Math.random() - 0.5) * 540;
+        s.style.transition = 'none';
+        requestAnimationFrame(() => { s.classList.add('scatter'); s.style.transition = ''; s.style.transform += ` translate(${dx}px, ${dy}px) rotate(${r}deg)`; });
+    });
+}
+function seatRect(seat) {
+    const el = document.querySelector(`.chip[data-seat="${seat}"]`);
+    return el ? el.getBoundingClientRect() : null;
+}
+function feltCenter() {
+    const r = document.getElementById('felt').getBoundingClientRect();
+    return { left: r.left + r.width / 2 - 20, top: r.top + r.height * 0.42 - 20, width: 40, height: 40 };
+}
+function fly(fromRect, toRect, html, cls, delay, dur, onDone) {
+    if (!fromRect || !toRect) { if (onDone) onDone(); return; }
+    const el = document.createElement('div');
+    el.className = `flyer ${cls}`;
+    el.innerHTML = html;
+    el.style.left = `${fromRect.left + fromRect.width / 2}px`;
+    el.style.top = `${fromRect.top + fromRect.height / 2}px`;
+    document.body.appendChild(el);
+    const dx = (toRect.left + toRect.width / 2) - (fromRect.left + fromRect.width / 2);
+    const dy = (toRect.top + toRect.height / 2) - (fromRect.top + fromRect.height / 2);
+    el.animate([
+        { transform: 'translate(-50%, -50%) scale(1) rotate(0deg)', opacity: 1, offset: 0 },
+        { transform: `translate(calc(-50% + ${dx * 0.5}px), calc(-50% + ${dy * 0.5 - 40}px)) scale(1.15) rotate(${dx > 0 ? 12 : -12}deg)`, opacity: 1, offset: 0.5 },
+        { transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(0.5) rotate(0deg)`, opacity: 0.2, offset: 1 }
+    ], { duration: dur, delay, easing: 'cubic-bezier(0.3, 0.7, 0.2, 1)', fill: 'forwards' }).onfinish = () => { el.remove(); if (onDone) onDone(); };
+}
+function miniCardHTML(c) {
+    const isRed = c.suit === '♥' || c.suit === '♦';
+    return `<div class="mini ${isRed ? 'red' : ''}">${c.rank === 'JKR' ? '★' : c.rank}<small>${c.rank === 'JKR' ? '' : c.suit}</small></div>`;
+}
+function flySteals(flights, thiefSeat) {
+    const to = seatRect(thiefSeat);
+    const dur = animMs(750);
+    let n = 0;
+    flights.forEach(f => {
+        const from = seatRect(f.fromSeat);
+        f.cards.forEach(c => { fly(from, to, miniCardHTML(c), '', n * 90, dur, null); n++; });
+    });
+    const total = dur + n * 90 + 150;
+    setTimeout(() => { const chip = document.querySelector(`.chip[data-seat="${thiefSeat}"]`); if (chip) chip.classList.add('flash'); }, total - 250);
+    return total;
+}
+function flyGem(seat, onDone) {
+    fly(feltCenter(), seatRect(seat), '◆', 'gem', 250, animMs(800), onDone);
 }
 function shakeTable() {
     const t = document.getElementById('table-area'), f = document.getElementById('felt');
@@ -1625,6 +1829,7 @@ function render(hasNewDraw = false) {
     const banner = document.getElementById('turn-banner');
     let who = me.isHuman ? (humanCount === 1 ? 'Your turn' : `<span class="who">${escapeHtml(me.name)}</span>, your turn`) : `<span class="who">${escapeHtml(me.name)}</span> is drawing<span class="dots"></span>`;
     if (awaitingBustConfirm) who = `<span class="who">${escapeHtml(me.name)}</span> busted`;
+    if (cashing) who = `<span class="who">${escapeHtml(me.name)}</span> banks ${cashing.points} from pending`;
     let odds = '';
     if (SETTINGS.showOdds && !awaitingBustConfirm && playArea.length) {
         const prob = calculateBustProbability();
@@ -1643,8 +1848,10 @@ function render(hasNewDraw = false) {
         btnHit.style.display = 'flex'; btnBank.style.display = 'flex'; btnCont.style.display = 'none';
         btnHit.disabled = !me.isHuman || gameOver || turnLocked;
         btnBank.disabled = !me.isHuman || gameOver || turnLocked || playArea.length < 1;
-        document.getElementById('bank-amt').innerHTML = `BANK ${handPts}${stealPts ? `<span class="plus">+${stealPts}</span>` : ''}`;
-        document.getElementById('bank-sub').innerText = stealPts ? `keep ${handPts}, steal ${stealPts}` : 'stop and keep';
+        const runsNow = playArea.length ? findAllRuns(playArea) : [];
+        const runVal = runsNow.length ? runsNow[bestRunIndex(runsNow)].reduce((a, b) => a + b.val, 0) * 2 : 0;
+        document.getElementById('bank-amt').innerHTML = `BANK ${handPts}${stealPts ? `<span class="plus">+${stealPts}</span>` : ''}${runVal ? `<span class="run">RUN ${runVal}</span>` : ''}`;
+        document.getElementById('bank-sub').innerText = runVal ? `or score the run for ${runVal}` : stealPts ? `keep ${handPts}, steal ${stealPts}` : 'stop and keep';
     }
 
     // Players
@@ -1661,6 +1868,7 @@ function render(hasNewDraw = false) {
         const flags = `${p.id === lastWinnerId ? ' ★' : ''}${finalRound && idx === finalTriggerIndex ? ' 🏁' : ''}`;
         const el = document.createElement('div');
         el.className = `chip ${isCurrent ? 'active' : ''}`;
+        el.dataset.seat = idx;
         el.innerHTML = `
             <div class="row1"><span class="name">${escapeHtml(p.name)}${flags}</span><span class="gems">${'◆'.repeat(p.gems)}</span></div>
             <div class="row2"><span class="score">${p.tally}<small>pts</small></span><span class="pend ${pendPts ? '' : 'none'}">${pendPts ? `+${pendPts} pending` : 'nothing pending'}</span></div>
@@ -1677,17 +1885,19 @@ function render(hasNewDraw = false) {
     pa.innerHTML = '';
     const opponentPendingRanks = [];
     players.forEach(p => { if (p.id !== me.id) p.pending.forEach(c => opponentPendingRanks.push(c.rank)); });
-    const runs = findAllRuns(playArea);
+    const shown = cashing ? cashing.cards : playArea;
+    const runs = cashing ? [] : findAllRuns(playArea);
     const primaryRun = runs.length ? runs[bestRunIndex(runs)] : [];
-    playArea.forEach((c, i) => {
+    shown.forEach((c, i) => {
         const isJoker = c.rank === 'JKR';
         let badge = '', extra = '';
-        if (c.isBustingCard) { extra = 'busting'; badge = '<span class="card-badge badge-bust">BUST</span>'; }
+        if (cashing) badge = '';
+        else if (c.isBustingCard) { extra = 'busting'; badge = '<span class="card-badge badge-bust">BUST</span>'; }
         else if (primaryRun.some(rc => rc.id === c.id)) badge = '<span class="card-badge badge-run">RUN</span>';
         else if (!isJoker && opponentPendingRanks.includes(c.rank)) badge = '<span class="card-badge badge-steal">STEAL</span>';
-        const isNew = hasNewDraw && i === playArea.length - 1;
+        const isNew = hasNewDraw && !cashing && i === playArea.length - 1;
         const slot = document.createElement('div');
-        slot.className = `card-slot ${c.isBustingCard ? 'busting' : ''}`;
+        slot.className = `card-slot ${c.isBustingCard && !cashing ? 'busting' : ''} ${cashing ? 'cashing' : ''}`;
         slot.innerHTML = cardHTML(c, badge, `${extra} ${isNew ? 'new-card' : ''}`);
         pa.appendChild(slot);
     });
@@ -1752,15 +1962,12 @@ function deviceId() {
         return id;
     } catch (e) { return 'anon'; }
 }
+let lastBoardRows = null;
 function renderBoard(el, rows) {
     if (!rows || rows.length === 0) { el.innerHTML = '<span class="board-empty">No wins posted yet today. Be the first.</span>'; return; }
-    const mine = deviceId();
-    el.innerHTML = rows.slice(0, 25).map((r, i) => `
-        <div class="board-row ${r.device === mine ? 'me' : ''}">
-            <span>${i + 1}.</span><span>${escapeHtml(r.name)}</span>
-            <span class="b-wins">${r.wins} win${r.wins === 1 ? '' : 's'}</span>
-            <span class="b-turns">best ${r.bestTurns} turn${r.bestTurns === 1 ? '' : 's'}</span>
-        </div>`).join('');
+    const groups = {};
+    rows.forEach(r => { const t = String(r.target || 150); (groups[t] = groups[t] || []).push(r); });
+    el.innerHTML = groupedBoardHTML(groups, deviceId());
 }
 async function loadLeaderboard() {
     if (!LEADERBOARD_URL) return;
@@ -1768,7 +1975,8 @@ async function loadLeaderboard() {
     try {
         const res = await fetch(`${LEADERBOARD_URL}?date=${chicagoDate()}&t=${Date.now()}`, { method: 'GET', redirect: 'follow' });
         const data = await res.json();
-        targets.forEach(el => renderBoard(el, data.rows || []));
+        lastBoardRows = data.rows || [];
+        targets.forEach(el => renderBoard(el, lastBoardRows));
     } catch (e) {
         targets.forEach(el => el.innerHTML = '<span class="board-empty">Could not reach the leaderboard.</span>');
     }
@@ -1785,7 +1993,7 @@ async function postWin(winner) {
         await fetch(LEADERBOARD_URL, {
             method: 'POST', redirect: 'follow',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify({ name: winner.name.slice(0, 16), turns: winner.turns, date: chicagoDate(), device: deviceId(), target: SETTINGS.target, players: players.length })
+            body: JSON.stringify({ name: winner.name.slice(0, 16), turns: winner.turns, score: winner.tally, date: chicagoDate(), device: deviceId(), target: SETTINGS.target, players: players.length })
         });
         setTimeout(loadLeaderboard, 1200);
     } catch (e) { /* offline; local tally still records it */ }
@@ -1795,9 +2003,10 @@ async function postWin(winner) {
 document.addEventListener('keydown', (e) => {
     if (document.getElementById('game-screen').style.display !== 'grid') return;
     const tag = (e.target && e.target.tagName) || '';
-    if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
     if (e.repeat) return;
     const k = e.key.toLowerCase();
+    if (k === 'escape' && e.target && e.target.blur) e.target.blur();
+    if (k !== 'escape' && (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA')) return;
     if (modalOpen('gem-modal')) {
         if (k === 'y') { e.preventDefault(); resolveGemSafeguard(true); }
         else if (k === 'n') { e.preventDefault(); resolveGemSafeguard(false); }
