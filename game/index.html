@@ -648,8 +648,8 @@ button:active:not(:disabled) { transform: translateY(2px); border-bottom-width: 
             <div class="form-group">
                 <label for="show-counts">Card counting</label>
                 <select id="show-counts">
-                    <option value="0" selected>Blind: face-up cards only</option>
-                    <option value="1">Show deck counts</option>
+                    <option value="0" selected>Off</option>
+                    <option value="1">Tap the deck to see what is left</option>
                 </select>
             </div>
         </div>
@@ -757,7 +757,7 @@ button:active:not(:disabled) { transform: translateY(2px); border-bottom-width: 
                 <li>Any cards in your pending pile are banked into your score first.</li>
                 <li>Then draw one card at a time. Hit for another, or bank to stop.</li>
                 <li>Draw a rank you already hold and you <strong>bust</strong>: the whole hand is lost and your turn ends.</li>
-                <li>Two jokers in one hand is a <strong>double joker bust</strong>: the hand is lost and your score resets to 0.</li>
+                <li>Two jokers in one hand is a <strong>double joker bust</strong>: the hand is lost and your score resets to 0. You do receive a pity gem, whatever the size of the hand.</li>
                 <li>When you bank, the cards in your hand go to your pending pile (jokers are discarded).</li>
             </ul>
 
@@ -766,7 +766,7 @@ button:active:not(:disabled) { transform: translateY(2px); border-bottom-width: 
 
             <h3>Gems</h3>
             <ul>
-                <li>Bust on three cards or fewer and you receive a <strong>pity gem</strong>.</li>
+                <li>Bust on three cards or fewer, or on a double joker, and you receive a <strong>pity gem</strong>.</li>
                 <li>Hold 2 gems and you may <strong>escape</strong> a bust: spend both, discard the bust card, and keep drawing.</li>
                 <li>Hold 3 gems and they convert at once into a 50-point bonus.</li>
             </ul>
@@ -775,7 +775,7 @@ button:active:not(:disabled) { transform: translateY(2px); border-bottom-width: 
             <p>Five or more cards in sequence make a run; jokers fill gaps. A run may be high (10-J-Q-K-A) or low (A-2-3-4-5) but never wraps. When you bank with a run you choose: score the run immediately at double value, or hold the whole hand as pending unscored.</p>
 
             <h3>The table strip</h3>
-            <p>The row of ranks beneath the table shows red for ranks you hold (a bust if drawn) and gold for ranks that would steal. In blind play the small number is how many of that rank are face up in hands and pending piles. With card counting on, it is how many remain in the deck.</p>
+            <p>The row of ranks beneath the table shows red for ranks you hold (a bust if drawn) and gold for ranks that would steal. The small number is how many of that rank are face up in hands and pending piles.</p>
 
             <h3>Turn order</h3>
             <p>The first game follows seat order, or a shuffled order if that option is on. In every rematch the winner of the previous game deals first and the order stays the same.</p>
@@ -791,7 +791,7 @@ button:active:not(:disabled) { transform: translateY(2px); border-bottom-width: 
                 <li><strong>Last call</strong> (final round only, on by default): once the final round begins, escaping a bust costs 1 gem instead of 2.</li>
                 <li><strong>Shuffled seating</strong>: randomize the order for the first game.</li>
                 <li><strong>Bust odds</strong>: show the chance that the next card busts you.</li>
-                <li><strong>Card counting</strong>: show how many of each rank remain in the deck, and open the deck and discard inspectors.</li>
+                <li><strong>Card counting</strong>: tap the deck or discard pile to see exactly how many of each rank remain.</li>
             </ul>
 
             <h3>Keyboard</h3>
@@ -842,8 +842,8 @@ button:active:not(:disabled) { transform: translateY(2px); border-bottom-width: 
             <div class="menu-grid">
                 <div><label for="menu-target">Play to</label><select id="menu-target" onchange="menuToSetup()"><option value="100">100 points</option><option value="150">150 points</option><option value="200">200 points</option></select></div>
                 <div><label for="menu-odds">Bust odds</label><select id="menu-odds" onchange="menuToSetup()"><option value="0">Hidden</option><option value="1">Shown</option></select></div>
-                <div><label for="menu-counts">Card counting</label><select id="menu-counts" onchange="menuToSetup()"><option value="0">Blind</option><option value="1">Show counts</option></select></div>
                 <div><label for="menu-end">How the game ends</label><select id="menu-end" onchange="menuToSetup()"><option value="final">Final round</option><option value="immediate">Instant win</option></select></div>
+                <div><label for="menu-counts">Card counting</label><select id="menu-counts" onchange="menuToSetup()"><option value="0">Off</option><option value="1">Deck inspector</option></select></div>
                 <div><label>&nbsp;</label><label class="check-row" style="margin:6px 0 0;"><input type="checkbox" id="menu-lastcall" onchange="menuToSetup()"> Last call gems</label></div>
             </div>
             <div class="menu-note">These change the rules, so they wait for the next deal.</div>
@@ -1385,7 +1385,7 @@ function executeBust(bustType, soundAlreadyPlayed = false) {
         shakeTable();
     }
 
-    if (playArea.length <= CONFIG.PITY_GEM_HAND_LIMIT) addGem(p);
+    if (bustType === 'joker' || playArea.length <= CONFIG.PITY_GEM_HAND_LIMIT) addGem(p);
     if (gameOver) return;
     if (!p.isHuman) aiTimer = setTimeout(confirmBust, Math.max(animMs(1300), Math.round(SETTINGS.aiDelay * 2.2)));
 }
@@ -1762,6 +1762,7 @@ function shakeTable() {
 
 function openInspector(type) {
     if (!SETTINGS.showCounts) { showToast('Card counting is off for this game'); return; }
+    if (turnLocked && !gameOver) { /* fine to peek any time */ }
     const grid = document.getElementById('inspector-grid');
     grid.innerHTML = '';
     const source = type === 'deck' ? deck : discardPile;
@@ -1836,14 +1837,13 @@ function render(hasNewDraw = false) {
     // Deck and discard
     const deckBack = document.getElementById('deck-back');
     deckBack.classList.toggle('empty', deck.length === 0);
-    document.getElementById('deck-cnt').innerText = SETTINGS.showCounts ? deck.length : '';
-    document.getElementById('deck-cnt').style.display = SETTINGS.showCounts ? 'inline-block' : 'none';
+    document.getElementById('deck-cnt').style.display = 'none';
     const disc = document.getElementById('discard-top');
     const topD = discardPile[discardPile.length - 1];
     if (topD) {
         const isRed = topD.suit === '♥' || topD.suit === '♦';
         disc.className = `discard has ${isRed ? 'red' : ''}`;
-        disc.innerHTML = `<div class="drk">${topD.rank === 'JKR' ? '★' : topD.rank}</div><div class="dst">${topD.rank === 'JKR' ? '' : topD.suit}</div>${SETTINGS.showCounts ? `<div class="dcnt">${discardPile.length}</div>` : ''}`;
+        disc.innerHTML = `<div class="drk">${topD.rank === 'JKR' ? '★' : topD.rank}</div><div class="dst">${topD.rank === 'JKR' ? '' : topD.suit}</div>`;
     } else { disc.className = 'discard'; disc.innerHTML = 'empty'; }
 
     // Turn banner
@@ -1938,9 +1938,9 @@ function renderRankStrip(activeRanks, opponentPendingRanks) {
         const up = faceUp[r] || 0;
         const held = r === 'JKR' ? jokersInHand >= 1 : activeRanks.includes(r);
         const steal = !held && r !== 'JKR' && opponentPendingRanks.includes(r);
-        const empty = SETTINGS.showCounts && count === 0 && !held;
-        const sub = SETTINGS.showCounts ? `<span class="rc-n">${count}</span>` : `<span class="rc-n">${up || '·'}</span>`;
-        const title = held ? `${r}: drawing this busts you` : steal ? `${r}: steals from a pending pile` : SETTINGS.showCounts ? `${r}: ${count} left in the deck` : `${r}: ${up} face up on the table`;
+        const empty = false;
+        const sub = `<span class="rc-n">${up || '·'}</span>`;
+        const title = held ? `${r}: drawing this busts you` : steal ? `${r}: steals from a pending pile` : `${r}: ${up} face up on the table`;
         return `<div class="rank-cell ${held ? 'held' : ''} ${steal ? 'steal' : ''} ${empty ? 'empty' : ''}" title="${title}">${r === 'JKR' ? '★' : r}${sub}</div>`;
     }).join('');
 }
@@ -1995,7 +1995,7 @@ function renderBoard(el, rows) {
     if (lastAllTime) Object.keys(lastAllTime).forEach(t => { groups[t] = groups[t] || []; });
     el.innerHTML = groupedBoardHTML(groups, deviceId(), lastAllTime);
 }
-async function loadLeaderboard() {
+async function loadLeaderboard(attempt = 0) {
     if (!LEADERBOARD_URL) return;
     const targets = [document.getElementById('global-board'), document.getElementById('board-modal-list')];
     try {
@@ -2005,6 +2005,7 @@ async function loadLeaderboard() {
         lastAllTime = data.alltime || null;
         targets.forEach(el => renderBoard(el, lastBoardRows));
     } catch (e) {
+        if (attempt < 2) { setTimeout(() => loadLeaderboard(attempt + 1), 2500 * (attempt + 1)); return; } // the sheet script may be waking up
         const preview = /claude\.(ai|site)$/.test(location.hostname) || location.hostname.endsWith('claudeusercontent.com');
         const msg = preview
             ? 'The leaderboard cannot be reached from the claude.ai preview; it works from the file itself or a hosted copy.'
