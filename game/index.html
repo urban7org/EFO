@@ -151,7 +151,7 @@ select:focus, input:focus { outline: 2px solid var(--brass); outline-offset: 1px
 .player-input-row { display: flex; align-items: center; gap: 8px; }
 .player-input-row span { font-size: 0.8rem; width: 56px; color: var(--cream-dark); flex-shrink: 0; }
 
-.sub-row { margin: -6px 0 12px; padding-left: 4px; }
+.sub-row { margin: 8px 0 12px; padding-left: 4px; }
 .sub-row .check-row { margin: 0; font-size: 0.88rem; }
 .menu-section { text-align: left; margin-bottom: 12px; }
 .menu-section h4 { font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: #7a6a5a; margin-bottom: 6px; }
@@ -533,6 +533,10 @@ button:active:not(:disabled) { transform: translateY(2px); border-bottom-width: 
     border: 2px solid var(--brass-dark);
     box-shadow: 0 0 0 5px var(--wood-deep), 0 0 0 6px var(--brass-dark), 0 30px 60px rgba(0,0,0,0.7);
 }
+.modal.sheet.peek { background: transparent; }
+.modal.sheet.peek .modal-content { background: transparent; box-shadow: none; border-color: transparent; }
+.modal.sheet.peek .modal-content > *:not(.endgame-btn-group):not(.peek-btn) { visibility: hidden; }
+.modal.sheet.peek .endgame-btn-group > *:not(.peek-btn) { visibility: hidden; }
 .modal.sheet { align-items: flex-end; background: rgba(10, 4, 5, 0.35); padding: 0; }
 .modal.sheet .modal-content { max-width: 100%; border-radius: 16px 16px 0 0; padding-bottom: calc(18px + env(safe-area-inset-bottom)); box-shadow: 0 -10px 40px rgba(0,0,0,0.7); border-bottom: none; }
 @media (min-width: 900px) { .modal.sheet { align-items: center; padding: 14px; } .modal.sheet .modal-content { max-width: 440px; border-radius: 8px; } }
@@ -553,6 +557,7 @@ button:active:not(:disabled) { transform: translateY(2px); border-bottom-width: 
 .run-option .ro-title { font-weight: 800; color: var(--wood-light); }
 .run-option .ro-cards { font-size: 0.85rem; color: #5a4a3c; margin-top: 2px; }
 .endgame-btn-group { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+.endgame-btn-group button small { display: block; font-weight: 600; font-size: 0.78rem; opacity: 0.9; margin-top: 2px; }
 .final-board { display: flex; flex-direction: column; gap: 4px; margin: 12px 0 0; text-align: left; }
 .final-row {
     display: grid; grid-template-columns: 22px 1fr auto auto; gap: 8px; align-items: center;
@@ -778,7 +783,7 @@ button:active:not(:disabled) { transform: translateY(2px); border-bottom-width: 
             <p>The row of ranks beneath the table shows red for ranks you hold (a bust if drawn) and gold for ranks that would steal. The small number is how many of that rank are face up in hands and pending piles.</p>
 
             <h3>Turn order</h3>
-            <p>The first game follows seat order, or a shuffled order if that option is on. In every rematch the winner of the previous game deals first and the order stays the same.</p>
+            <p>The first game follows seat order, or a shuffled order if that option is on. In every rematch the seating stays the same, but play begins with whoever had the lowest score in the previous game.</p>
 
             <h3>Ending the game</h3>
             <ul>
@@ -810,6 +815,7 @@ button:active:not(:disabled) { transform: translateY(2px); border-bottom-width: 
             <button class="btn-green" onclick="resolveGemSafeguard(true)">Use gems (Y)</button>
             <button class="btn-red" onclick="resolveGemSafeguard(false)">Take the bust (N)</button>
         </div>
+        <button class="btn-wood peek-btn" type="button" style="margin-top:8px;">Hold to peek at the table</button>
     </div>
 </div>
 
@@ -822,6 +828,7 @@ button:active:not(:disabled) { transform: translateY(2px); border-bottom-width: 
         <div class="endgame-btn-group">
             <button class="btn-green" id="run-score-btn" onclick="resolveRunChoice('score')">Score the run</button>
             <button class="btn-brass" id="run-hold-btn" onclick="resolveRunChoice('pending')">Hold everything as pending</button>
+            <button class="btn-wood peek-btn" type="button">Hold to peek at the table</button>
         </div>
     </div>
 </div>
@@ -1169,6 +1176,7 @@ function recycleDiscards() {
     showToast(`Reshuffled ${discardPile.length} discards`);
     playSound('shuffle');
     deck = [...discardPile]; discardPile = [];
+    deck.forEach(c => { c.isBustingCard = false; });
     shuffle(deck);
 }
 
@@ -1349,6 +1357,7 @@ function resolveGemSafeguard(useGems) {
     if (useGems && p.gems >= cost) {
         p.gems -= cost;
         const savedCard = playArea.pop();
+        savedCard.isBustingCard = false;
         discardPile.push(savedCard);
         playArea.forEach(c => c.isBustingCard = false);
         playSound('gem');
@@ -1393,6 +1402,7 @@ function executeBust(bustType, soundAlreadyPlayed = false) {
 function confirmBust() {
     if (!awaitingBustConfirm) return;
     awaitingBustConfirm = false;
+    playArea.forEach(c => c.isBustingCard = false); // the cards are already in the discard pile; strip the badge before they come back
     playArea = [];
     endTurn();
 }
@@ -1431,13 +1441,21 @@ function humanStay() {
     else bankTurn(false);
 }
 
+function stealPts(handCards) {
+    return stealTargets(handCards, players[turnIndex]).reduce((a, s) => a + s.cards.reduce((x, y) => x + y.val, 0), 0);
+}
 function runChoiceLabels(runs) {
-    const handPts = playArea.reduce((a, b) => a + b.val, 0);
     const run = runs[selectedRunIndex] || runs[0];
     const runVal = run.reduce((a, b) => a + b.val, 0) * 2;
-    const rest = playArea.filter(c => !run.some(rc => rc.id === c.id)).reduce((a, b) => a + b.val, 0);
-    document.getElementById('run-score-btn').innerText = `Score the run: +${runVal} now, ${rest} to pending`;
-    document.getElementById('run-hold-btn').innerText = `Hold everything as pending: ${handPts}`;
+    const restCards = playArea.filter(c => !run.some(rc => rc.id === c.id) && c.rank !== 'JKR');
+    const rest = restCards.reduce((a, b) => a + b.val, 0);
+    const holdCards = playArea.filter(c => c.rank !== 'JKR');
+    const hold = holdCards.reduce((a, b) => a + b.val, 0);
+    const stealScore = stealPts(restCards), stealHold = stealPts(holdCards);
+    document.getElementById('run-score-btn').innerHTML =
+        `Score the run<br><small>run +${runVal} to score · ${rest} to pending${stealScore ? ` · steals ${stealScore}` : ''}</small>`;
+    document.getElementById('run-hold-btn').innerHTML =
+        `Hold everything<br><small>${hold} to pending${stealHold ? ` · steals ${stealHold}` : ''} · nothing scored yet</small>`;
 }
 function buildRunModal(runs) {
     const container = document.getElementById('run-options-container');
@@ -1642,12 +1660,13 @@ function endGame() {
 function rematchGame() {
     clearAiTimer();
     toggleModal('win-modal', false);
-    const wi = players.findIndex(p => p.id === lastWinnerId);
-    if (wi > 0) players = [...players.slice(wi), ...players.slice(0, wi)];
+    let li = 0;
+    players.forEach((p, i) => { if (p.tally < players[li].tally) li = i; });
+    if (li > 0) players = [...players.slice(li), ...players.slice(0, li)];
     players.forEach(p => { p.tally = 0; p.pending = []; p.gems = 0; p.turns = 0; });
     createDeck(); discardPile = []; playArea = []; lastRenderedTurn = -1; turnIndex = 0; cashing = null;
     finalRound = false; finalTriggerIndex = null; gameOver = false;
-    log(`Rematch. ${players[0].name} deals first as last game's winner.`);
+    log(`Rematch. ${players[0].name} deals first with last game's lowest score.`);
     showToast(`${players[0].name} deals first`);
     playSound('shuffle');
     startTurn();
@@ -2031,6 +2050,13 @@ async function postWin(winner) {
     } catch (e) { /* offline; local tally still records it */ }
 }
 
+document.querySelectorAll('.peek-btn').forEach(btn => {
+    const modal = btn.closest('.modal');
+    const on = (e) => { e.preventDefault(); modal.classList.add('peek'); };
+    const off = () => modal.classList.remove('peek');
+    btn.addEventListener('pointerdown', on);
+    ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => btn.addEventListener(ev, off));
+});
 document.addEventListener('click', (e) => { if (!e.target.closest('.help-wrap')) document.querySelectorAll('.help-wrap.open').forEach(w => w.classList.remove('open')); });
 
 /* ============ Keyboard ============ */
