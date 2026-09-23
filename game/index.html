@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#1a0b0c">
 <title>Push Yer Luck!</title>
-<link rel="icon" type="image/png" href="favicon.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rye&family=Barlow+Semi+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -168,6 +166,8 @@ select:focus, input:focus { outline: 2px solid var(--brass); outline-offset: 1px
 .board-row .b-wins { font-weight: 800; color: var(--brass-light); }
 .board-row .b-turns { font-size: 0.7rem; color: #a08e7c; }
 .board-empty { color: #9a8578; font-style: italic; font-size: 0.85rem; }
+.board-foot { font-size: 0.72rem; color: #9a8578; margin-top: 8px; text-align: right; }
+.modal-content .board-foot { color: #7a6a5a; }
 .modal-content .board-row { background: rgba(255,255,255,0.4); border-color: #d8c9a6; color: var(--ink); }
 .modal-content .board-row .b-wins { color: var(--wood-light); }
 .modal-content .board-row .b-turns { color: #7a6a5a; }
@@ -180,8 +180,14 @@ select:focus, input:focus { outline: 2px solid var(--brass); outline-offset: 1px
 .card-slot.cashing .card { box-shadow: 0 0 0 2px rgba(61,220,132,0.6), 0 0 22px rgba(61,220,132,0.5), 0 8px 18px rgba(0,0,0,0.5); }
 .card-slot.scatter { transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.3, 1), opacity 0.7s; opacity: 0; }
 .chip.flash { animation: chipFlash 0.9s; }
+.chip.robbed { animation: chipRobbed 1.6s; }
+@keyframes chipRobbed { 0%, 100% { transform: translateX(0); box-shadow: 0 0 0 1px var(--wood-edge); } 10%, 50% { transform: translateX(-3px); box-shadow: 0 0 0 3px var(--red-bright), 0 0 26px rgba(240,113,94,0.7); } 30%, 70% { transform: translateX(3px); box-shadow: 0 0 0 3px var(--red-bright), 0 0 26px rgba(240,113,94,0.7); } }
+.flyer .mini.hot { border: 2px solid var(--red-bright); box-shadow: 0 0 14px var(--red), 0 6px 14px rgba(0,0,0,0.6); }
+.toast.alarm { border-color: var(--red-bright); background: rgba(90, 16, 16, 0.96); }
 @keyframes chipFlash { 0%, 100% { box-shadow: 0 0 0 1px var(--brass); } 40% { box-shadow: 0 0 0 3px var(--emerald), 0 0 24px rgba(61,220,132,0.6); } }
 .stamp.big { font-size: clamp(2.6rem, 14vw, 5rem); border-width: 6px; }
+.stamp.long { font-size: clamp(1.4rem, 7.5vw, 2.8rem); letter-spacing: 0.03em; }
+.stamp.long.big { font-size: clamp(1.8rem, 9vw, 3.4rem); }
 .big-btn .amt .run { color: #0a5c34; font-size: 0.85rem; margin-left: 6px; font-weight: 800; }
 .sort-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 0.8rem; color: var(--cream-dark); }
 .sort-row select { width: auto; padding: 4px 26px 4px 8px; font-size: 0.8rem; }
@@ -769,36 +775,42 @@ button:active:not(:disabled) { transform: translateY(2px); border-bottom-width: 
             </ul>
 
             <h3>Stealing</h3>
-            <p>If your hand holds a rank that also sits in an opponent's pending pile, banking steals those cards into your own pending pile. The bank button shows what you would take, and the gold cells under the table mark ranks that would steal.</p>
+            <p>If your hand holds a rank that also sits in an opponent's pending pile, banking steals those cards into your own pending pile. Stolen cards become yours to bank on your next turn, unless someone steals them back first.</p>
 
             <h3>Gems</h3>
             <ul>
                 <li>Bust on three cards or fewer, or on a double joker, and you receive a <strong>pity gem</strong>.</li>
                 <li>Hold 2 gems and you may <strong>escape</strong> a bust: spend both, discard the bust card, and keep drawing.</li>
-                <li>Hold 3 gems and they convert at once into a 50-point bonus.</li>
+                <li>Receive a third gem and all three convert at once into a 50-point bonus.</li>
             </ul>
 
             <h3>Runs</h3>
-            <p>Five or more cards in sequence make a run; jokers fill gaps. A run may be high (10-J-Q-K-A) or low (A-2-3-4-5) but never wraps. When you bank with a run you choose: score the run immediately at double value, or hold the whole hand as pending unscored.</p>
-
-            <h3>The table strip</h3>
-            <p>The row of ranks beneath the table shows red for ranks you hold (a bust if drawn) and gold for ranks that would steal. The small number is how many of that rank are face up in hands and pending piles.</p>
+            <p>Five or more cards in sequence in your hand make a <strong>run</strong>; jokers fill gaps. A run may be high (10-J-Q-K-A) or low (A-2-3-4-5) but never wraps. A run counts only at the moment you bank the hand that holds it; it does not carry into your pending pile or wait for a later turn. When you bank with a run you choose one of two things:</p>
+            <ul>
+                <li><strong>Score it now.</strong> Add up the run cards and double them straight into your score. The run cards are then discarded, and the rest of your hand goes to pending as usual.</li>
+                <li><strong>Hold it.</strong> Give up the run and put every card in your hand into your pending pile unscored. The run cards then count as ordinary cards, so they still steal matching ranks and still bank at your next turn.</li>
+            </ul>
 
             <h3>Turn order</h3>
             <p>The first game follows seat order, or a shuffled order if that option is on. In every rematch the seating stays the same, but play begins with whoever had the lowest score in the previous game.</p>
 
             <h3>Ending the game</h3>
-            <ul>
-                <li><strong>Final round</strong> (default): when a player reaches the target, every other player takes one last turn. All pending piles are then banked and the highest score wins.</li>
-                <li><strong>Instant win</strong>: the first player to reach the target wins on the spot.</li>
-            </ul>
+            <p>When a player reaches the target, every other player takes one last turn (the <strong>final round</strong>). All pending piles are then banked and the highest score wins.</p>
 
             <h3>Optional rules</h3>
             <ul>
+                <li><strong>Instant win</strong>: the first player to reach the target wins on the spot, with no final round.</li>
                 <li><strong>Last call</strong> (final round only, on by default): once the final round begins, escaping a bust costs 1 gem instead of 2.</li>
                 <li><strong>Shuffled seating</strong>: randomize the order for the first game.</li>
                 <li><strong>Bust odds</strong>: show the chance that the next card busts you.</li>
                 <li><strong>Card counting</strong>: tap the deck or discard pile to see exactly how many of each rank remain.</li>
+            </ul>
+
+            <h3>Reading the digital table</h3>
+            <ul>
+                <li>The row of ranks beneath the table shows red for ranks you hold (a bust if drawn) and gold for ranks that would steal. The small number is how many of that rank are face up in hands and pending piles.</li>
+                <li>The bank button shows what banking pays: the hand, any steal, and the run score if one is available.</li>
+                <li>Each player's chip shows score, pending points, gems, and the ranks in their pending pile. Pending ranks that your current hand would steal pulse red.</li>
             </ul>
 
             <h3>Keyboard</h3>
@@ -1003,6 +1015,10 @@ function playSound(type) {
             case 'steal':
                 [784, 1047].forEach((f, i) => note(f, t + i * 0.09, 0.4, { vol: 0.17, partials: BELL, send: 0.5 }));
                 break;
+            case 'robbed': // your pile just got lifted: a sharp knock and a sour falling pair
+                noise(t, 0.06, { type: 'bandpass', freq: 1200, q: 2, vol: 0.5, attack: 0.002 });
+                [622, 466].forEach((f, i) => note(f, t + 0.08 + i * 0.16, 0.5, { type: 'triangle', vol: 0.16, partials: [[1, 1], [2, 0.3]], send: 0.45 }));
+                break;
             case 'run':
                 [523, 659, 784, 1047].forEach((f, i) => note(f, t + i * 0.085, 0.65, { vol: 0.15, partials: BELL, send: 0.5 }));
                 [1319, 1568].forEach((f, i) => note(f, t + 0.42 + i * 0.07, 0.9, { vol: 0.09, partials: BELL, send: 0.6 }));
@@ -1076,6 +1092,9 @@ function recordWin(name, score, turns, target) {
 }
 function winsFor(name, target) { try { return ((loadRecords()[String(target)] || {})[name] || {}).wins || 0; } catch (e) { return 0; } }
 function clearWins() { try { localStorage.removeItem(RECORDS_KEY); localStorage.removeItem('pyl_wins'); } catch (e) { } renderHallOfFame(); }
+const NAMES_KEY = 'pyl_names';
+function loadNames() { try { return JSON.parse(localStorage.getItem(NAMES_KEY) || '[]') || []; } catch (e) { return []; } }
+function saveNames(names) { try { localStorage.setItem(NAMES_KEY, JSON.stringify(names)); } catch (e) { } }
 function boardSort() { const el = document.getElementById('board-sort'); return el ? el.value : 'wins'; }
 function sortRows(rows) {
     const mode = boardSort();
@@ -1132,16 +1151,25 @@ function buildPlayerInputs() {
     }
     const numHumans = parseInt(humanSelect.value);
     const container = document.getElementById('player-inputs-container');
+    // keep whatever the person has already typed or chosen
+    const typed = {}, chosen = {};
+    for (let i = 0; i < 6; i++) {
+        const inp = document.getElementById(`player-name-input-${i}`); if (inp) typed[i] = inp.value;
+        const sel = document.getElementById(`player-ai-select-${i}`); if (sel) chosen[i] = sel.value;
+    }
+    const remembered = loadNames();
     container.innerHTML = '';
     let aiCount = 0;
     for (let i = 0; i < total; i++) {
         const row = document.createElement('div');
         row.className = 'player-input-row';
         if (i < numHumans) {
-            row.innerHTML = `<span>Seat ${i + 1}</span><input type="text" id="player-name-input-${i}" value="Player ${i + 1}" maxlength="16">`;
+            const val = typed[i] !== undefined ? typed[i] : (remembered[i] || `Player ${i + 1}`);
+            row.innerHTML = `<span>Seat ${i + 1}</span><input type="text" id="player-name-input-${i}" value="${escapeHtml(val)}" maxlength="16">`;
         } else {
+            const pick = chosen[i] !== undefined ? parseInt(chosen[i]) : aiCount % AI_PERSONALITIES.length;
             const aiOptions = AI_PERSONALITIES.map((p, idx) =>
-                `<option value="${idx}" ${idx === aiCount % AI_PERSONALITIES.length ? 'selected' : ''}>${p.name} (${p.style})</option>`).join('');
+                `<option value="${idx}" ${idx === pick ? 'selected' : ''}>${p.name} (${p.style})</option>`).join('');
             row.innerHTML = `<span>Seat ${i + 1}</span><select id="player-ai-select-${i}">${aiOptions}</select>`;
             aiCount++;
         }
@@ -1199,11 +1227,13 @@ function initGame() {
 
     players = [];
     const used = {};
+    const typedNames = [];
     for (let i = 0; i < total; i++) {
         let name, isHuman = i < humans, personality = null;
         if (isHuman) {
             const el = document.getElementById(`player-name-input-${i}`);
             name = (el && el.value.trim()) || `Player ${i + 1}`;
+            typedNames[i] = name;
         } else {
             const sel = document.getElementById(`player-ai-select-${i}`);
             personality = AI_PERSONALITIES[sel ? parseInt(sel.value) : 0];
@@ -1212,6 +1242,7 @@ function initGame() {
         if (used[name]) name = `${name} ${++used[name]}`; else used[name] = 1;
         players.push({ id: i, name, isHuman, personality, tally: 0, pending: [], gems: 0, turns: 0 });
     }
+    saveNames(typedNames);
     if (SETTINGS.randomStart) shuffle(players);
 
     createDeck();
@@ -1513,12 +1544,15 @@ function bankTurn(scoreRun) {
     const steals = stealTargets(leftovers, p);
     const thiefSeat = turnIndex;
     const flights = [];
+    let robbedHuman = null;
     steals.forEach(({ from, cards }) => {
         const pts = cards.reduce((a, b) => a + b.val, 0);
+        const ranks = [...new Set(cards.map(c => c.rank))].join(', ');
         log(`${p.name} steals ${cards.length} card${cards.length > 1 ? 's' : ''} worth ${pts} from ${from.name}.`, 'log-steal');
-        showToast(`${p.name} steals ${pts} from ${from.name}`);
+        if (from.isHuman && !p.isHuman) { robbedHuman = from; showToast(`${p.name} took your ${ranks}s for ${pts}!`, 'alarm'); }
+        else showToast(`${p.name} steals ${pts} from ${from.name}`);
         stolen.push(...cards);
-        flights.push({ fromSeat: players.indexOf(from), cards });
+        flights.push({ fromSeat: players.indexOf(from), cards, hot: from.isHuman });
         from.pending = from.pending.filter(c => !cards.includes(c));
     });
 
@@ -1532,9 +1566,17 @@ function bankTurn(scoreRun) {
     if (flights.length) {
         turnLocked = true;
         render(false);
-        setTimeout(() => playSound('steal'), 120);
-        stamp('STEAL', 'gold');
-        buzz(25);
+        if (robbedHuman) {
+            setTimeout(() => playSound('robbed'), 60);
+            stamp(players.filter(x => x.isHuman).length > 1 ? `${robbedHuman.name.toUpperCase()} ROBBED` : 'YOU GOT ROBBED', 'red');
+            buzz([60, 40, 60, 40, 120]);
+            const chip = document.querySelector(`.chip[data-seat="${players.indexOf(robbedHuman)}"]`);
+            if (chip) chip.classList.add('robbed');
+        } else {
+            setTimeout(() => playSound('steal'), 120);
+            stamp('STEAL', 'gold');
+            buzz(25);
+        }
         wait = flySteals(flights, thiefSeat);
     }
     if (checkTarget(p)) return;
@@ -1691,17 +1733,17 @@ function log(msg, className = '') {
     list.appendChild(div);
     list.scrollTop = list.scrollHeight;
 }
-function showToast(msg) {
+function showToast(msg, cls = '') {
     const c = document.getElementById('toast-container');
     const t = document.createElement('div');
-    t.className = 'toast'; t.innerText = msg;
+    t.className = `toast ${cls}`; t.innerText = msg;
     c.appendChild(t);
     setTimeout(() => t.remove(), 2600);
 }
 function stamp(text, color) {
     const felt = document.getElementById('felt');
     const el = document.createElement('div');
-    el.className = `stamp ${color}`;
+    el.className = `stamp ${color} ${text.length > 9 ? 'long' : ''}`;
     el.innerText = text;
     felt.appendChild(el);
     setTimeout(() => el.remove(), 1700);
@@ -1754,9 +1796,9 @@ function fly(fromRect, toRect, html, cls, delay, dur, onDone) {
         { transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(0.5) rotate(0deg)`, opacity: 0.2, offset: 1 }
     ], { duration: dur, delay, easing: 'cubic-bezier(0.3, 0.7, 0.2, 1)', fill: 'forwards' }).onfinish = () => { el.remove(); if (onDone) onDone(); };
 }
-function miniCardHTML(c) {
+function miniCardHTML(c, hot) {
     const isRed = c.suit === '♥' || c.suit === '♦';
-    return `<div class="mini ${isRed ? 'red' : ''}">${c.rank === 'JKR' ? '★' : c.rank}<small>${c.rank === 'JKR' ? '' : c.suit}</small></div>`;
+    return `<div class="mini ${isRed ? 'red' : ''} ${hot ? 'hot' : ''}">${c.rank === 'JKR' ? '★' : c.rank}<small>${c.rank === 'JKR' ? '' : c.suit}</small></div>`;
 }
 function flySteals(flights, thiefSeat) {
     const to = seatRect(thiefSeat);
@@ -1764,7 +1806,7 @@ function flySteals(flights, thiefSeat) {
     let n = 0;
     flights.forEach(f => {
         const from = seatRect(f.fromSeat);
-        f.cards.forEach(c => { fly(from, to, miniCardHTML(c), '', n * 90, dur, null); n++; });
+        f.cards.forEach(c => { fly(from, to, miniCardHTML(c, f.hot), '', n * 90, dur, null); n++; });
     });
     const total = dur + n * 90 + 150;
     setTimeout(() => { const chip = document.querySelector(`.chip[data-seat="${thiefSeat}"]`); if (chip) chip.classList.add('flash'); }, total - 250);
@@ -2004,17 +2046,21 @@ function deviceId() {
         return id;
     } catch (e) { return 'anon'; }
 }
-let lastBoardRows = null, lastAllTime = null;
+let lastBoardRows = null, lastAllTime = null, lastCounts = null;
+function boardFoot() {
+    if (!lastCounts) return '';
+    return `<div class="board-foot">Games recorded: ${lastCounts.today} today · ${lastCounts.total} all time</div>`;
+}
 function renderBoard(el, rows) {
     if (!rows || rows.length === 0) {
         const at = lastAllTime && Object.keys(lastAllTime).length ? groupedBoardHTML(Object.fromEntries(Object.keys(lastAllTime).map(t => [t, []])), null, lastAllTime) : '';
-        el.innerHTML = '<span class="board-empty">No wins posted yet today. Be the first.</span>' + at;
+        el.innerHTML = '<span class="board-empty">No wins posted yet today. Be the first.</span>' + at + boardFoot();
         return;
     }
     const groups = {};
     rows.forEach(r => { const t = String(r.target || 150); (groups[t] = groups[t] || []).push(r); });
     if (lastAllTime) Object.keys(lastAllTime).forEach(t => { groups[t] = groups[t] || []; });
-    el.innerHTML = groupedBoardHTML(groups, deviceId(), lastAllTime);
+    el.innerHTML = groupedBoardHTML(groups, deviceId(), lastAllTime) + boardFoot();
 }
 async function loadLeaderboard(attempt = 0) {
     if (!LEADERBOARD_URL) return;
@@ -2024,6 +2070,7 @@ async function loadLeaderboard(attempt = 0) {
         const data = await res.json();
         lastBoardRows = data.rows || [];
         lastAllTime = data.alltime || null;
+        lastCounts = data.counts || null;
         targets.forEach(el => renderBoard(el, lastBoardRows));
     } catch (e) {
         if (attempt < 2) { setTimeout(() => loadLeaderboard(attempt + 1), 2500 * (attempt + 1)); return; } // the sheet script may be waking up
@@ -2063,10 +2110,13 @@ document.addEventListener('click', (e) => { if (!e.target.closest('.help-wrap'))
 
 /* ============ Keyboard ============ */
 document.addEventListener('keydown', (e) => {
-    if (document.getElementById('game-screen').style.display !== 'grid') return;
     const tag = (e.target && e.target.tagName) || '';
     if (e.repeat) return;
     const k = e.key.toLowerCase();
+    if (document.getElementById('game-screen').style.display !== 'grid') {
+        if (k === 'escape') ['rules-modal', 'inspector-modal', 'board-modal'].forEach(id => toggleModal(id, false));
+        return;
+    }
     if (k === 'escape' && e.target && e.target.blur) e.target.blur();
     if (k !== 'escape' && (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA')) return;
     if (modalOpen('gem-modal')) {
