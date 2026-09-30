@@ -336,6 +336,12 @@
   .toast.warn{ background:var(--warn-soft); color:var(--ink); border:1px solid var(--warn); }
   @keyframes fadein{ from{ opacity:0; transform:translate(-50%, 6px) } to{ opacity:1; transform:translate(-50%, 0) } }
 
+  .section-link{ background:none; border:none; padding:4px 0; text-align:left; }
+  .section-link:active .eyebrow{ color:var(--accent-deep); }
+  .bday-row.past{ opacity:.62; }
+  .bday-row.today .oname{ color:var(--accent-deep); }
+  .bday-when{ flex:none; text-align:right; font-size:12.5px; color:var(--ink-2); font-variant-numeric:tabular-nums; }
+  .bday-when b{ display:block; color:var(--ink); font-size:14px; }
   .add-link{ background:none; border:1.5px dashed var(--line-strong); border-radius:14px; color:var(--ink-2); font-size:14.5px; font-weight:700; padding:13px; width:100%; display:inline-flex; align-items:center; justify-content:center; gap:8px; }
   .add-link svg{ width:18px; height:18px; }
   .divider{ height:1px; background:var(--line); margin:2px 0; }
@@ -400,10 +406,11 @@
           </section>
 
           <section>
-            <div class="row" style="gap:8px; margin-bottom:8px;">
+            <button class="row section-link" id="open-birthdays" type="button" style="gap:8px; margin-bottom:8px; width:100%;">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:16px;height:16px;color:var(--accent-deep)"><path d="M12 8v13M12 8a2.5 2.5 0 1 0-2.5-2.5c0 1.5 1.2 2.5 2.5 2.5Zm0 0a2.5 2.5 0 1 1 2.5-2.5c0 1.5-1.2 2.5-2.5 2.5Z"/><path d="M5 13h14a2 2 0 0 1 2 2v6H3v-6a2 2 0 0 1 2-2Z"/><path d="M3 21h18"/></svg>
-              <span class="eyebrow">Birthdays in the next 30 days</span>
-            </div>
+              <span class="eyebrow grow" style="text-align:left;">Birthdays coming up</span>
+              <span class="linkbtn" style="padding:0;">See all &rsaquo;</span>
+            </button>
             <div class="ticker" id="bday-ticker"></div>
           </section>
 
@@ -412,6 +419,26 @@
             Add a new student
           </button>
         </div>
+      </section>
+
+      <!-- BIRTHDAYS -->
+      <section id="screen-birthdays" class="screen" hidden>
+        <div class="back-row">
+          <button class="iconbtn" data-back type="button" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg></button>
+          <span class="eyebrow">Birthdays</span>
+        </div>
+        <section class="card">
+          <div class="card-head"><h2 class="card-title">Active students</h2><span class="tiny">last 2 · next 13</span></div>
+          <p class="empty" id="bday-active-empty" hidden>No birthdates on file for active students yet.</p>
+          <div id="bday-active-list"></div>
+        </section>
+        <div class="results-divider"><span>Not currently active</span></div>
+        <section class="card">
+          <div class="card-head"><h2 class="card-title">Inactive students</h2><span class="tiny">last 2 · next 13</span></div>
+          <p class="empty" id="bday-inactive-empty" hidden>No birthdates on file for inactive students.</p>
+          <div id="bday-inactive-list"></div>
+        </section>
+        <p class="tiny" style="text-align:center;">Tap a name to open their profile. Birthdates are added or fixed there.</p>
       </section>
 
       <!-- ROSTER -->
@@ -944,7 +971,7 @@
   //  NAVIGATION
   // =====================================================================
   var TAB_SCREENS = ["screen-home", "screen-roster", "screen-summary"];
-  var ALL_SCREENS = ["screen-home", "screen-roster", "screen-summary", "screen-confirm", "screen-update", "screen-add", "screen-success", "screen-profile"];
+  var ALL_SCREENS = ["screen-home", "screen-roster", "screen-summary", "screen-confirm", "screen-update", "screen-add", "screen-success", "screen-profile", "screen-birthdays"];
   function show(id, opts){
     opts = opts || {};
     if(opts.push && state.screen !== id && ALL_SCREENS.indexOf(state.screen) !== -1) state.navStack.push(state.screen);
@@ -961,6 +988,7 @@
     if(!prev || TAB_SCREENS.indexOf(prev) !== -1){ showTab(prev && TAB_SCREENS.indexOf(prev) !== -1 ? prev : state.tab); return; }
     if(prev === "screen-confirm" && state.current){ openConfirm(state.current, {replace:true}); return; }
     if(prev === "screen-profile" && state.current){ openProfile(state.current, {replace:true}); return; }
+    if(prev === "screen-birthdays"){ openBirthdays({replace:true}); return; }
     showTab(state.tab);
   }
   function showTab(id){
@@ -1113,29 +1141,83 @@
   }
   $("today-toggle").addEventListener("click", function(){ state.todayExpanded = !state.todayExpanded; renderToday(); });
 
+  // Birthday math for one student: days until the next birthday (0..365), days since
+  // the last one (1..365), the age they turn / turned, and the calendar dates.
+  function birthdayInfo(s){
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(s.birthdate)) return null;
+    var t = new Date(); t.setHours(12,0,0,0);
+    var b = isoToDate(s.birthdate);
+    if(isNaN(b.getTime())) return null;
+    var thisYear = new Date(t.getFullYear(), b.getMonth(), b.getDate(), 12);
+    var next = thisYear >= t ? thisYear : new Date(t.getFullYear()+1, b.getMonth(), b.getDate(), 12);
+    var last = thisYear < t ? thisYear : new Date(t.getFullYear()-1, b.getMonth(), b.getDate(), 12);
+    return {
+      s: s,
+      daysUntil: Math.round((next - t) / 86400000),
+      daysSince: Math.round((t - last) / 86400000),
+      next: next, last: last,
+      turning: next.getFullYear() - b.getFullYear(),
+      turned: last.getFullYear() - b.getFullYear()
+    };
+  }
+  function cakeSvg(){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 8v13M12 8a2.5 2.5 0 1 0-2.5-2.5c0 1.5 1.2 2.5 2.5 2.5Zm0 0a2.5 2.5 0 1 1 2.5-2.5c0 1.5-1.2 2.5-2.5 2.5Z"/><path d="M5 13h14a2 2 0 0 1 2 2v6H3v-6a2 2 0 0 1 2-2Z"/><path d="M3 21h18"/></svg>'; }
+  function monthDay(d){ return d.toLocaleDateString(undefined, {month:"short", day:"numeric"}); }
+
+  // Home ticker: the next few birthdays among active/approaching students.
   function renderBirthdays(){
     var el = $("bday-ticker"); el.innerHTML = "";
-    var t = new Date(); t.setHours(12,0,0,0);
-    var list = [];
-    state.students.forEach(function(s){
-      if(!/^\d{4}-\d{2}-\d{2}$/.test(s.birthdate) || statusOf(s) === "inactive") return;
-      var b = isoToDate(s.birthdate);
-      var next = new Date(t.getFullYear(), b.getMonth(), b.getDate(), 12);
-      if(next < t) next = new Date(t.getFullYear()+1, b.getMonth(), b.getDate(), 12);
-      var days = Math.round((next - t) / 86400000);
-      if(days <= 30) list.push({ s: s, days: days, next: next, turning: next.getFullYear() - b.getFullYear() });
-    });
-    list.sort(function(a, b){ return a.days - b.days; });
-    if(!list.length){ el.innerHTML = '<p class="empty">No birthdays among active students in the next 30 days.</p>'; return; }
+    var list = state.students.map(birthdayInfo).filter(function(x){ return x && statusOf(x.s) !== "inactive"; });
+    list.sort(function(a, b){ return a.daysUntil - b.daysUntil; });
+    list = list.slice(0, 6);
+    if(!list.length){ el.innerHTML = '<p class="empty">No birthdates on file yet. Add them from a student’s profile.</p>'; return; }
     list.forEach(function(x){
       var chip = document.createElement("button"); chip.className = "bday-chip"; chip.type = "button";
-      var when = x.days === 0 ? "Today!" : x.days === 1 ? "Tomorrow" : x.next.toLocaleDateString(undefined, {month:"short", day:"numeric"});
-      chip.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 8v13M12 8a2.5 2.5 0 1 0-2.5-2.5c0 1.5 1.2 2.5 2.5 2.5Zm0 0a2.5 2.5 0 1 1 2.5-2.5c0 1.5-1.2 2.5-2.5 2.5Z"/><path d="M5 13h14a2 2 0 0 1 2 2v6H3v-6a2 2 0 0 1 2-2Z"/><path d="M3 21h18"/></svg>' +
-        '<span>' + esc(fullName(x.s)) + '</span><span class="when">' + esc(when) + ' · turns ' + x.turning + '</span>';
+      var when = x.daysUntil === 0 ? "Today!" : x.daysUntil === 1 ? "Tomorrow" : monthDay(x.next);
+      chip.innerHTML = cakeSvg() + '<span>' + esc(fullName(x.s)) + '</span><span class="when">' + esc(when) + ' · turns ' + x.turning + '</span>';
       chip.addEventListener("click", function(){ openProfile(x.s, {push:true}); });
       el.appendChild(chip);
     });
   }
+
+  // Full list: for a group of students, the 2 most recent birthdays then the next 13, in date order.
+  var BDAY_PAST = 2, BDAY_NEXT = 13;
+  function birthdayRows(students){
+    var infos = students.map(birthdayInfo).filter(Boolean);
+    var past = infos.filter(function(x){ return x.daysUntil !== 0; }).sort(function(a, b){ return a.daysSince - b.daysSince; }).slice(0, BDAY_PAST).reverse();
+    var upcoming = infos.slice().sort(function(a, b){ return a.daysUntil - b.daysUntil; }).slice(0, BDAY_NEXT);
+    var seen = {};
+    past.forEach(function(x){ seen[x.s.id] = true; });
+    return past.map(function(x){ return { x: x, kind: "past" }; })
+      .concat(upcoming.filter(function(x){ return !seen[x.s.id]; }).map(function(x){ return { x: x, kind: x.daysUntil === 0 ? "today" : "upcoming" }; }));
+  }
+  function renderBirthdayList(elId, emptyId, students){
+    var rows = birthdayRows(students), el = $(elId);
+    el.innerHTML = "";
+    $(emptyId).hidden = !!rows.length;
+    rows.forEach(function(r){
+      var x = r.x, s = x.s, age = ageFrom(s.birthdate);
+      var row = document.createElement("div"); row.className = "list-row bday-row " + r.kind;
+      var when, sub;
+      if(r.kind === "past"){ when = monthDay(x.last); sub = "turned " + x.turned + " · " + (x.daysSince === 1 ? "yesterday" : x.daysSince + " days ago"); }
+      else if(r.kind === "today"){ when = "Today!"; sub = "turns " + x.turning; }
+      else { when = monthDay(x.next); sub = "turns " + x.turning + " · " + (x.daysUntil === 1 ? "tomorrow" : "in " + x.daysUntil + " days"); }
+      row.innerHTML = '<span class="dot dot-' + statusOf(s) + '"></span>' +
+        '<button class="main" type="button"><div class="oname">' + esc(fullName(s)) + (s.nickname ? ' <span class="tiny">“' + esc(s.nickname) + '”</span>' : '') + '</div>' +
+        '<div class="ometa">' + esc([s.grade ? "Grade " + s.grade : null, age !== null ? "Age " + age : null, lastSeenText(s)].filter(Boolean).join(" · ")) + '</div></button>' +
+        '<span class="bday-when"><b>' + esc(when) + '</b>' + esc(sub) + '</span>';
+      row.querySelector(".main").addEventListener("click", function(){ openProfile(s, {push:true}); });
+      el.appendChild(row);
+    });
+  }
+  function openBirthdays(opts){
+    opts = opts || {};
+    var active = state.students.filter(function(s){ return statusOf(s) !== "inactive"; });
+    var inactive = state.students.filter(function(s){ return statusOf(s) === "inactive"; });
+    renderBirthdayList("bday-active-list", "bday-active-empty", active);
+    renderBirthdayList("bday-inactive-list", "bday-inactive-empty", inactive);
+    show("screen-birthdays", { push: !opts.replace });
+  }
+  $("open-birthdays").addEventListener("click", function(){ openBirthdays(); });
 
   // ---- search ----------------------------------------------------------
   function searchStudents(q){
