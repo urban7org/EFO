@@ -336,6 +336,8 @@
   .toast.warn{ background:var(--warn-soft); color:var(--ink); border:1px solid var(--warn); }
   @keyframes fadein{ from{ opacity:0; transform:translate(-50%, 6px) } to{ opacity:1; transform:translate(-50%, 0) } }
 
+  .sortbox{ display:inline-flex; align-items:center; gap:6px; }
+  .sortbox select{ border:1px solid var(--line); background:var(--surface); color:var(--ink); border-radius:10px; padding:7px 10px; font-size:13.5px; font-weight:600; }
   .section-link{ background:none; border:none; padding:4px 0; text-align:left; }
   .section-link:active .eyebrow{ color:var(--accent-deep); }
   .bday-row.past{ opacity:.62; }
@@ -428,15 +430,12 @@
           <span class="eyebrow">Birthdays</span>
         </div>
         <section class="card">
-          <div class="card-head"><h2 class="card-title">Active students</h2><span class="tiny">last 2 · next 13</span></div>
-          <p class="empty" id="bday-active-empty" hidden>No birthdates on file for active students yet.</p>
-          <div id="bday-active-list"></div>
-        </section>
-        <div class="results-divider"><span>Not currently active</span></div>
-        <section class="card">
-          <div class="card-head"><h2 class="card-title">Inactive students</h2><span class="tiny">last 2 · next 13</span></div>
-          <p class="empty" id="bday-inactive-empty" hidden>No birthdates on file for inactive students.</p>
-          <div id="bday-inactive-list"></div>
+          <div class="card-head">
+            <h2 class="card-title">Last 2 &middot; next 13</h2>
+            <label class="check" style="padding:0;"><input type="checkbox" id="bday-show-inactive"> Show inactive</label>
+          </div>
+          <p class="empty" id="bday-empty" hidden>No birthdates on file yet.</p>
+          <div id="bday-list"></div>
         </section>
         <p class="tiny" style="text-align:center;">Tap a name to open their profile. Birthdates are added or fixed there.</p>
       </section>
@@ -449,7 +448,20 @@
           <button class="search-clear" id="roster-clear" type="button" aria-label="Clear" hidden>&times;</button>
         </div>
         <div class="chip-row" id="roster-chips"></div>
-        <p class="tiny" id="roster-count"></p>
+        <div class="row" style="justify-content:space-between;">
+          <p class="tiny" id="roster-count"></p>
+          <label class="sortbox"><span class="tiny">Sort</span>
+            <select id="roster-sort" aria-label="Sort roster">
+              <option value="last">Last name</option>
+              <option value="first">First name</option>
+              <option value="grade">Grade</option>
+              <option value="age">Age</option>
+              <option value="school">School</option>
+              <option value="recent">Last visit</option>
+              <option value="household">Household</option>
+            </select>
+          </label>
+        </div>
         <div class="roster-list" id="roster-list"></div>
       </section>
 
@@ -475,6 +487,13 @@
           <div class="card-head"><h2 class="card-title">Regulars this month</h2></div>
           <p class="empty" id="regulars-empty" hidden>No check-ins in the last 30 days yet.</p>
           <div id="regulars-list"></div>
+        </section>
+        <section class="card">
+          <div class="card-head"><h2 class="card-title">Missing info</h2><span class="pill pill-muted num" id="missing-count">0</span></div>
+          <p class="tiny" style="margin-bottom:8px;">Active students with a blank school, grade, birthdate, phone, or guardian. Tap to fill it in.</p>
+          <p class="empty" id="missing-empty" hidden>Everyone active has complete info.</p>
+          <div id="missing-list"></div>
+          <button class="linkbtn" id="missing-more" type="button" hidden>Show all</button>
         </section>
       </section>
 
@@ -551,6 +570,12 @@
         </div>
 
         <div class="card stack">
+          <div class="card-head" style="margin-bottom:0"><div class="section-title">Family &amp; household</div><span class="tiny" id="household-label"></span></div>
+          <p class="empty" id="household-empty" hidden>No other students share this household label, phone number, or guardian.</p>
+          <div id="household-list"></div>
+        </div>
+
+        <div class="card stack">
           <div class="section-title">Add a past check-in</div>
           <div class="field-row">
             <div class="field"><label for="add-visit-date">Date</label><input type="date" id="add-visit-date"></div>
@@ -606,6 +631,11 @@
     </div>
   </div>
 
+  <datalist id="school-list"></datalist>
+  <datalist id="household-list"></datalist>
+  <datalist id="grade-list">
+    <option value="PK"></option><option value="K"></option><option value="1"></option><option value="2"></option><option value="3"></option><option value="4"></option><option value="5"></option><option value="6"></option><option value="7"></option><option value="8"></option><option value="9"></option><option value="10"></option><option value="11"></option><option value="12"></option>
+  </datalist>
   <div class="toast" id="toast" hidden role="status" aria-live="polite"></div>
 </div>
 
@@ -625,16 +655,17 @@
     {key:"school", label:"School"},
     {key:"grade", label:"Grade"},
     {key:"birthdate", label:"Birthdate", type:"date"},
-    {key:"phone", label:"Phone", type:"tel"},
-    {key:"guardian", label:"Parent / guardian"}
+    {key:"guardian", label:"Parent / guardian"},
+    {key:"phone", label:"Parent / guardian phone", type:"tel"}
   ];
   var PROFILE_FIELDS = [
     {key:"first", label:"First name"}, {key:"last", label:"Last name"},
     {key:"nickname", label:"Nickname"}, {key:"notes", label:"Notes"},
     {key:"school", label:"School"}, {key:"grade", label:"Grade"},
     {key:"birthdate", label:"Birthdate", type:"date"},
-    {key:"phone", label:"Phone", type:"tel"},
     {key:"guardian", label:"Parent / guardian"},
+    {key:"phone", label:"Parent / guardian phone", type:"tel"},
+    {key:"household", label:"Household (family label)"},
     {key:"email", label:"Email", type:"email"},
     {key:"address", label:"Address"}
   ];
@@ -653,8 +684,8 @@
     online: true, syncing: false, flushing: false, loading: null, lastSync: null, lastError: null,
     failStreak: 0, alertSent: false, reconnectTimer: null, refreshTimer: null, flushTimer: null,
     current: null, prevLastSeen: null, todayExpanded: false, historyExpanded: false,
-    rosterFilter: "all", rosterQuery: "", navStack: [], screen: "screen-gate", tab: "screen-home",
-    selectedBar: null
+    rosterFilter: "all", rosterQuery: "", rosterSort: "last", missingExpanded: false,
+    navStack: [], screen: "screen-gate", tab: "screen-home", selectedBar: null
   };
   var KEYS = { roster:"efo.roster.v2", pending:"efo.pending.v2", unlock:"efo.unlock.v2", lastGood:"efo.lastgood.v2" };
   var store = {
@@ -709,6 +740,7 @@
       nickname: String(o.nickname || ""), notes: String(o.notes || ""), school: String(o.school || ""),
       grade: String(o.grade || ""), birthdate: String(o.birthdate || ""), phone: String(o.phone || ""),
       guardian: String(o.guardian || ""), email: String(o.email || ""), address: String(o.address || ""),
+      gradeYear: String(o.gradeYear || ""), household: String(o.household || ""),
       visits: Array.isArray(o.visits) ? o.visits.slice().sort() : [],
       archivedVisits: parseInt(o.archivedVisits, 10) || 0
     };
@@ -731,6 +763,28 @@
     if(st === "active") return '<span class="pill pill-good">Active</span>';
     if(st === "approaching") return '<span class="pill pill-warn">Approaching</span>';
     return '<span class="pill pill-muted">Inactive</span>';
+  }
+  // School years run August through July: Sep 2026 -> "2026-27", Jul 2027 -> "2026-27".
+  function schoolYear(d){
+    d = d || new Date();
+    var y = d.getFullYear(), start = (d.getMonth() + 1) >= 8 ? y : y - 1;
+    return start + "-" + String((start + 1) % 100).padStart(2, "0");
+  }
+  function isGradeStale(s){ return !!s.grade && s.gradeYear !== schoolYear(); }
+  function gradeText(s){
+    if(!s.grade) return null;
+    return "Grade " + s.grade + (isGradeStale(s) ? " (" + (s.gradeYear || "earlier year") + ")" : "");
+  }
+  function phoneDigits(p){ var d = String(p || "").replace(/\D/g, ""); if(d.length === 11 && d[0] === "1") d = d.slice(1); return d.length >= 7 ? d : ""; }
+  // People connected to this student: same Household label, then a shared phone, then the same guardian text.
+  function relatedStudents(s){
+    var out = [], seen = {}; seen[s.id] = true;
+    function add(o, why){ if(seen[o.id]) return; seen[o.id] = true; out.push({ s: o, why: why }); }
+    var hh = norm(s.household), ph = phoneDigits(s.phone), gd = norm(s.guardian);
+    state.students.forEach(function(o){ if(hh && norm(o.household) === hh) add(o, "household"); });
+    state.students.forEach(function(o){ if(ph && phoneDigits(o.phone) === ph) add(o, "phone"); });
+    state.students.forEach(function(o){ if(gd && gd.length > 2 && norm(o.guardian) === gd) add(o, "guardian"); });
+    return out;
   }
   function sameNameOthers(s){
     var f = norm(s.first), l = norm(s.last);
@@ -936,6 +990,7 @@
     renderToday();
     state.current = s;
     var missing = REQUIRED_FIELDS.filter(function(f){ return !s[f.key]; });
+    if(isGradeStale(s)) missing.push({ key:"grade", label:"Grade", stale:true });
     var needsReverify = !!(state.prevLastSeen && daysBetween(state.prevLastSeen, today) > REVERIFY_DAYS);
     if(missing.length || needsReverify) openUpdate(s, missing, needsReverify);
     else openSuccess(s);
@@ -953,13 +1008,20 @@
   }
   function saveFields(s, fields){
     var changed = {};
-    for(var k in fields){ if(String(s[k] || "") !== String(fields[k] || "")){ s[k] = fields[k]; changed[k] = fields[k]; } }
+    for(var k in fields){
+      var same = String(s[k] || "") === String(fields[k] || "");
+      // Re-saving an unchanged grade still counts once it's from an earlier school year: it confirms this year's grade.
+      if(same && !(k === "grade" && fields[k] && isGradeStale(s))) continue;
+      s[k] = fields[k]; changed[k] = fields[k];
+    }
+    if(changed.hasOwnProperty("grade")) s.gradeYear = changed.grade ? schoolYear() : "";
     if(Object.keys(changed).length){ enqueue({ action:"updateStudent", studentId: s.id, fields: changed }); saveRosterCache(); }
     return Object.keys(changed).length;
   }
   function newStudentId(){ return "N" + Date.now().toString(36).toUpperCase() + Math.floor(Math.random()*1296).toString(36).toUpperCase().padStart(2, "0"); }
   function addStudent(fields){
     var s = normalizeStudent(fields); s.id = newStudentId(); s.visits = [];
+    s.gradeYear = s.grade ? schoolYear() : "";
     state.students.push(s);
     var f = {}; PROFILE_FIELDS.forEach(function(x){ f[x.key] = s[x.key]; }); f.id = s.id;
     enqueue({ action:"addStudent", fields: f });
@@ -1194,6 +1256,7 @@
     var rows = birthdayRows(students), el = $(elId);
     el.innerHTML = "";
     $(emptyId).hidden = !!rows.length;
+    $(emptyId).textContent = students.length ? "No birthdates on file for these students yet." : "No students in this group.";
     rows.forEach(function(r){
       var x = r.x, s = x.s, age = ageFrom(s.birthdate);
       var row = document.createElement("div"); row.className = "list-row bday-row " + r.kind;
@@ -1203,21 +1266,24 @@
       else { when = monthDay(x.next); sub = "turns " + x.turning + " · " + (x.daysUntil === 1 ? "tomorrow" : "in " + x.daysUntil + " days"); }
       row.innerHTML = '<span class="dot dot-' + statusOf(s) + '"></span>' +
         '<button class="main" type="button"><div class="oname">' + esc(fullName(s)) + (s.nickname ? ' <span class="tiny">“' + esc(s.nickname) + '”</span>' : '') + '</div>' +
-        '<div class="ometa">' + esc([s.grade ? "Grade " + s.grade : null, age !== null ? "Age " + age : null, lastSeenText(s)].filter(Boolean).join(" · ")) + '</div></button>' +
+        '<div class="ometa">' + esc([gradeText(s), age !== null ? "Age " + age : null, lastSeenText(s)].filter(Boolean).join(" · ")) + '</div></button>' +
         '<span class="bday-when"><b>' + esc(when) + '</b>' + esc(sub) + '</span>';
       row.querySelector(".main").addEventListener("click", function(){ openProfile(s, {push:true}); });
       el.appendChild(row);
     });
   }
+  function renderBirthdaysScreen(){
+    var showInactive = $("bday-show-inactive").checked;
+    var pool = showInactive ? state.students : state.students.filter(function(s){ return statusOf(s) !== "inactive"; });
+    renderBirthdayList("bday-list", "bday-empty", pool);
+  }
   function openBirthdays(opts){
     opts = opts || {};
-    var active = state.students.filter(function(s){ return statusOf(s) !== "inactive"; });
-    var inactive = state.students.filter(function(s){ return statusOf(s) === "inactive"; });
-    renderBirthdayList("bday-active-list", "bday-active-empty", active);
-    renderBirthdayList("bday-inactive-list", "bday-inactive-empty", inactive);
+    renderBirthdaysScreen();
     show("screen-birthdays", { push: !opts.replace });
   }
   $("open-birthdays").addEventListener("click", function(){ openBirthdays(); });
+  $("bday-show-inactive").addEventListener("change", renderBirthdaysScreen);
 
   // ---- search ----------------------------------------------------------
   function searchStudents(q){
@@ -1226,7 +1292,7 @@
     var tokens = q.split(/\s+/).filter(Boolean);
     var out = [];
     state.students.forEach(function(s){
-      var hay = norm(s.first + " " + s.last + " " + s.last + " " + s.first + " " + s.nickname + " " + s.notes + " " + s.id);
+      var hay = norm(s.first + " " + s.last + " " + s.last + " " + s.first + " " + s.nickname + " " + s.notes + " " + s.household + " " + s.id);
       for(var i = 0; i < tokens.length; i++){ if(hay.indexOf(tokens[i]) === -1) return; }
       var score = 0;
       if(norm(s.first).indexOf(q) === 0 || norm(s.last).indexOf(q) === 0 || norm(fullName(s)).indexOf(q) === 0) score += 3;
@@ -1244,7 +1310,7 @@
   }
   function buildResultRow(s){
     var st = statusOf(s), today = todayISO(), here = hasVisit(s, today), age = ageFrom(s.birthdate);
-    var meta = [ s.grade ? "Grade " + s.grade : null, age !== null ? "Age " + age : null, lastSeenText(s) ].filter(Boolean).join(" · ");
+    var meta = [ gradeText(s), age !== null ? "Age " + age : null, lastSeenText(s) ].filter(Boolean).join(" · ");
     var row = document.createElement("div"); row.className = "result-row";
     row.innerHTML =
       '<button class="result-card" type="button">' +
@@ -1318,8 +1384,10 @@
     notes.querySelector("input").addEventListener("input", function(e){ saveNotes(e.target.value.trim()); });
 
     var facts = document.createElement("div"); facts.className = "facts";
-    facts.innerHTML = factHtml("Grade", s.grade) + factHtml("Age", age !== null ? String(age) : "") + factHtml("School", s.school) + factHtml("Last here", lastVisit(s) ? fmtDateShort(lastVisit(s)) + (lastVisit(s).slice(0,4) !== today.slice(0,4) ? " " + lastVisit(s).slice(0,4) : "") : "First visit") +
-      factHtml("Last 12 wks", plural(visitsWithin(s, 84), "visit", "visits")) + factHtml("Contact", s.phone || s.guardian);
+    var gradeFact = s.grade ? s.grade + (isGradeStale(s) ? " (" + (s.gradeYear || "earlier year") + ")" : "") : "";
+    facts.innerHTML = factHtml("Grade", gradeFact) + factHtml("Age", age !== null ? String(age) : "") + factHtml("School", s.school) + factHtml("Last here", lastVisit(s) ? fmtDateShort(lastVisit(s)) + (lastVisit(s).slice(0,4) !== today.slice(0,4) ? " " + lastVisit(s).slice(0,4) : "") : "First visit") +
+      factHtml("Last 12 wks", plural(visitsWithin(s, 84), "visit", "visits")) + factHtml("Parent / guardian", [s.guardian, s.phone].filter(Boolean).join(" \u00b7 ")) +
+      (s.household ? factHtml("Household", s.household) : "");
     card.appendChild(facts);
 
     if(here){
@@ -1344,8 +1412,26 @@
     var type = f.type === "date" ? "date" : f.type === "tel" ? "tel" : f.type === "email" ? "email" : "text";
     var extra = f.type === "tel" ? ' inputmode="tel"' : "";
     var id = (prefix || "f") + "-" + f.key;
+    if(f.key === "school"){ extra += ' list="school-list" autocapitalize="words"'; refreshSchoolList(); }
+    if(f.key === "grade"){ extra += ' list="grade-list" autocapitalize="characters"'; }
+    if(f.key === "household"){ extra += ' list="household-list" autocapitalize="words"'; refreshHouseholdList(); }
     return '<div class="field' + (isEmpty ? " empty" : "") + '"><label for="' + id + '">' + esc(f.label) + (req ? ' <span class="req">· needed</span>' : '') + '</label>' +
       '<input id="' + id + '" type="' + type + '"' + extra + ' data-field="' + f.key + '" value="' + esc(value || "") + '"></div>';
+  }
+  // Every distinct school already on the roster becomes a typing suggestion (free text still allowed).
+  function refreshHouseholdList(){
+    var dl = $("household-list"); if(!dl) return;
+    var seen = {}, names = [];
+    state.students.forEach(function(s){ var v = String(s.household || "").trim(); if(v && !seen[norm(v)]){ seen[norm(v)] = true; names.push(v); } });
+    names.sort();
+    dl.innerHTML = names.map(function(n){ return '<option value="' + esc(n) + '"></option>'; }).join("");
+  }
+  function refreshSchoolList(){
+    var dl = $("school-list"); if(!dl) return;
+    var counts = {};
+    state.students.forEach(function(s){ var v = String(s.school || "").trim(); if(!v) return; var k = norm(v); if(!counts[k]) counts[k] = { label: v, n: 0 }; counts[k].n++; if(v !== counts[k].label && v[0] === v[0].toUpperCase()) counts[k].label = v; });
+    var names = Object.keys(counts).map(function(k){ return counts[k]; }).sort(function(a, b){ return b.n - a.n || a.label.localeCompare(b.label); }).map(function(x){ return x.label; });
+    dl.innerHTML = names.map(function(n){ return '<option value="' + esc(n) + '"></option>'; }).join("");
   }
   function wireDateField(input){
     if(!input || input.type !== "date") return;
@@ -1368,7 +1454,15 @@
     } else banner.hidden = true;
     var fields = needsReverify ? REQUIRED_FIELDS : missing;
     var form = $("update-form"); form.innerHTML = "";
-    fields.forEach(function(f){ form.insertAdjacentHTML("beforeend", fieldHtml(f, s[f.key], !s[f.key], !s[f.key], "u")); });
+    fields.forEach(function(f){
+      var stale = f.key === "grade" && isGradeStale(s);
+      form.insertAdjacentHTML("beforeend", fieldHtml(f, stale ? "" : s[f.key], !s[f.key] || stale, !s[f.key] || stale, "u"));
+      if(stale){
+        var hint = document.createElement("p"); hint.className = "field-hint";
+        hint.textContent = "On file: Grade " + s.grade + " for " + (s.gradeYear || "an earlier year") + ". What grade is " + s.first + " in this school year (" + schoolYear() + ")? Same grade is fine if held back.";
+        form.lastElementChild.appendChild(hint);
+      }
+    });
     form.querySelectorAll('input[type="date"]').forEach(wireDateField);
     $("update-eyebrow").textContent = needsReverify ? "Welcome back" : "One quick thing";
     show("screen-update");
@@ -1475,6 +1569,7 @@
 
     $("add-visit-date").value = today; $("add-visit-date").max = today;
     $("add-visit-msg").hidden = true;
+    renderHousehold(s);
     renderHistory(s);
     show("screen-profile", { push: !!opts.push });
   }
@@ -1486,6 +1581,35 @@
     toast(n ? "Saved " + s.first + "'s info" : "Nothing changed");
     openProfile(s, {replace:true});
   });
+  function householdLabelFor(a, b){
+    var base = (a.last || b.last || a.first || "Family").trim().split(/\s+/)[0];
+    var digits = phoneDigits(a.phone) || phoneDigits(b.phone);
+    return base + "-" + (digits ? digits.slice(-4) : String(Date.now()).slice(-4));
+  }
+  function linkHousehold(s, o){
+    var label = s.household || o.household || householdLabelFor(s, o);
+    if(!s.household) saveFields(s, { household: label });
+    if(norm(o.household) !== norm(label)) saveFields(o, { household: label });
+    toast(s.first + " and " + o.first + " are now in household \u201c" + label + "\u201d");
+    openProfile(s, {replace:true});
+  }
+  function renderHousehold(s){
+    var rel = relatedStudents(s), el = $("household-list"); el.innerHTML = "";
+    $("household-label").textContent = s.household ? "Label: " + s.household : "No household label yet";
+    $("household-empty").hidden = !!rel.length;
+    rel.forEach(function(r){
+      var o = r.s, why = r.why === "household" ? "Same household" : r.why === "phone" ? "Shares phone " + esc(o.phone) : "Same guardian: " + esc(o.guardian);
+      var row = document.createElement("div"); row.className = "list-row";
+      row.innerHTML = '<span class="dot dot-' + statusOf(o) + '"></span>' +
+        '<button class="main" type="button"><div class="oname">' + esc(fullName(o)) + (o.nickname ? ' <span class="tiny">\u201c' + esc(o.nickname) + '\u201d</span>' : '') + '</div>' +
+        '<div class="ometa">' + why + ' \u00b7 ' + esc([gradeText(o), lastSeenText(o)].filter(Boolean).join(" \u00b7 ")) + '</div></button>' +
+        (r.why !== "household" ? '<button class="btn btn-secondary btn-sm" type="button" data-link="' + esc(o.id) + '">Link</button>' : '<span class="pill pill-accent">Household</span>');
+      row.querySelector(".main").addEventListener("click", function(){ openProfile(o, {push:true}); });
+      var lb = row.querySelector("[data-link]");
+      if(lb) lb.addEventListener("click", function(){ linkHousehold(s, o); });
+      el.appendChild(row);
+    });
+  }
   function renderHistory(s){
     var list = $("history-list"), v = visitsOf(s).slice().sort().reverse(), LIMIT = 12;
     list.innerHTML = "";
@@ -1541,24 +1665,46 @@
       return true;
     });
     function key(s){ return norm(s.last) || norm(s.first); }
-    list.sort(function(a, b){ var la = key(a), lb = key(b); return la < lb ? -1 : la > lb ? 1 : norm(a.first).localeCompare(norm(b.first)); });
+    var mode = state.rosterSort || "last";
+    function gradeNum(g){ g = norm(g); if(!g) return 999; if(g === "pk" || g === "pre-k" || g === "prek") return -1; if(g === "k") return 0; var n = parseInt(g, 10); return isNaN(n) ? 900 : n; }
+    function byName(a, b){ var la = key(a), lb = key(b); return la < lb ? -1 : la > lb ? 1 : norm(a.first).localeCompare(norm(b.first)); }
+    var sorters = {
+      last: byName,
+      first: function(a, b){ var fa = norm(a.first) || norm(a.last), fb = norm(b.first) || norm(b.last); return fa < fb ? -1 : fa > fb ? 1 : byName(a, b); },
+      grade: function(a, b){ return (gradeNum(a.grade) - gradeNum(b.grade)) || byName(a, b); },
+      age: function(a, b){ var x = ageFrom(a.birthdate), y = ageFrom(b.birthdate); if(x === null && y === null) return byName(a, b); if(x === null) return 1; if(y === null) return -1; return (x - y) || byName(a, b); },
+      school: function(a, b){ var x = norm(a.school), y = norm(b.school); if(!x && !y) return byName(a, b); if(!x) return 1; if(!y) return -1; return x < y ? -1 : x > y ? 1 : byName(a, b); },
+      recent: function(a, b){ var x = lastVisit(a), y = lastVisit(b); if(!x && !y) return byName(a, b); if(!x) return 1; if(!y) return -1; return x < y ? 1 : x > y ? -1 : byName(a, b); },
+      household: function(a, b){ var x = norm(a.household), y = norm(b.household); if(!x && !y) return byName(a, b); if(!x) return 1; if(!y) return -1; return x < y ? -1 : x > y ? 1 : byName(a, b); }
+    };
+    var groupers = {
+      last: function(s){ return (key(s) || "?")[0].toUpperCase(); },
+      first: function(s){ return ((norm(s.first) || norm(s.last) || "?")[0]).toUpperCase(); },
+      grade: function(s){ var g = String(s.grade || "").trim(); return g ? "Grade " + g.toUpperCase() : "No grade on file"; },
+      age: function(s){ var a = ageFrom(s.birthdate); return a === null ? "No birthdate on file" : "Age " + a; },
+      school: function(s){ return String(s.school || "").trim() || "No school on file"; },
+      recent: function(s){ var ls = lastVisit(s); if(!ls) return "No visits on record"; var d = daysBetween(ls, todayISO()); return d === 0 ? "Today" : d < 7 ? "This week" : d < 30 ? "This month" : d <= REVERIFY_DAYS ? "Last 12 weeks" : d < 365 ? "This year" : "Over a year ago"; },
+      household: function(s){ return String(s.household || "").trim() || "No household label"; }
+    };
+    list.sort(sorters[mode] || byName);
     $("roster-count").textContent = plural(list.length, "student", "students") + (q ? ' matching “' + state.rosterQuery.trim() + '”' : "");
     var el = $("roster-list"); el.innerHTML = "";
     if(!list.length){ el.innerHTML = '<p class="empty">No one in this group.</p>'; return; }
-    var letter = null;
+    var letter = null, grouper = groupers[mode] || groupers.last;
     list.forEach(function(s){
-      var L = (key(s) || "?")[0].toUpperCase();
+      var L = grouper(s);
       if(L !== letter && !q){ letter = L; var h = document.createElement("div"); h.className = "letter"; h.textContent = L; el.appendChild(h); }
       var row = document.createElement("button"); row.type = "button"; row.className = "roster-row";
       var age = ageFrom(s.birthdate);
       row.innerHTML = '<span class="dot dot-' + statusOf(s) + '"></span><span class="grow"><div class="rname">' + esc(s.last ? s.last + ", " + s.first : s.first) + (s.nickname ? ' <span class="tiny">“' + esc(s.nickname) + '”</span>' : '') + '</div>' +
-        '<div class="rmeta">' + esc([s.grade ? "Grade " + s.grade : null, age !== null ? "Age " + age : null, lastSeenText(s)].filter(Boolean).join(" · ")) + '</div></span>' +
+        '<div class="rmeta">' + esc([gradeText(s), age !== null ? "Age " + age : null, lastSeenText(s)].filter(Boolean).join(" · ")) + '</div></span>' +
         '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--ink-3);flex:none"><path d="m9 6 6 6-6 6"/></svg>';
       row.addEventListener("click", function(){ openProfile(s, {push:true}); });
       el.appendChild(row);
     });
   }
   $("roster-search").addEventListener("input", function(){ state.rosterQuery = this.value; renderRoster(); });
+  $("roster-sort").addEventListener("change", function(){ state.rosterSort = this.value; renderRoster(); });
   $("roster-clear").addEventListener("click", function(){ $("roster-search").value = ""; state.rosterQuery = ""; renderRoster(); });
 
   // =====================================================================
@@ -1568,8 +1714,26 @@
     var today = todayISO(), todayCt = 0, weekCt = 0, monthCt = 0;
     state.students.forEach(function(s){ visitsOf(s).forEach(function(d){ var n = daysBetween(d, today); if(n === 0) todayCt++; if(n >= 0 && n < 7) weekCt++; if(n >= 0 && n < 30) monthCt++; }); });
     $("sum-today").textContent = todayCt; $("sum-week").textContent = weekCt; $("sum-month").textContent = monthCt;
-    renderBarChart(); renderOutreach(); renderRegulars();
+    renderBarChart(); renderOutreach(); renderRegulars(); renderMissing();
   }
+  function renderMissing(){
+    var rows = state.students.filter(function(s){ return statusOf(s) !== "inactive"; }).map(function(s){
+      return { s: s, missing: REQUIRED_FIELDS.filter(function(f){ return !s[f.key]; }).map(function(f){ return f.label.toLowerCase(); }) };
+    }).filter(function(x){ return x.missing.length; });
+    rows.sort(function(a, b){ return b.missing.length - a.missing.length || fullName(a.s).localeCompare(fullName(b.s)); });
+    $("missing-count").textContent = rows.length;
+    $("missing-empty").hidden = !!rows.length;
+    var el = $("missing-list"), LIMIT = 8, more = $("missing-more"); el.innerHTML = "";
+    more.hidden = rows.length <= LIMIT;
+    more.textContent = state.missingExpanded ? "Show fewer" : "Show all " + rows.length;
+    (state.missingExpanded ? rows : rows.slice(0, LIMIT)).forEach(function(x){
+      var row = document.createElement("div"); row.className = "list-row";
+      row.innerHTML = '<button class="main" type="button"><div class="oname">' + esc(fullName(x.s)) + '</div><div class="ometa">Missing ' + esc(x.missing.join(", ")) + '</div></button><span class="pill pill-muted num">' + x.missing.length + '</span>';
+      row.querySelector(".main").addEventListener("click", function(){ openProfile(x.s, {push:true}); });
+      el.appendChild(row);
+    });
+  }
+  $("missing-more").addEventListener("click", function(){ state.missingExpanded = !state.missingExpanded; renderMissing(); });
   function renderBarChart(){
     var today = todayISO(), days = [];
     for(var i = 13; i >= 0; i--){ var d = isoToDate(today); d.setDate(d.getDate() - i); days.push(d.getFullYear() + "-" + pad2(d.getMonth()+1) + "-" + pad2(d.getDate())); }
