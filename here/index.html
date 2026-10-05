@@ -590,6 +590,38 @@
           <button class="linkbtn" id="history-more" type="button" hidden>Show all</button>
           <p class="tiny" id="history-archived" hidden></p>
         </div>
+
+        <div class="card stack">
+          <div class="section-title">Housekeeping</div>
+          <p class="tiny">If this record was created by mistake and the student already exists, merge it: every visit moves to the other record and this one is removed. A copy is kept on the Sheet's Merge Log tab.</p>
+          <button class="btn btn-ghost" id="profile-merge" type="button">Merge into another student&hellip;</button>
+        </div>
+      </section>
+
+      <!-- MERGE -->
+      <section id="screen-merge" class="screen" hidden>
+        <div class="back-row">
+          <button class="iconbtn" data-back type="button" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg></button>
+          <span class="eyebrow">Merge student</span>
+        </div>
+        <div class="card stack" id="merge-remove-card"></div>
+        <div id="merge-pick" class="stack">
+          <div class="search-wrap">
+            <svg class="mag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <input id="merge-search" placeholder="Find the record to keep&hellip;" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Find the record to keep">
+          </div>
+          <p class="tiny" id="merge-hint"></p>
+          <div class="results" id="merge-results"></div>
+        </div>
+        <div id="merge-confirm" class="stack" hidden>
+          <div class="card stack" id="merge-keep-card"></div>
+          <div class="banner banner-warn" id="merge-warning">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/></svg>
+            <span id="merge-warning-text"></span>
+          </div>
+          <button class="btn btn-danger btn-lg" id="merge-go" type="button"></button>
+          <button class="btn btn-ghost" id="merge-cancel" type="button">Pick a different record</button>
+        </div>
       </section>
     </main>
 
@@ -671,6 +703,7 @@
   ];
   var LOAD_TIMEOUT_MS = 25000;   // the Sheet can take a while to wake up; give it time
   var POST_TIMEOUT_MS = 30000;
+  var MERGE_TIMEOUT_MS = 90000;  // merges touch every log tab; give them time
   var RECONNECT_INTERVAL_MS = 20000;    // quiet retry cadence while the Sheet is unreachable
   var BACKGROUND_REFRESH_MS = 3 * 60000; // pick up other phones' check-ins
   var ALERT_AFTER_FAILURES = 3;          // ~1 minute down before asking the Sheet to email
@@ -685,7 +718,7 @@
     failStreak: 0, alertSent: false, reconnectTimer: null, refreshTimer: null, flushTimer: null,
     current: null, prevLastSeen: null, todayExpanded: false, historyExpanded: false,
     rosterFilter: "all", rosterQuery: "", rosterSort: "last", missingExpanded: false,
-    navStack: [], screen: "screen-gate", tab: "screen-home", selectedBar: null
+    navStack: [], screen: "screen-gate", tab: "screen-home", selectedBar: null, mergeRemove: null, mergeKeep: null
   };
   var KEYS = { roster:"efo.roster.v2", pending:"efo.pending.v2", unlock:"efo.unlock.v2", lastGood:"efo.lastgood.v2" };
   var store = {
@@ -1050,7 +1083,7 @@
   //  NAVIGATION
   // =====================================================================
   var TAB_SCREENS = ["screen-home", "screen-roster", "screen-summary"];
-  var ALL_SCREENS = ["screen-home", "screen-roster", "screen-summary", "screen-confirm", "screen-update", "screen-add", "screen-success", "screen-profile", "screen-birthdays"];
+  var ALL_SCREENS = ["screen-home", "screen-roster", "screen-summary", "screen-confirm", "screen-update", "screen-add", "screen-success", "screen-profile", "screen-birthdays", "screen-merge"];
   function show(id, opts){
     opts = opts || {};
     if(opts.push && state.screen !== id && ALL_SCREENS.indexOf(state.screen) !== -1) state.navStack.push(state.screen);
@@ -1068,6 +1101,7 @@
     if(prev === "screen-confirm" && state.current){ openConfirm(state.current, {replace:true}); return; }
     if(prev === "screen-profile" && state.current){ openProfile(state.current, {replace:true}); return; }
     if(prev === "screen-birthdays"){ openBirthdays({replace:true}); return; }
+    if(prev === "screen-merge" && state.mergeRemove){ openMerge(state.mergeRemove, {replace:true}); return; }
     showTab(state.tab);
   }
   function showTab(id){
@@ -1627,6 +1661,136 @@
       el.appendChild(row);
     });
   }
+  // ---- merge two records --------------------------------------------
+  function studentCardHtml(s, eyebrow){
+    var age = ageFrom(s.birthdate);
+    return '<div class="eyebrow">' + esc(eyebrow) + '</div>' +
+      '<div class="row" style="gap:12px;"><div class="avatar">' + esc(initials(s)) + '</div><div class="grow"><h2 style="font-size:20px;">' + esc(fullName(s)) + (s.nickname ? ' <span class="muted">“' + esc(s.nickname) + '”</span>' : '') + '</h2>' +
+      '<div class="row" style="gap:6px;margin-top:4px;flex-wrap:wrap;">' + statusPill(statusOf(s)) + '<span class="idchip">ID ' + esc(s.id) + '</span></div></div></div>' +
+      '<div class="facts">' + factHtml("Visits", plural(totalVisits(s), "visit", "visits")) + factHtml("Last here", lastVisit(s) ? fmtDateShort(lastVisit(s)) : "never") +
+      factHtml("Grade", s.grade) + factHtml("School", s.school) + factHtml("Parent / guardian", [s.guardian, s.phone].filter(Boolean).join(" · ")) + factHtml("Birthdate", s.birthdate ? fmtDateShort(s.birthdate) + ", " + s.birthdate.slice(0,4) : "") + '</div>';
+  }
+  // Looser than an exact name match: same last name, and first names that share their first word
+  // ("Antonio J" and "Antonio", "Dee" and "Dee Dee"), so a slightly different spelling still surfaces.
+  function likelyDuplicates(s){
+    var l = norm(s.last), f = norm(s.first).split(/\s+/)[0] || "";
+    return state.students.filter(function(o){
+      if(o.id === s.id) return false;
+      if(norm(o.last) !== l) return false;
+      var of = norm(o.first).split(/\s+/)[0] || "";
+      return !!f && !!of && (f === of || f.indexOf(of) === 0 || of.indexOf(f) === 0);
+    });
+  }
+  function openMerge(s, opts){
+    opts = opts || {};
+    if(!state.online){ toast("Merging needs a live connection to the Sheet. Try again once the pill says Synced.", "warn", 3600); return; }
+    if(state.pending.length){ toast("Wait for the " + plural(state.pending.length, "change", "changes") + " still sending, then merge.", "warn", 3600); return; }
+    state.mergeRemove = s; state.mergeKeep = null;
+    $("merge-remove-card").innerHTML = studentCardHtml(s, "Record to remove");
+    $("merge-search").value = "";
+    $("merge-pick").hidden = false; $("merge-confirm").hidden = true;
+    renderMergeCandidates("");
+    show("screen-merge", { push: !opts.replace });
+  }
+  function renderMergeCandidates(q){
+    var s = state.mergeRemove, el = $("merge-results"); el.innerHTML = "";
+    var list;
+    if(norm(q)){
+      list = searchStudents(q).map(function(m){ return m.s; });
+      $("merge-hint").textContent = "";
+    } else {
+      list = likelyDuplicates(s).concat(relatedStudents(s).map(function(r){ return r.s; }));
+      $("merge-hint").textContent = list.length ? "Likely matches (same name, phone, or guardian). Or search for someone else above." : "Search for the record to keep.";
+    }
+    var seen = {}; seen[s.id] = true;
+    list = list.filter(function(o){ if(seen[o.id]) return false; seen[o.id] = true; return true; }).slice(0, 10);
+    list.forEach(function(o){
+      var row = document.createElement("button"); row.type = "button"; row.className = "result-card";
+      row.innerHTML = '<span class="dot dot-' + statusOf(o) + '"></span><span class="result-main"><span class="result-name">' + esc(fullName(o)) + (o.nickname ? '<span class="nick">“' + esc(o.nickname) + '”</span>' : '') + '</span>' +
+        '<span class="result-meta">ID ' + esc(o.id) + ' · ' + plural(totalVisits(o), "visit", "visits") + ' · ' + esc(lastSeenText(o)) + '</span></span>' +
+        '<span class="result-side"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--ink-3)"><path d="m9 6 6 6-6 6"/></svg></span>';
+      row.addEventListener("click", function(){ pickMergeKeep(o); });
+      el.appendChild(row);
+    });
+    if(!list.length && norm(q)) el.innerHTML = '<p class="empty">No one matches “' + esc(q.trim()) + '”.</p>';
+  }
+  function pickMergeKeep(keep){
+    var remove = state.mergeRemove;
+    state.mergeKeep = keep;
+    $("merge-keep-card").innerHTML = studentCardHtml(keep, "Record to keep");
+    var both = visitsOf(remove).filter(function(d){ return hasVisit(keep, d); }).length;
+    $("merge-warning-text").textContent = "All " + plural(totalVisits(remove), "visit", "visits") + " recorded for " + fullName(remove) + " (ID " + remove.id + ") will move to " + fullName(keep) + " (ID " + keep.id + ")" +
+      (both ? "; " + plural(both, "day", "days") + " they both have will count once" : "") + ". Any info missing on " + keep.first + "’s record is filled in from this one, then this record is deleted. A copy is saved on the Merge Log tab.";
+    $("merge-go").textContent = "Merge into " + fullName(keep);
+    $("merge-go").disabled = false; $("merge-cancel").disabled = false;
+    $("merge-pick").hidden = true; $("merge-confirm").hidden = false;
+    window.scrollTo(0, 0);
+  }
+  function finishMergeLocally(keep, remove, movedCount){
+    // Mirror the Sheet's result locally so the screen is right immediately.
+    visitsOf(remove).forEach(function(d){ addVisitLocal(keep, d); });
+    keep.archivedVisits = (keep.archivedVisits || 0) + (remove.archivedVisits || 0);
+    PROFILE_FIELDS.forEach(function(f){
+      if(f.key === "first" || f.key === "last") return;
+      if(f.key === "notes"){ if(remove.notes && keep.notes.indexOf(remove.notes) === -1) keep.notes = keep.notes ? keep.notes + " | " + remove.notes : remove.notes; return; }
+      if(!keep[f.key] && remove[f.key]){ keep[f.key] = remove[f.key]; if(f.key === "grade") keep.gradeYear = remove.gradeYear; }
+    });
+    if(state.times[remove.id] && !state.times[keep.id]) state.times[keep.id] = state.times[remove.id];
+    delete state.times[remove.id];
+    state.students = state.students.filter(function(o){ return o.id !== remove.id; });
+    clearMergeScreen();
+    saveRosterCache();
+    toast("Merged. " + (movedCount === null ? "Visits" : plural(movedCount, "visit", "visits")) + " moved to " + fullName(keep) + ".");
+    state.navStack = [];
+    openProfile(keep, {replace:true});
+  }
+  function clearMergeScreen(){
+    state.mergeRemove = null; state.mergeKeep = null;
+    $("merge-results").innerHTML = ""; $("merge-remove-card").innerHTML = ""; $("merge-keep-card").innerHTML = "";
+  }
+  function doMerge(){
+    var keep = state.mergeKeep, remove = state.mergeRemove;
+    if(!keep || !remove) return;
+    var btn = $("merge-go"); btn.disabled = true; btn.textContent = "Merging\u2026 this can take a minute on a large log";
+    $("merge-cancel").disabled = true;
+    setSyncing(true);
+    function reset(){ btn.disabled = false; btn.textContent = "Merge into " + fullName(keep); $("merge-cancel").disabled = false; }
+    request({ action:"mergeStudents", keepId: keep.id, removeId: remove.id }, MERGE_TIMEOUT_MS).then(function(data){
+      setSyncing(false);
+      if(!data || data.ok === false){
+        reset();
+        toast("The merge didn\u2019t go through: " + ((data && data.error) || "no reply") + ". Nothing was changed.", "warn", 4200);
+        return;
+      }
+      finishMergeLocally(keep, remove, data.moved || 0);
+      loadRoster(); // pick up the Sheet's own view of the result
+    }).catch(function(err){
+      // No answer in time. The Sheet may well have finished anyway, so ask it rather than guess.
+      var code = errCode(err), why = errText(code);
+      toast("The Sheet " + (code === "timeout" ? "is taking a while" : "didn\u2019t answer (" + why + ")") + ". Checking whether the merge went through\u2026", "warn", 4000);
+      setTimeout(function(){
+        loadRoster().then(function(res){
+          setSyncing(false);
+          if(res !== "ok"){ reset(); toast("Still can\u2019t reach the Sheet (" + why + "). Check it directly before trying again; the merge may or may not have finished.", "warn", 5000); return; }
+          var stillThere = byId(remove.id), keptNow = byId(keep.id);
+          if(!stillThere && keptNow){
+            clearMergeScreen();
+            toast("The merge went through. Visits now sit under " + fullName(keptNow) + ".");
+            state.navStack = [];
+            openProfile(keptNow, {replace:true});
+          } else {
+            reset();
+            toast("The merge didn\u2019t finish; both records are still there. Nothing was changed. Try again.", "warn", 4500);
+          }
+        });
+      }, 1500);
+    });
+  }
+  $("profile-merge").addEventListener("click", function(){ if(state.current) openMerge(state.current); });
+  $("merge-search").addEventListener("input", function(){ renderMergeCandidates(this.value); });
+  $("merge-cancel").addEventListener("click", function(){ state.mergeKeep = null; $("merge-confirm").hidden = true; $("merge-pick").hidden = false; });
+  $("merge-go").addEventListener("click", doMerge);
+
   function renderHistory(s){
     var list = $("history-list"), v = visitsOf(s).slice().sort().reverse(), LIMIT = 12;
     list.innerHTML = "";
@@ -1839,6 +2003,7 @@
   window.addEventListener("online", function(){ if(state.code && !state.online){ (state.pending.length ? flushPending() : loadRoster()); } });
   window.addEventListener("beforeunload", function(){ savePending(); });
 
+  if(/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) window.__efo = state; // test hook only
   boot();
 })();
 </script>
