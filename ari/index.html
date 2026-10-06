@@ -1,1 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arielle · Senior Portraits</title>
+<style>
+  :root{--bg:#f6f1ea;--card:#fffdf9;--ink:#2b2622;--muted:#7a6f66;--line:#e6ddd2}
+  @media (prefers-color-scheme:dark){:root{--bg:#1b1816;--card:#262220;--ink:#f1ebe4;--muted:#a79b91;--line:#3a332f}}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  header{max-width:1240px;margin:0 auto;padding:28px 16px 6px}
+  h1{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:clamp(28px,4vw,40px);margin:0}
+  h1 small{display:block;font:13px/1.4 system-ui,sans-serif;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-top:6px}
+  p{color:var(--muted);margin:10px 0 0}
+  main{max-width:1240px;margin:0 auto;padding:16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
+  @media (min-width:700px){.grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}}
+  figure{margin:0;background:var(--card);border-radius:12px;overflow:hidden;box-shadow:0 1px 2px rgba(60,40,30,.08),0 8px 24px rgba(60,40,30,.08)}
+  figure a{display:block}
+  figure img{display:block;width:100%;height:auto;background:var(--line)}
+  figcaption{padding:8px 12px 10px;font-size:13px;color:var(--ink)}
+  figcaption span{color:var(--muted);margin-right:8px;letter-spacing:.06em}
+  footer{max-width:1240px;margin:0 auto;padding:4px 16px 32px;color:var(--muted);font-size:13px}
+  .lb{position:fixed;inset:0;background:rgba(20,14,12,.94);display:none;align-items:center;justify-content:center;z-index:9}
+  .lb.open{display:flex}
+  .lb img{max-width:96vw;max-height:88vh;object-fit:contain;border-radius:6px}
+  .lb .cap{position:absolute;left:0;right:0;bottom:0;padding:12px 16px calc(12px + env(safe-area-inset-bottom));color:#f1ebe4;font-size:14px;text-align:center;background:linear-gradient(transparent,rgba(0,0,0,.5))}
+  .lb button{position:absolute;top:50%;transform:translateY(-50%);all:unset;cursor:pointer;color:#fff;font-size:34px;padding:10px 16px;position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.08);border-radius:10px}
+  .lb .prev{left:10px} .lb .next{right:10px}
+  .lb .close{top:10px;right:12px;transform:none;font-size:22px;padding:8px 12px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Arielle<small>Senior Portraits · October 2026</small></h1>
+  <p>42 photographs. Click or tap any photo to see it large; use the arrow keys or swipe to move between them.</p>
+</header>
+<main>
+  <div class="grid" id="grid">
+    <figure><a href="Ari_Senior_01_8101_web.jpg" data-i="0"><img src="Ari_Senior_01_8101_web.jpg" alt="Photo 01: hydrangea headshot, smile" loading="lazy" width="1638" height="2048"></a><figcaption><span>01</span>hydrangea headshot, smile</figcaption></figure>
+    <figure><a href="Ari_Senior_02_8110_web.jpg" data-i="1"><img src="Ari_Senior_02_8110_web.jpg" alt="Photo 02: hydrangeas, half-length, big smile" loading="lazy" width="1638" height="2048"></a><figcaption><span>02</span>hydrangeas, half-length, big smile</figcaption></figure>
+    <figure><a href="Ari_Senior_03_8102_web.jpg" data-i="2"><img src="Ari_Senior_03_8102_web.jpg" alt="Photo 03: hydrangea headshot, soft smile" loading="lazy" width="1639" height="2048"></a><figcaption><span>03</span>hydrangea headshot, soft smile</figcaption></figure>
+    <figure><a href="Ari_Senior_04_8097_web.jpg" data-i="3"><img src="Ari_Senior_04_8097_web.jpg" alt="Photo 04: brick pillar, over the shoulder" loading="lazy" width="1639" height="2048"></a><figcaption><span>04</span>brick pillar, over the shoulder</figcaption></figure>
+    <figure><a href="Ari_Senior_05_8237_web.jpg" data-i="4"><img src="Ari_Senior_05_8237_web.jpg" alt="Photo 05: willow, looking back through the fronds" loading="lazy" width="1638" height="2048"></a><figcaption><span>05</span>willow, looking back through the fronds</figcaption></figure>
+    <figure><a href="Ari_Senior_06_8232_web.jpg" data-i="5"><img src="Ari_Senior_06_8232_web.jpg" alt="Photo 06: willow by the pond, laughing" loading="lazy" width="1638" height="2048"></a><figcaption><span>06</span>willow by the pond, laughing</figcaption></figure>
+    <figure><a href="Ari_Senior_07_8230_web.jpg" data-i="6"><img src="Ari_Senior_07_8230_web.jpg" alt="Photo 07: willow by the pond, eyes down" loading="lazy" width="1638" height="2048"></a><figcaption><span>07</span>willow by the pond, eyes down</figcaption></figure>
+    <figure><a href="Ari_Senior_08_8229_web.jpg" data-i="7"><img src="Ari_Senior_08_8229_web.jpg" alt="Photo 08: willow, soft smile" loading="lazy" width="1638" height="2048"></a><figcaption><span>08</span>willow, soft smile</figcaption></figure>
+    <figure><a href="Ari_Senior_09_8227_web.jpg" data-i="8"><img src="Ari_Senior_09_8227_web.jpg" alt="Photo 09: willow, portrait crop" loading="lazy" width="1638" height="2048"></a><figcaption><span>09</span>willow, portrait crop</figcaption></figure>
+    <figure><a href="Ari_Senior_10_8212_web.jpg" data-i="9"><img src="Ari_Senior_10_8212_web.jpg" alt="Photo 10: through the willow fronds" loading="lazy" width="1638" height="2048"></a><figcaption><span>10</span>through the willow fronds</figcaption></figure>
+    <figure><a href="Ari_Senior_11_8146_web.jpg" data-i="10"><img src="Ari_Senior_11_8146_web.jpg" alt="Photo 11: hydrangea bloom, big smile" loading="lazy" width="1638" height="2048"></a><figcaption><span>11</span>hydrangea bloom, big smile</figcaption></figure>
+    <figure><a href="Ari_Senior_12_8144_web.jpg" data-i="11"><img src="Ari_Senior_12_8144_web.jpg" alt="Photo 12: hydrangea bloom, soft smile" loading="lazy" width="1638" height="2048"></a><figcaption><span>12</span>hydrangea bloom, soft smile</figcaption></figure>
+    <figure><a href="Ari_Senior_13_8141_web.jpg" data-i="12"><img src="Ari_Senior_13_8141_web.jpg" alt="Photo 13: hugging the hydrangea" loading="lazy" width="1638" height="2048"></a><figcaption><span>13</span>hugging the hydrangea</figcaption></figure>
+    <figure><a href="Ari_Senior_14_8125_web.jpg" data-i="13"><img src="Ari_Senior_14_8125_web.jpg" alt="Photo 14: the back of the dress" loading="lazy" width="1365" height="2048"></a><figcaption><span>14</span>the back of the dress</figcaption></figure>
+    <figure><a href="Ari_Senior_15_8135_web.jpg" data-i="14"><img src="Ari_Senior_15_8135_web.jpg" alt="Photo 15: full length among the hydrangeas" loading="lazy" width="1365" height="2048"></a><figcaption><span>15</span>full length among the hydrangeas</figcaption></figure>
+    <figure><a href="Ari_Senior_16_8222_web.jpg" data-i="15"><img src="Ari_Senior_16_8222_web.jpg" alt="Photo 16: willow trunk, full length" loading="lazy" width="1365" height="2048"></a><figcaption><span>16</span>willow trunk, full length</figcaption></figure>
+    <figure><a href="Ari_Senior_17_8215_web.jpg" data-i="16"><img src="Ari_Senior_17_8215_web.jpg" alt="Photo 17: willow trunk, full length, eyes down" loading="lazy" width="1365" height="2048"></a><figcaption><span>17</span>willow trunk, full length, eyes down</figcaption></figure>
+    <figure><a href="Ari_Senior_18_8209_web.jpg" data-i="17"><img src="Ari_Senior_18_8209_web.jpg" alt="Photo 18: leaning on the willow" loading="lazy" width="1365" height="2048"></a><figcaption><span>18</span>leaning on the willow</figcaption></figure>
+    <figure><a href="Ari_Senior_19_8091_web.jpg" data-i="18"><img src="Ari_Senior_19_8091_web.jpg" alt="Photo 19: the campus gate" loading="lazy" width="1638" height="2048"></a><figcaption><span>19</span>the campus gate</figcaption></figure>
+    <figure><a href="Ari_Senior_20_8096_web.jpg" data-i="19"><img src="Ari_Senior_20_8096_web.jpg" alt="Photo 20: brick pillar, soft smile" loading="lazy" width="1639" height="2048"></a><figcaption><span>20</span>brick pillar, soft smile</figcaption></figure>
+    <figure><a href="Ari_Senior_21_8160_web.jpg" data-i="20"><img src="Ari_Senior_21_8160_web.jpg" alt="Photo 21: the pond, backlit" loading="lazy" width="1365" height="2048"></a><figcaption><span>21</span>the pond, backlit</figcaption></figure>
+    <figure><a href="Ari_Senior_22_8261_web.jpg" data-i="21"><img src="Ari_Senior_22_8261_web.jpg" alt="Photo 22: by the pond, editorial" loading="lazy" width="2048" height="1365"></a><figcaption><span>22</span>by the pond, editorial</figcaption></figure>
+    <figure><a href="Ari_Senior_23_8223_web.jpg" data-i="22"><img src="Ari_Senior_23_8223_web.jpg" alt="Photo 23: laughing up at the willow" loading="lazy" width="2048" height="1365"></a><figcaption><span>23</span>laughing up at the willow</figcaption></figure>
+    <figure><a href="Ari_Senior_24_8157_web.jpg" data-i="23"><img src="Ari_Senior_24_8157_web.jpg" alt="Photo 24: the two sisters at the gate" loading="lazy" width="1365" height="2048"></a><figcaption><span>24</span>the two sisters at the gate</figcaption></figure>
+    <figure><a href="Ari_Senior_25_175736021_web.jpg" data-i="24"><img src="Ari_Senior_25_175736021_web.jpg" alt="Photo 25: garden headshot, big smile" loading="lazy" width="1638" height="2048"></a><figcaption><span>25</span>garden headshot, big smile</figcaption></figure>
+    <figure><a href="Ari_Senior_26_174239663_web.jpg" data-i="25"><img src="Ari_Senior_26_174239663_web.jpg" alt="Photo 26: garden, head tilt" loading="lazy" width="1638" height="2048"></a><figcaption><span>26</span>garden, head tilt</figcaption></figure>
+    <figure><a href="Ari_Senior_27_180040201_web.jpg" data-i="26"><img src="Ari_Senior_27_180040201_web.jpg" alt="Photo 27: garden, soft look" loading="lazy" width="1638" height="2048"></a><figcaption><span>27</span>garden, soft look</figcaption></figure>
+    <figure><a href="Ari_Senior_28_180315116_web.jpg" data-i="27"><img src="Ari_Senior_28_180315116_web.jpg" alt="Photo 28: garden, glasses, big smile" loading="lazy" width="1638" height="2048"></a><figcaption><span>28</span>garden, glasses, big smile</figcaption></figure>
+    <figure><a href="Ari_Senior_29_175146583_web.jpg" data-i="28"><img src="Ari_Senior_29_175146583_web.jpg" alt="Photo 29: hibiscus, close" loading="lazy" width="1638" height="2048"></a><figcaption><span>29</span>hibiscus, close</figcaption></figure>
+    <figure><a href="Ari_Senior_30_175245659_web.jpg" data-i="29"><img src="Ari_Senior_30_175245659_web.jpg" alt="Photo 30: hibiscus, big smile" loading="lazy" width="1638" height="2048"></a><figcaption><span>30</span>hibiscus, big smile</figcaption></figure>
+    <figure><a href="Ari_Senior_31_180439582_web.jpg" data-i="30"><img src="Ari_Senior_31_180439582_web.jpg" alt="Photo 31: garden, arms crossed, smile" loading="lazy" width="1638" height="2048"></a><figcaption><span>31</span>garden, arms crossed, smile</figcaption></figure>
+    <figure><a href="Ari_Senior_32_180434311_web.jpg" data-i="31"><img src="Ari_Senior_32_180434311_web.jpg" alt="Photo 32: garden, arms crossed, soft" loading="lazy" width="1638" height="2048"></a><figcaption><span>32</span>garden, arms crossed, soft</figcaption></figure>
+    <figure><a href="Ari_Senior_33_174247442_web.jpg" data-i="32"><img src="Ari_Senior_33_174247442_web.jpg" alt="Photo 33: hands to cheeks" loading="lazy" width="1638" height="2048"></a><figcaption><span>33</span>hands to cheeks</figcaption></figure>
+    <figure><a href="Ari_Senior_34_174529614_web.jpg" data-i="33"><img src="Ari_Senior_34_174529614_web.jpg" alt="Photo 34: by the creek, close, glasses" loading="lazy" width="1638" height="2048"></a><figcaption><span>34</span>by the creek, close, glasses</figcaption></figure>
+    <figure><a href="Ari_Senior_35_180807040_web.jpg" data-i="34"><img src="Ari_Senior_35_180807040_web.jpg" alt="Photo 35: by the creek, close" loading="lazy" width="1638" height="2048"></a><figcaption><span>35</span>by the creek, close</figcaption></figure>
+    <figure><a href="Ari_Senior_36_175655252_web.jpg" data-i="35"><img src="Ari_Senior_36_175655252_web.jpg" alt="Photo 36: seated on the rock, smile" loading="lazy" width="1365" height="2048"></a><figcaption><span>36</span>seated on the rock, smile</figcaption></figure>
+    <figure><a href="Ari_Senior_37_175639509_web.jpg" data-i="36"><img src="Ari_Senior_37_175639509_web.jpg" alt="Photo 37: seated, laughing" loading="lazy" width="1365" height="2048"></a><figcaption><span>37</span>seated, laughing</figcaption></figure>
+    <figure><a href="Ari_Senior_38_175822655_web.jpg" data-i="37"><img src="Ari_Senior_38_175822655_web.jpg" alt="Photo 38: holding the green hydrangea" loading="lazy" width="1638" height="2048"></a><figcaption><span>38</span>holding the green hydrangea</figcaption></figure>
+    <figure><a href="Ari_Senior_39_180521596_web.jpg" data-i="38"><img src="Ari_Senior_39_180521596_web.jpg" alt="Photo 39: autumn foliage, over the shoulder" loading="lazy" width="1638" height="2048"></a><figcaption><span>39</span>autumn foliage, over the shoulder</figcaption></figure>
+    <figure><a href="Ari_Senior_40_174203269_web.jpg" data-i="39"><img src="Ari_Senior_40_174203269_web.jpg" alt="Photo 40: stone bench, full length" loading="lazy" width="1536" height="2048"></a><figcaption><span>40</span>stone bench, full length</figcaption></figure>
+    <figure><a href="Ari_Senior_41_180302148_web.jpg" data-i="40"><img src="Ari_Senior_41_180302148_web.jpg" alt="Photo 41: garden path, full length" loading="lazy" width="1536" height="2048"></a><figcaption><span>41</span>garden path, full length</figcaption></figure>
+    <figure><a href="Ari_Senior_42_174653684_web.jpg" data-i="41"><img src="Ari_Senior_42_174653684_web.jpg" alt="Photo 42: with grandparents and sister" loading="lazy" width="1536" height="2048"></a><figcaption><span>42</span>with grandparents and sister</figcaption></figure>
+  </div>
+</main>
+<footer>Photographs 1–24 were made at the campus gate, the willow and the pond; 25–42 in the garden. Full-resolution files are in the folder above this one.</footer>
 
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <button class="close" id="close" aria-label="Close">✕</button>
+  <button class="prev" id="prev" aria-label="Previous">‹</button>
+  <img id="lbImg" alt="">
+  <button class="next" id="next" aria-label="Next">›</button>
+  <div class="cap" id="cap"></div>
+</div>
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll("#grid a"));
+  var lb = document.getElementById("lb"), img = document.getElementById("lbImg"), cap = document.getElementById("cap"), cur = -1;
+  function show(i){ cur = (i + links.length) % links.length; var a = links[cur], im = a.querySelector("img");
+    img.src = a.getAttribute("href"); img.alt = im.alt; cap.textContent = im.alt.replace(/^Photo /, "");
+    lb.classList.add("open"); document.body.style.overflow = "hidden";
+    var n = new Image(); n.src = links[(cur+1) % links.length].getAttribute("href"); }
+  function close(){ lb.classList.remove("open"); document.body.style.overflow = ""; cur = -1; }
+  links.forEach(function(a, i){ a.addEventListener("click", function(e){ e.preventDefault(); show(i); }); });
+  document.getElementById("prev").addEventListener("click", function(){ show(cur - 1); });
+  document.getElementById("next").addEventListener("click", function(){ show(cur + 1); });
+  document.getElementById("close").addEventListener("click", close);
+  lb.addEventListener("click", function(e){ if (e.target === lb) close(); });
+  document.addEventListener("keydown", function(e){ if (cur < 0) return;
+    if (e.key === "Escape") close(); else if (e.key === "ArrowRight") show(cur + 1); else if (e.key === "ArrowLeft") show(cur - 1); });
+  var tx = null;
+  lb.addEventListener("touchstart", function(e){ tx = e.touches[0].clientX; }, {passive:true});
+  lb.addEventListener("touchend", function(e){ if (tx === null) return; var dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 50) show(cur + (dx < 0 ? 1 : -1)); tx = null; }, {passive:true});
+})();
+</script>
+</body>
+</html>
